@@ -1,3 +1,4 @@
+import 'package:doan_tapgymtainha/screen/start_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_tapgymtainha/screen/home_screen.dart'; // Màn hình Tập luyện
 import 'package:doan_tapgymtainha/screen/profile_screen.dart'; // Màn hình Khám phá
@@ -16,6 +17,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
     ProfileScreen(),
+    StartScreen(),
     // Thêm các màn hình khác nếu cần
   ];
 
