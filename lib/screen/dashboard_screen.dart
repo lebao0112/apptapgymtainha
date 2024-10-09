@@ -2,6 +2,8 @@ import 'package:doan_tapgymtainha/screen/start_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_tapgymtainha/screen/home_screen.dart'; // Màn hình Tập luyện
 import 'package:doan_tapgymtainha/screen/profile_screen.dart'; // Màn hình Khám phá
+import 'package:doan_tapgymtainha/screen/explore_screen.dart';
+import 'package:doan_tapgymtainha/screen/setting_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -16,8 +18,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // List of screens
   final List<Widget> _screens = [
     HomeScreen(),
-    ProfileScreen(),
+    ExploreScreen(),
     StartScreen(),
+    SettingScreen(),
+
     // Thêm các màn hình khác nếu cần
   ];
 
@@ -35,25 +39,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard),
-              label: 'Trang chủ',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.explore),
-              label: 'Khám phá',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add), // Add a placeholder for FAB (Not clickable)
-              label: 'Bắt đầu',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Hồ sơ',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
-            ),
+            icon: Icon(Icons.dashboard),
+            label: 'Trang chủ',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.explore),
+            label: 'Khám phá',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add), // Add a placeholder for FAB (Not clickable)
+            label: 'Bắt đầu',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.report),
+            label: 'Thống kê',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Cài đặt',
+          ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.orange, // Màu cam cho mục đang chọn

@@ -1,5 +1,6 @@
 // File path: lib/screens/createworkout_screen.dart
 import 'package:flutter/material.dart';
+import 'excercise_screen.dart';
 import 'exerciselist_screen.dart'; // Import ExerciseListScreen
 
 class CreateWorkoutScreen extends StatelessWidget {
@@ -78,6 +79,10 @@ class CreateWorkoutScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // Handle adding exercises
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ExercisesScreen()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.lightBlue[100],
