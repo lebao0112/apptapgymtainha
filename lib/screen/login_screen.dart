@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:doan_tapgymtainha/screen/dashboard_screen.dart';
+import 'dashboard_screen.dart';  // Assuming this is your DashboardScreen
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,13 +15,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login() {
     if (_formKey.currentState!.validate()) {
-      Navigator.push(
-        // dùng pushReplacement không cho quay lại màn hình trước đó.
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => DashboardScreen()),
       );
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Đăng nhập thành công'),
         ),
       );
@@ -33,17 +32,17 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Hình nền toàn màn hình
+          // Background image
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/AnhnenTapGym.png'), // Hình nền gym
+                image: AssetImage('assets/AnhnenTapGym.png'),  // Ensure the path is correct
                 fit: BoxFit.cover,
               ),
             ),
           ),
+          // Gradient overlay
           Container(
-            // Màn che màu gradient
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
@@ -72,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         key: _formKey,
                         child: Column(
                           children: [
-                            Text(
+                            const Text(
                               'Đăng nhập',
                               style: TextStyle(
                                 fontSize: 26,
@@ -80,12 +79,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Colors.black87,
                               ),
                             ),
-                            SizedBox(height: 25),
+                            const SizedBox(height: 25),
+                            // Username Field
                             TextFormField(
                               controller: _nameController,
                               decoration: InputDecoration(
                                 labelText: "Tên đăng nhập",
-                                prefixIcon: Icon(Icons.person),
+                                prefixIcon: const Icon(Icons.person),
                                 filled: true,
                                 fillColor: Colors.grey[200],
                                 border: OutlineInputBorder(
@@ -100,13 +100,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return null;
                               },
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
+                            // Password Field
                             TextFormField(
                               controller: _passwordController,
                               obscureText: true,
                               decoration: InputDecoration(
                                 labelText: "Mật khẩu",
-                                prefixIcon: Icon(Icons.lock),
+                                prefixIcon: const Icon(Icons.lock),
                                 filled: true,
                                 fillColor: Colors.grey[200],
                                 border: OutlineInputBorder(
@@ -121,11 +122,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return null;
                               },
                             ),
-                            SizedBox(height: 30),
+                            const SizedBox(height: 30),
+                            // Login Button
                             ElevatedButton(
                               onPressed: _login,
                               style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                   vertical: 16.0,
                                   horizontal: 50.0,
                                 ),
@@ -134,45 +136,46 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(12.0),
                                 ),
                               ),
-                              child: Text(
+                              child: const Text(
                                 "Đăng nhập",
                                 style: TextStyle(fontSize: 18, color: Colors.white),
                               ),
                             ),
-
-                            SizedBox(height: 20),
-                            Text("Hoặc đăng nhập với"),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
+                            const Text("Hoặc đăng nhập với"),
+                            const SizedBox(height: 20),
+                            // Social Login Buttons
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 IconButton(
                                   onPressed: () {
-                                    // Thêm chức năng đăng nhập bằng Google
+                                    // Add Google login functionality
                                   },
                                   icon: Image.asset(
-                                    'assets/google.png', // Đường dẫn đến icon Google
+                                    'assets/google.png',  // Ensure the path is correct
                                     width: 35,
                                   ),
                                 ),
-                                SizedBox(width: 20),
+                                const SizedBox(width: 20),
                                 IconButton(
                                   onPressed: () {
-                                    // Thêm chức năng đăng nhập bằng Facebook
+                                    // Add Facebook login functionality
                                   },
                                   icon: Image.asset(
-                                    'assets/facebook.png', // Đường dẫn đến icon Facebook
+                                    'assets/facebook.png',  // Ensure the path is correct
                                     width: 35,
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
+                            // Register Option
                             GestureDetector(
                               onTap: () {
-                                // Thêm chức năng "Đăng ký" tại đây
+                                // Add "Register" functionality here
                               },
-                              child: Text(
+                              child: const Text(
                                 "Chưa có tài khoản? Đăng ký ngay",
                                 style: TextStyle(
                                   color: Colors.orangeAccent,
