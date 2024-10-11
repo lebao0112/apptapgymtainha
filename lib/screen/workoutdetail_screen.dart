@@ -1,3 +1,4 @@
+import 'package:doan_tapgymtainha/screen/doingworkout_screen.dart';
 import 'package:flutter/material.dart';
 
 final List<Map<String, String>> exercises = [
@@ -101,7 +102,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                       ),
                       TextButton(
                         onPressed: () {},
-                        child: Text('Edit', style: TextStyle(color: Colors.blue)),
+                        child: Text('Edit', style: TextStyle(color: Colors.orange)),
                       ),
                     ],
                   ),
@@ -126,18 +127,28 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
             ),
           ),
           Center(
-            child: ElevatedButton(
-              onPressed: () {
-                // Xử lý sự kiện khi nhấn nút Start
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                padding: EdgeInsets.symmetric(horizontal: 80, vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-              ),
-              child: Text(
-                'Start',
-                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 50),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DoingworkoutScreen(exercises: [],),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  padding: EdgeInsets.symmetric(horizontal: 80, vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                ),
+                child: Text(
+                  'START',
+                  style: TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.bold),
+
+                ),
+
               ),
             ),
           ),
