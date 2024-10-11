@@ -1,3 +1,5 @@
+import 'package:doan_tapgymtainha/screen/excercise_screen.dart';
+import 'package:doan_tapgymtainha/screen/trainingprogram_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_tapgymtainha/screen/login_screen.dart';
 import 'package:doan_tapgymtainha/screen/dashboard_screen.dart';
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginScreen(),
+      home: const TrainingProgramScreen(),
     );
   }
 }
