@@ -185,6 +185,10 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
         title: Text('CÁC BÀI TẬP', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         actions: const [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
