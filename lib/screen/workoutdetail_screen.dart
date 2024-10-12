@@ -1,4 +1,5 @@
-import 'package:doan_tapgymtainha/screen/doingworkout_screen.dart';
+import 'package:doan_tapgymtainha/screen/exercise_sequence/exercise_timer_screen.dart';
+import 'package:doan_tapgymtainha/screen/exercise_sequence/ready_workout_sreen.dart';
 import 'package:flutter/material.dart';
 
 final List<Map<String, String>> exercises = [
@@ -134,7 +135,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DoingworkoutScreen(exercises: [],),
+                      builder: (context) => ReadyWorkoutSreen(exercises: [],),
                     ),
                   );
                 },

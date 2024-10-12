@@ -1,48 +1,43 @@
+import 'package:doan_tapgymtainha/screen/exercise_sequence/taking_break_sreen.dart';
 import 'package:doan_tapgymtainha/screen/workoutdetail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:video_player/video_player.dart';
 
-class DoingworkoutScreen extends StatefulWidget {
+class ExerciseTimerScreen extends StatefulWidget {
   List<Map<String, String>> exercises;
 
-  DoingworkoutScreen( {required this.exercises});
+  ExerciseTimerScreen( {required this.exercises});
 
   @override
-  State<DoingworkoutScreen> createState() => _DoingworkoutScreenState();
+  State<ExerciseTimerScreen> createState() => _ExerciseTimerScreenState();
 }
 
-class _DoingworkoutScreenState extends State<DoingworkoutScreen> {
+class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
   late VideoPlayerController _videoPlayerController;
   late Future<void> _initializeVideoPlayerFuture;
 
   @override
   void initState() {
     super.initState();
-
-    // Create and store the VideoPlayerController. The VideoPlayerController
-    // offers several different constructors to play videos from assets, files,
-    // or the internet.
     _videoPlayerController = VideoPlayerController.networkUrl(
       Uri.parse(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+        'https://videos.pexels.com/video-files/2376809/2376809-hd_1920_1080_24fps.mp4',
       ),
     );
 
     _initializeVideoPlayerFuture = _videoPlayerController.initialize().then((_) {
-      _videoPlayerController.setLooping(true); // Set video to loop
-      setState(() {}); // Refresh the state once the video is initialized
+      _videoPlayerController.setLooping(true);
+      setState(() {});
     });
 
   }
   @override
   void dispose() {
-    // Ensure disposing of the VideoPlayerController to free up resources.
     _videoPlayerController.dispose();
-
     super.dispose();
   }
-    
+
   @override
   Widget build(BuildContext context) {
 
@@ -71,17 +66,16 @@ class _DoingworkoutScreenState extends State<DoingworkoutScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Close Button on the Left
                 Container(
                   margin: const EdgeInsets.only(top: 10, left: 10),
                   decoration: BoxDecoration(
-                    color: Colors.grey[300], // Background color of the close button
+                    color: Colors.grey[300],
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: Icon(Icons.close),
-                    color: Colors.black, // Icon color
+                    color: Colors.black,
                   ),
                 ),
 
@@ -291,7 +285,12 @@ class _DoingworkoutScreenState extends State<DoingworkoutScreen> {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            // Action for next button
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TakingBreakSreen(exercises: [],),
+                              ),
+                            );
                           },
                           icon: Icon(Icons.skip_next),
                           color: Colors.white,
