@@ -1,4 +1,6 @@
 import 'package:doan_tapgymtainha/screen/excercise_screen.dart';
+import 'package:doan_tapgymtainha/screen/exercise_sequence/ready_workout_sreen.dart';
+import 'package:doan_tapgymtainha/screen/exercise_sequence/taking_break_sreen.dart';
 import 'package:doan_tapgymtainha/screen/trainingprogram_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_tapgymtainha/screen/login_screen.dart';
