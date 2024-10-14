@@ -1,111 +1,112 @@
-// File path: lib/screens/createworkout_screen.dart
 import 'package:flutter/material.dart';
-import 'excercise_screen.dart';
-import 'exerciselist_screen.dart'; // Import ExerciseListScreen
+import '../service/api_service.dart'; // Import ApiService for API calls
+class CreateWorkoutScreen extends StatefulWidget {
+  final String userId; // Accept the userId
 
-class CreateWorkoutScreen extends StatelessWidget {
+  CreateWorkoutScreen({required this.userId}); // Pass userId in constructor
+
+  @override
+  _CreateWorkoutScreenState createState() => _CreateWorkoutScreenState();
+}
+
+class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  List<String> _exercises = []; // List of exercises
+
+  // Function to add workout
+  void _addWorkout() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        // Prepare workout data
+        Map<String, dynamic> workoutData = {
+          'Title': _titleController.text,
+          'Description': _descriptionController.text,
+          'Exercises': _exercises,
+        };
+
+        // In ra workout data trước khi gửi lên server để kiểm tra
+        print("Adding workout: $workoutData");
+
+        // Call the API service to add workout for user
+        await ApiService.addWorkout(widget.userId, workoutData);
+
+        // Navigate back and pass a value to inform that a workout was added
+        Navigator.pop(context, true); // Return true to indicate success
+      } catch (e) {
+        // If adding workout fails, show an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add workout: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60),
-        child: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.timer, color: Colors.black),
-            onPressed: () {
-              // Handle timer button press
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                // Navigate to ExerciseListScreen when Finish is clicked
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ExerciseListScreen()),
-                );
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 20),
-              ),
-              child: Text('Finish'),
-            ),
-          ],
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          'Create Workout',
+          style: TextStyle(color: Colors.black),
         ),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Workout Title and Menu
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Afternoon Workout',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(width: 10),
-                IconButton(
-                  icon: Icon(Icons.more_horiz, color: Colors.grey),
-                  onPressed: () {
-                    // Handle menu button press
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 5),
-
-            // Workout Time
-            Text(
-              '0:03',
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-            SizedBox(height: 10),
-
-            // Notes Section
-            Text(
-              'Notes',
-              style: TextStyle(color: Colors.grey, fontSize: 16),
-            ),
-            SizedBox(height: 20),
-
-            // Add Exercises Button
-            ElevatedButton(
-              onPressed: () {
-                // Handle adding exercises
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ExercisesScreen()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightBlue[100],
-                foregroundColor: Colors.blue,
-                minimumSize: Size(double.infinity, 50),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              // Title Field
+              TextFormField(
+                controller: _titleController,
+                decoration: InputDecoration(labelText: "Workout Title"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a title';
+                  }
+                  return null;
+                },
               ),
-              child: Text('Add Exercises'),
-            ),
-            SizedBox(height: 20),
+              SizedBox(height: 10),
 
-            // Cancel Workout Button
-            ElevatedButton(
-              onPressed: () {
-                // Handle cancel workout
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red[100],
-                foregroundColor: Colors.red,
-                minimumSize: Size(double.infinity, 50),
+              // Description Field
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(labelText: "Workout Description"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a description';
+                  }
+                  return null;
+                },
               ),
-              child: Text('Cancel Workout'),
-            ),
-          ],
+              SizedBox(height: 20),
+
+              // Button to add exercises (you can navigate to another screen to select exercises)
+              ElevatedButton(
+                onPressed: () {
+                  // Handle adding exercises (dummy example)
+                  setState(() {
+                    _exercises.add('Push-up');
+                    _exercises.add('Squat');
+                  });
+                },
+                child: Text('Add Exercises'),
+              ),
+
+              SizedBox(height: 20),
+
+              // Submit Button
+              ElevatedButton(
+                onPressed: _addWorkout,
+                child: Text('Add Workout'),
+              ),
+            ],
+          ),
         ),
       ),
     );

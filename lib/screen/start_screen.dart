@@ -1,8 +1,37 @@
-// File path: lib/screens/start_screen.dart
 import 'package:flutter/material.dart';
 import 'createworkout_screen.dart';  // Import the CreateWorkoutScreen
+import '../service/api_service.dart'; // Import your ApiService
+class StartScreen extends StatefulWidget {
+  final String userId; // Accept the userId
 
-class StartScreen extends StatelessWidget {
+  StartScreen({required this.userId}); // Constructor to pass userId
+
+  @override
+  _StartScreenState createState() => _StartScreenState();
+}
+
+class _StartScreenState extends State<StartScreen> {
+  late Future<List<dynamic>> _userWorkouts; // Declare a Future for user workouts
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserWorkouts(); // Load user workouts when the screen is initialized
+  }
+
+  void _loadUserWorkouts() {
+    // Fetch user workouts when the screen is initialized
+    print("User ID: ${widget.userId}");
+    _userWorkouts = ApiService.fetchUserWorkouts(widget.userId);
+
+    // In ra dữ liệu workouts để kiểm tra
+    _userWorkouts.then((workouts) {
+      print("Workouts from server: $workouts");
+    }).catchError((error) {
+      print("Error fetching workouts: $error");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,12 +50,19 @@ class StartScreen extends StatelessWidget {
           children: [
             // Quick Start Section
             ElevatedButton(
-              onPressed: () {
-                // Navigate to CreateWorkoutScreen
-                Navigator.push(
+              onPressed: () async {
+                // Navigate to CreateWorkoutScreen and wait for result
+                final result = await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CreateWorkoutScreen()),
+                  MaterialPageRoute(builder: (context) => CreateWorkoutScreen(userId: widget.userId)),
                 );
+
+                // If a workout was added (result is true), reload workouts
+                if (result == true) {
+                  setState(() {
+                    _loadUserWorkouts(); // Reload workouts after adding a new one
+                  });
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
@@ -39,54 +75,54 @@ class StartScreen extends StatelessWidget {
 
             // Templates Section
             Text(
-              'Templates',
+              'My Templates', // Changed from Example Templates to My Templates
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
 
-            // My Templates Section
-            Container(
-              height: 100,
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  side: BorderSide(color: Colors.grey),
-                ),
-                child: Center(
-                  child: TextButton(
-                    onPressed: () {
-                      // Handle add new template
-                    },
-                    child: Text(
-                      'Tap to Add New Template',
-                      style: TextStyle(fontSize: 16, color: Colors.blue),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-
-            // Example Templates Section
-            Text(
-              'Example Templates (5)',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-
-            // Example Templates List
-            GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio: 2.0,
-              physics: NeverScrollableScrollPhysics(),
-              children: _buildExampleTemplates(),
+            // Load and display example templates with user workouts
+            FutureBuilder<List<dynamic>>(
+              future: _userWorkouts,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  print("Error: ${snapshot.error}");
+                  return Center(child: Text('Failed to load workouts'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  print("No workouts found");
+                  return _buildTemplates([]); // No user workouts, show only static templates
+                } else {
+                  print("Workouts found: ${snapshot.data}");
+                  return _buildTemplates(snapshot.data!); // Combine user workouts with static templates
+                }
+              },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  // Function to combine static example templates with dynamic user workouts
+  Widget _buildTemplates(List<dynamic> userWorkouts) {
+    // Static example templates
+    List<Widget> templates = _buildExampleTemplates();
+
+    // Append user workouts to the template list
+    templates.addAll(userWorkouts.map((workout) {
+      return _buildTemplateCard(workout['Title'], workout['Description']);
+    }).toList());
+
+    // Return a GridView with all templates (both static and dynamic)
+    return GridView.count(
+      shrinkWrap: true,
+      crossAxisCount: 2,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: 2.0,
+      physics: NeverScrollableScrollPhysics(),
+      children: templates,
     );
   }
 
@@ -128,3 +164,4 @@ class StartScreen extends StatelessWidget {
     );
   }
 }
+

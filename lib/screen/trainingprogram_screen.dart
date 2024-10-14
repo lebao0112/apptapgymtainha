@@ -94,9 +94,11 @@ class TrainingProgramScreen extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-          borderRadius: BorderRadius.circular(10),
-        ),
+
+            color: Colors.grey.shade900,
+            borderRadius: BorderRadius.circular(10),
+          ),
+
           child: Column(
             children: [
               Row(
@@ -156,4 +158,6 @@ class TrainingProgramScreen extends StatelessWidget {
       ),
     );
   }
+
 }
+

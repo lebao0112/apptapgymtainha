@@ -1,13 +1,16 @@
-import 'package:doan_tapgymtainha/screen/excercise_screen.dart';
-import 'package:doan_tapgymtainha/screen/exercise_sequence/ready_workout_sreen.dart';
-import 'package:doan_tapgymtainha/screen/exercise_sequence/taking_break_sreen.dart';
+
 import 'package:doan_tapgymtainha/screen/trainingprogram_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_tapgymtainha/screen/login_screen.dart';
 import 'package:doan_tapgymtainha/screen/dashboard_screen.dart';
 import 'package:doan_tapgymtainha/screen/register_screen.dart';
-
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
