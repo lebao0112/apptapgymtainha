@@ -56,7 +56,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
               right: 16),
           child: Column(
             mainAxisSize:
-            MainAxisSize.min, // Kích thước nhỏ gọn tùy thuộc nội dung
+                MainAxisSize.min, // Kích thước nhỏ gọn tùy thuộc nội dung
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -102,7 +102,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                       'name': nameController.text,
                       'category': categoryController.text,
                       'image':
-                      'default.png', // Bạn có thể thay đổi hình ảnh mặc định
+                          'default.png', // Bạn có thể thay đổi hình ảnh mặc định
                     });
                     isSelected.add(false);
                   });
@@ -162,10 +162,10 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
                 const SizedBox(height: 5),
                 const Text(
                   '1. Lie flat on the bench holding the cable handles.\n'
-                      '2. Retract scapula and have elbows between 45 to 90 degrees.\n'
-                      '3. Lower handles to middle chest.\n'
-                      '4. Push handles back towards starting position.\n'
-                      '5. Repeat for reps.\n',
+                  '2. Retract scapula and have elbows between 45 to 90 degrees.\n'
+                  '3. Lower handles to middle chest.\n'
+                  '4. Push handles back towards starting position.\n'
+                  '5. Repeat for reps.\n',
                   style: TextStyle(fontSize: 16),
                 ),
               ],
@@ -185,10 +185,6 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
         title: Text('CÁC BÀI TẬP', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.black,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
         actions: const [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
