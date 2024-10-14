@@ -1,12 +1,14 @@
-import 'package:doan_tapgymtainha/screen/start_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:doan_tapgymtainha/screen/home_screen.dart'; // Màn hình Tập luyện
-import 'package:doan_tapgymtainha/screen/profile_screen.dart'; // Màn hình Khám phá
+import 'package:doan_tapgymtainha/screen/start_screen.dart'; // Import StartScreen
+import 'package:doan_tapgymtainha/screen/home_screen.dart';
+import 'package:doan_tapgymtainha/screen/profile_screen.dart';
 import 'package:doan_tapgymtainha/screen/explore_screen.dart';
 import 'package:doan_tapgymtainha/screen/setting_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final String userId; // Add the userId field
+
+  const DashboardScreen({Key? key, required this.userId}) : super(key: key); // Pass the userId in constructor
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -14,28 +16,37 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
+  late List<Widget> _screens;
+  bool _startScreenLoaded = false; // Track if StartScreen is loaded
 
-  // List of screens
-  final List<Widget> _screens = [
-    HomeScreen(),
-    ExploreScreen(),
-    StartScreen(),
-    SettingScreen(),
-
-    // Thêm các màn hình khác nếu cần
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      HomeScreen(),
+      ExploreScreen(),
+      Container(), // Placeholder for StartScreen until it's loaded
+      SettingScreen(),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      if (index == 2 && !_startScreenLoaded) {
+        // Lazy load StartScreen when selected
+        _screens[2] = StartScreen(userId: widget.userId); // Use widget.userId to pass userId
+        print("userId $widget.userId");
+        _startScreenLoaded = true;
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Nền đen cho toàn bộ màn hình
-      body: _screens[_selectedIndex], // Hiển thị màn hình được chọn
+      backgroundColor: Colors.black,
+      body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -47,7 +58,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             label: 'Khám phá',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add), // Add a placeholder for FAB (Not clickable)
+            icon: Icon(Icons.add),
             label: 'Bắt đầu',
           ),
           BottomNavigationBarItem(
@@ -60,13 +71,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.orange, // Màu cam cho mục đang chọn
-        unselectedItemColor: Colors.grey, // Màu xám cho các mục không được chọn
-        backgroundColor: Colors.black12, // Nền đen cho BottomNavigationBar
-        type: BottomNavigationBarType.fixed, // Loại thanh điều hướng cố định
-        onTap: _onItemTapped, // Xử lý sự kiện khi nhấn vào các mục
-        selectedLabelStyle: TextStyle(color: Colors.orange), // Màu chữ cho mục chọn
-        unselectedLabelStyle: TextStyle(color: Colors.white), // Màu chữ cho mục không chọn
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.black12,
+        type: BottomNavigationBarType.fixed,
+        onTap: _onItemTapped,
+        selectedLabelStyle: TextStyle(color: Colors.orange),
+        unselectedLabelStyle: TextStyle(color: Colors.white),
       ),
     );
   }

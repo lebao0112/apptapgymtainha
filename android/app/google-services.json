@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "928939982821",
+    "project_id": "apptapgym-3152f",
+    "storage_bucket": "apptapgym-3152f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:928939982821:android:44ba2218ea13985a55790c",
+        "android_client_info": {
+          "package_name": "com.example.doan_tapgymtainha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "928939982821-lkpkle9fdvkf1rbc6pe7q2irr8jrcmrr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdGJdZRm-PHrhZcQpDOsBIVC-yMHquRKY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "928939982821-lkpkle9fdvkf1rbc6pe7q2irr8jrcmrr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
