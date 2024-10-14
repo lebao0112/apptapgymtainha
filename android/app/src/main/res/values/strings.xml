@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">tapgymtainha</string>
+    <string name="facebook_app_id">572739355105961</string>
+    <string name="fb_login_protocol_scheme">fb572739355105961</string>
+    <string name="facebook_client_token">94a9dea5ccec87a93d916e5ee3067818</string>
+</resources>

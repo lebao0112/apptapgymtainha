@@ -1,5 +1,11 @@
+import 'package:doan_tapgymtainha/screen/start_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'dashboard_screen.dart';  // Assuming this is your DashboardScreen
+import 'register_screen.dart';  // Import the RegisterScreen
+import './../service/api_service.dart'; // Your API service for backend calls
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,22 +16,87 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => DashboardScreen()),
-      );
+      try {
+        // Call the login API service
+        final result = await ApiService.loginUser(
+          _emailController.text,
+          _passwordController.text,
+        );
+
+        // Assuming result contains userId in 'userId' key
+        final String userId = result['userId'];
+        print("userId $userId");
+        // Navigate to the StartScreen and pass the userId
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DashboardScreen(userId: userId), // Pass userId here
+          ),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Đăng nhập thành công'),
+          ),
+        );
+      } catch (e) {
+        // If login fails, show an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Đăng nhập thất bại: $e'),
+          ),
+        );
+      }
+    }
+  }
+
+
+
+  Future<void> _loginWithGoogle() async {
+    try {
+      // Trigger the Google Sign-In process
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+        // Create Firebase credential using the Google authentication token
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        // Sign in to Firebase
+        final UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+        // Get the Firebase User ID
+        final String userId = userCredential.user!.uid;
+
+        // Navigate to the StartScreen and pass the userId
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StartScreen(userId: userId), // Pass Firebase userId
+          ),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đăng nhập Google thành công')),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Đăng nhập thành công'),
-        ),
+        SnackBar(content: Text('Đăng nhập Google thất bại: $e')),
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +151,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             const SizedBox(height: 25),
-                            // Username Field
+                            // Email Field
                             TextFormField(
-                              controller: _nameController,
+                              controller: _emailController,
                               decoration: InputDecoration(
-                                labelText: "Tên đăng nhập",
-                                prefixIcon: const Icon(Icons.person),
+                                labelText: "Email",
+                                prefixIcon: const Icon(Icons.email),
                                 filled: true,
                                 fillColor: Colors.grey[200],
                                 border: OutlineInputBorder(
@@ -95,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Vui lòng nhập tên đăng nhập';
+                                  return 'Vui lòng nhập email';
                                 }
                                 return null;
                               },
@@ -149,9 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 IconButton(
-                                  onPressed: () {
-                                    // Add Google login functionality
-                                  },
+                                  onPressed: _loginWithGoogle,
                                   icon: Image.asset(
                                     'assets/google.png',  // Ensure the path is correct
                                     width: 35,
@@ -159,8 +228,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 const SizedBox(width: 20),
                                 IconButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     // Add Facebook login functionality
+                                    // Trigger the sign-in flow
+                                    final LoginResult loginResult = await FacebookAuth.instance.login();
+
+                                    // Create a credential from the access token
+                                    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+                                    // Once signed in, return the UserCredential
+                                    FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
                                   },
                                   icon: Image.asset(
                                     'assets/facebook.png',  // Ensure the path is correct
@@ -173,7 +250,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             // Register Option
                             GestureDetector(
                               onTap: () {
-                                // Add "Register" functionality here
+                                // Navigate to RegisterScreen
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                                );
                               },
                               child: const Text(
                                 "Chưa có tài khoản? Đăng ký ngay",
