@@ -68,4 +68,18 @@ class ApiService {
       throw Exception('Failed to add workout');
     }
   }
+
+  //code exercise
+  static Future<List<dynamic>> fetchExercises() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/exercise/exercise-list'),
+      headers: {"Content-Type": "application/json"},
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body); // Trả về danh sách các bài tập
+    } else {
+      throw Exception('Failed to load exercises');
+    }
+  }
 }

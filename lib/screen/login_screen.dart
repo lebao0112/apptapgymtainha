@@ -1,3 +1,4 @@
+import 'package:doan_tapgymtainha/screen/home_screen.dart';
 import 'package:doan_tapgymtainha/screen/start_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => StartScreen(userId: userId), // Pass Firebase userId
+            builder: (context) => DashboardScreen(userId: userId), // Pass Firebase userId
           ),
         );
 

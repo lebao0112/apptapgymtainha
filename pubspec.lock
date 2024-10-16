@@ -216,9 +216,7 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-
   google_identity_services_web:
-
     dependency: transitive
     description:
       name: google_identity_services_web
