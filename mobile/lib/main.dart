@@ -1,9 +1,10 @@
 
+import 'package:doan_tapgymtainha/screen/home_screen.dart';
+import 'package:doan_tapgymtainha/screen/splash_screen.dart';
 import 'package:doan_tapgymtainha/screen/trainingprogram_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:doan_tapgymtainha/screen/login_screen.dart';
 import 'package:doan_tapgymtainha/screen/dashboard_screen.dart';
-import 'package:doan_tapgymtainha/screen/register_screen.dart';
+import 'package:doan_tapgymtainha/screen/authentication/register_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 void main() async {
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const TrainingProgramScreen(),
+      home: SplashScreen(),
     );
   }
 }

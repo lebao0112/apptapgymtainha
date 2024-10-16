@@ -1,11 +1,12 @@
+import 'package:doan_tapgymtainha/screen/home_screen.dart';
 import 'package:doan_tapgymtainha/screen/start_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'dashboard_screen.dart';  // Assuming this is your DashboardScreen
+import '../dashboard_screen.dart';  // Assuming this is your DashboardScreen
 import 'register_screen.dart';  // Import the RegisterScreen
-import './../service/api_service.dart'; // Your API service for backend calls
+import '../../../service/api_service.dart'; // Your API service for backend calls
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -82,10 +83,9 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => StartScreen(userId: userId), // Pass Firebase userId
+            builder: (context) => DashboardScreen(userId: userId), // Pass Firebase userId
           ),
         );
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Đăng nhập Google thành công')),
         );

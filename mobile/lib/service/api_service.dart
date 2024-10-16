@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = "http://192.168.31.218:3000"; // Your backend URL
+  static const String baseUrl = "http://10.15.18.14:3000"; // Your backend URL
 
   // Updated method to include height and weight
   static Future<Map<String, dynamic>> registerUser(String name, String email, String password, double height, double weight) async {

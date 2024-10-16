@@ -1,5 +1,7 @@
+import 'package:doan_tapgymtainha/screen/trainingprogram_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,8 +17,153 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentMonth = DateTime.now().month;
   int currentYear = DateTime.now().year;
 
+  final List<Widget> myContainers = [
+    Container(
+      margin: EdgeInsets.all(4),
+      padding: EdgeInsets.all(20),
+      width: 400,
+
+
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft, // Bắt đầu từ bên trái
+          end: Alignment.centerRight,   // Kết thúc ở bên phải
+          colors: [
+            Colors.red[600]!,  // Màu bắt đầu
+            Colors.orange[400]!, // Màu kết thúc
+          ],
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'THỬ THÁCH 7X4',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'Bắt đầu hành trình tạo dáng cơ thể để tập trung vào tất cả các nhóm cơ và xây dựng cơ thể mơ ước của bạn trong 4 tuần!',
+            style: TextStyle(color: Colors.white),
+          ),
+          SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.orange,
+            ),
+            child: Text('KHỞI ĐẦU'),
+          ),
+        ],
+      ),
+    ),
+    // Thêm nhiều Container tương tự
+    Container(
+      margin: EdgeInsets.all(4),
+      padding: EdgeInsets.all(20),
+      width: 400,
+
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft, // Bắt đầu từ bên trái
+          end: Alignment.centerRight,   // Kết thúc ở bên phải
+          colors: [
+            Colors.blueAccent!,  // Màu bắt đầu
+            Colors.purpleAccent!, // Màu kết thúc
+          ],
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'THỬ THÁCH 5X3',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'Thử thách này tập trung vào sự phát triển sức mạnh và cải thiện các kỹ năng thể chất trong 3 tuần.',
+            style: TextStyle(color: Colors.white),
+          ),
+          SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              // Hành động khởi đầu
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.orange,
+            ),
+            child: Text('KHỞI ĐẦU'),
+          ),
+        ],
+      ),
+    ),
+    Container(
+      margin: EdgeInsets.all(4),
+      padding: EdgeInsets.all(20),
+      width: 400,
+
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft, // Bắt đầu từ bên trái
+          end: Alignment.centerRight,   // Kết thúc ở bên phải
+          colors: [
+            Colors.cyan!,  // Màu bắt đầu
+            Colors.blueAccent!, // Màu kết thúc
+          ],
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'THỬ THÁCH 30 NGÀY',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'Thử thách này tập trung vào sự phát triển sức mạnh và cải thiện các kỹ năng thể chất trong 3 tuần.',
+            style: TextStyle(color: Colors.white),
+          ),
+          SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () {
+              // Hành động khởi đầu
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.orange,
+            ),
+            child: Text('KHỞI ĐẦU'),
+          ),
+        ],
+      ),
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
+    final double carousel_width = MediaQuery.of(context).size.width * 0.8;
+
     return Scaffold(
       backgroundColor: Colors.black, // Nền đen
       appBar: AppBar(
@@ -25,7 +172,13 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: Icon(Icons.star, color: Colors.orange), // Biểu tượng PRO màu cam
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Image(image: AssetImage('assets/fire_streak.png'), height: 45, width: 45),
+                Text('10', style: TextStyle(fontSize: 24, color: Colors.white), )
+              ],
+            )
           ),
         ],
       ),
@@ -80,44 +233,70 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // Thử thách
-          Container(
-            margin: EdgeInsets.all(16),
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.brown, // Nền cam cho thử thách
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'THỬ THÁCH 7X4',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+          Padding(
+            padding: const EdgeInsets.all(0),
+            child: CarouselSlider(
+              items: [Container(
+                margin: EdgeInsets.all(4),
+                padding: EdgeInsets.all(20),
+                width: 400,
+
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft, // Bắt đầu từ bên trái
+                    end: Alignment.centerRight,   // Kết thúc ở bên phải
+                    colors: [
+                      Colors.cyan!,  // Màu bắt đầu
+                      Colors.blueAccent!, // Màu kết thúc
+                    ],
                   ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  'Bắt đầu hành trình tạo dáng cơ thể để tập trung vào tất cả các nhóm cơ và xây dựng cơ thể mơ ước của bạn trong 4 tuần!',
-                  style: TextStyle(color: Colors.white), // Chữ đen
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'THỬ THÁCH 30 NGÀY',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Thử thách này tập trung vào sự phát triển sức mạnh và cải thiện các kỹ năng thể chất trong 3 tuần.',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => TrainingProgramScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.orange,
+                      ),
+                      child: Text('KHỞI ĐẦU'),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    // Hành động khởi đầu
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white, // Nút màu trắng
-                    foregroundColor: Colors.orange, // Chữ màu cam
-                  ),
-                  child: Text('KHỞI ĐẦU'),
-                ),
-              ],
+              ),],
+
+              options: CarouselOptions(
+                height: 250, // Chiều cao của slider
+                autoPlay: false, // Tự động di chuyển
+                enlargeCenterPage: false, // Không phóng to item ở giữa
+                enableInfiniteScroll: true, // Không vòng lặp
+                viewportFraction: 0.9,  // Mỗi trang chiếm 100% chiều rộng của viewport
+              ),
             ),
           ),
+
+
 
           SizedBox(height: 20),
           Padding(
