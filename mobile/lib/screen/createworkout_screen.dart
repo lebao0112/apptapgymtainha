@@ -1,3 +1,4 @@
+import 'package:doan_tapgymtainha/screen/excercise_screen.dart';
 import 'package:flutter/material.dart';
 import '../service/api_service.dart'; // Import ApiService for API calls
 class CreateWorkoutScreen extends StatefulWidget {
@@ -89,7 +90,10 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
               // Button to add exercises (you can navigate to another screen to select exercises)
               ElevatedButton(
                 onPressed: () {
-                  // Handle adding exercises (dummy example)
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ExercisesScreen()),
+                  );
                   setState(() {
                     _exercises.add('Push-up');
                     _exercises.add('Squat');
