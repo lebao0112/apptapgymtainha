@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = "http://10.15.18.14:3000"; // Your backend URL
+  static const String baseUrl =
+      "http://192.168.31.218:3000"; // Your backend URL
 
   // Updated method to include height and weight
-  static Future<Map<String, dynamic>> registerUser(String name, String email, String password, double height, double weight) async {
+  static Future<Map<String, dynamic>> registerUser(String name, String email,
+      String password, double height, double weight) async {
     final response = await http.post(
       Uri.parse('$baseUrl/user/register'),
       headers: {"Content-Type": "application/json"},
@@ -13,8 +15,8 @@ class ApiService {
         'Name': name,
         'Email': email,
         'Password': password,
-        'Height': height,  // Send height
-        'Weight': weight   // Send weight
+        'Height': height, // Send height
+        'Weight': weight // Send weight
       }),
     );
 
@@ -25,7 +27,8 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> loginUser(String email, String password) async {
+  static Future<Map<String, dynamic>> loginUser(
+      String email, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/user/login'),
       headers: {"Content-Type": "application/json"},
@@ -45,7 +48,8 @@ class ApiService {
   // Fetch workouts for a specific user
   static Future<List<dynamic>> fetchUserWorkouts(String userId) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/workout/user-workouts/$userId'),  // Đảm bảo userId được truyền đúng vào API
+      Uri.parse(
+          '$baseUrl/workout/user-workouts/$userId'), // Đảm bảo userId được truyền đúng vào API
       headers: {"Content-Type": "application/json"},
     );
 
@@ -56,8 +60,10 @@ class ApiService {
       throw Exception('Failed to load workouts');
     }
   }
+
   // Method to add a workout for a specific user
-  static Future<void> addWorkout(String userId, Map<String, dynamic> workoutData) async {
+  static Future<void> addWorkout(
+      String userId, Map<String, dynamic> workoutData) async {
     final response = await http.post(
       Uri.parse('$baseUrl/workout/insert-workout/$userId'),
       headers: {"Content-Type": "application/json"},
@@ -66,6 +72,20 @@ class ApiService {
 
     if (response.statusCode != 201) {
       throw Exception('Failed to add workout');
+    }
+  }
+
+  //code exercise
+  static Future<List<dynamic>> fetchExercises() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/exercise/exercise-list'),
+      headers: {"Content-Type": "application/json"},
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body); // Trả về danh sách các bài tập
+    } else {
+      throw Exception('Failed to load exercises');
     }
   }
 }
