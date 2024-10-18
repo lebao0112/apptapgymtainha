@@ -1,6 +1,7 @@
 import 'package:doan_tapgymtainha/screen/exercise_screen.dart';
 import 'package:flutter/material.dart';
 import '../service/api_service.dart'; // Import ApiService for API calls
+
 class CreateWorkoutScreen extends StatefulWidget {
   final String userId; // Accept the userId
 
@@ -24,23 +25,42 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
         Map<String, dynamic> workoutData = {
           'Title': _titleController.text,
           'Description': _descriptionController.text,
-          'Exercises': _exercises,
+          'Exercises': _exercises, // Use selected exercises
         };
 
-        // In ra workout data trước khi gửi lên server để kiểm tra
+        // Log workout data before sending it to the server for debugging
         print("Adding workout: $workoutData");
 
         // Call the API service to add workout for user
         await ApiService.addWorkout(widget.userId, workoutData);
 
-        // Navigate back and pass a value to inform that a workout was added
-        Navigator.pop(context, true); // Return true to indicate success
+        // Navigate back to start screen after adding workout
+        Navigator.pop(context, true); // Pass true to indicate success
       } catch (e) {
         // If adding workout fails, show an error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to add workout: $e')),
         );
       }
+    }
+  }
+
+  // This method will handle the result from ExercisesScreen
+  void _selectExercises() async {
+    final selectedExercises = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExercisesScreen(
+          selectedExercises: _exercises,
+        ),
+      ),
+    );
+
+    // If exercises are returned, update the list
+    if (selectedExercises != null) {
+      setState(() {
+        _exercises = List<String>.from(selectedExercises);
+      });
     }
   }
 
@@ -87,21 +107,26 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
               ),
               SizedBox(height: 20),
 
-              // Button to add exercises (you can navigate to another screen to select exercises)
+              // Button to add exercises
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => ExercisesScreen(), // Pass userId here
-                  ));
-                },
+                onPressed: _selectExercises, // Navigate to exercise selection screen
                 child: Text('Add Exercises'),
               ),
 
               SizedBox(height: 20),
 
+              // Display selected exercises
+              _exercises.isNotEmpty
+                  ? Column(
+                children: _exercises
+                    .map((exercise) => Text(exercise))
+                    .toList(),
+              )
+                  : Text("No exercises selected"),
+
               // Submit Button
               ElevatedButton(
-                onPressed: _addWorkout,
+                onPressed: _addWorkout, // Add workout function
                 child: Text('Add Workout'),
               ),
             ],
