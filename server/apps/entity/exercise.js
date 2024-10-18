@@ -9,6 +9,7 @@ class Exercise {
   imageUrl;       // URL hình ảnh minh họa
   videoUrl;       // URL video bài tập
 
+
   constructor() {}
 }
 

@@ -1,3 +1,4 @@
+import 'package:doan_tapgymtainha/screen/statistics_sreen.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_tapgymtainha/screen/start_screen.dart'; // Import StartScreen
 import 'package:doan_tapgymtainha/screen/home_screen.dart';
@@ -8,7 +9,8 @@ import 'package:doan_tapgymtainha/screen/setting_screen.dart';
 class DashboardScreen extends StatefulWidget {
   final String userId; // Add the userId field
 
-  const DashboardScreen({Key? key, required this.userId}) : super(key: key); // Pass the userId in constructor
+  const DashboardScreen({Key? key, required this.userId})
+      : super(key: key); // Pass the userId in constructor
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -25,7 +27,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _screens = [
       HomeScreen(),
       ExploreScreen(),
-      Container(), // Placeholder for StartScreen until it's loaded
+      Container(),
+      StatisticsSreen(), // Placeholder for StartScreen until it's loaded
       SettingScreen(),
     ];
   }
@@ -35,7 +38,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _selectedIndex = index;
       if (index == 2 && !_startScreenLoaded) {
         // Lazy load StartScreen when selected
-        _screens[2] = StartScreen(userId: widget.userId); // Use widget.userId to pass userId
+        _screens[2] = StartScreen(
+            userId: widget.userId); // Use widget.userId to pass userId
         print("userId $widget.userId");
         _startScreenLoaded = true;
       }
