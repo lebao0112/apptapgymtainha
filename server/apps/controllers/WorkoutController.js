@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var WorkoutService = require("./../services/WorkoutService");
 var Workout = require("./../entity/workout");
+const authenticateToken = require("../middleware/authMiddleware");
 
 router.post("/insert-workout", async function (req, res) {
   const workoutService = new WorkoutService();
@@ -37,16 +38,17 @@ router.get("/workout-list", async function (req, res) {
   const workouts = await workoutService.getWorkoutList();
   res.render("workout/workout-list", { workouts });
 });
-router.get("/user-workouts/:userId", async function (req, res) {
+
+router.get("/user-workouts", authenticateToken, async function (req, res) {
   const workoutService = new WorkoutService();
-  const userId = req.params.userId; // Get the userId from the URL
+  const userId = req.user.userId; // Lấy userId từ token
 
   try {
     console.log("Fetching workouts for user:", userId); // In ra userId để kiểm tra
     const workouts = await workoutService.getWorkoutsByUserId(userId);
     console.log("Workouts found:", workouts); // In ra workouts tìm thấy
 
-    res.json(workouts); // Return the list of workouts for the user
+    res.json(workouts); // Trả về danh sách workouts của người dùng
   } catch (error) {
     console.error("Error fetching workouts for user:", error);
     res
@@ -54,6 +56,24 @@ router.get("/user-workouts/:userId", async function (req, res) {
       .json({ message: "Failed to fetch workouts", error: error.message });
   }
 });
+
+//router.get("/user-workouts/:userId", async function (req, res) {
+//  const workoutService = new WorkoutService();
+//  const userId = req.params.userId; // Get the userId from the URL
+//
+//  try {
+//    console.log("Fetching workouts for user:", userId); // In ra userId để kiểm tra
+//    const workouts = await workoutService.getWorkoutsByUserId(userId);
+//    console.log("Workouts found:", workouts); // In ra workouts tìm thấy
+//
+//    res.json(workouts); // Return the list of workouts for the user
+//  } catch (error) {
+//    console.error("Error fetching workouts for user:", error);
+//    res
+//      .status(500)
+//      .json({ message: "Failed to fetch workouts", error: error.message });
+//  }
+//});
 router.post("/insert-workout/:userId", async function (req, res) {
   const workoutService = new WorkoutService();
   const workout = new Workout();
@@ -76,6 +96,7 @@ router.post("/insert-workout/:userId", async function (req, res) {
       .json({ message: "Failed to add workout", error: error.message });
   }
 });
+
 router.put("/update-workout/:userId/:workoutId", async function (req, res) {
   const workoutService = new WorkoutService();
   const workoutId = req.params.workoutId;

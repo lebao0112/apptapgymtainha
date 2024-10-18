@@ -7,7 +7,7 @@ const signToken = (req, res, next) => {
   const token = jwt.sign(
     { userId: user._id, email: user.email },
     process.env.JWT_SECRET_KEY,
-    { expiresIn: "10s" }
+    { expiresIn: "30d" }
   );
 
   res.json({

@@ -7,6 +7,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
   late Future<Map<String, dynamic>> _userProfile;
   final double profileHeight = 144;
 
