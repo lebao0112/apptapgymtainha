@@ -3,6 +3,10 @@ var router = express.Router();
 var UserService = require("./../services/UserService");
 var User = require("./../entity/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const secretKey = "your_secret_key";
+
 router.post("/insert-user", async function (req, res) {
   const userService = new UserService();
   const user = new User();
@@ -43,7 +47,6 @@ router.post("/register", async function (req, res) {
   }
 });
 
-// Login user
 router.post("/login", async function (req, res) {
   const userService = new UserService();
   const user = await userService.getUserByEmail(req.body.Email);
@@ -60,9 +63,30 @@ router.post("/login", async function (req, res) {
     return res.status(400).json({ message: "Invalid password" });
   }
 
-  // If login is successful
-  res.json({ message: "Login successful", userId: user._id });
+  // Generate a JWT token upon successful login
+  const token = jwt.sign({ userId: user._id }, secretKey, { expiresIn: "7d" });
+
+  res.json({ message: "Login successful", userId: user._id, token });
 });
+
+// router.post("/login", async function (req, res) {
+//   const userService = new UserService();
+//   const user = await userService.getUserByEmail(req.body.Email);
+
+//   if (!user) {
+//     return res.status(400).json({ message: "User not found" });
+//   }
+
+//   const isPasswordValid = await bcrypt.compare(
+//     req.body.Password,
+//     user.Password
+//   );
+//   if (!isPasswordValid) {
+//     return res.status(400).json({ message: "Invalid password" });
+//   }
+
+//   res.json({ message: "Login successful", userId: user._id });
+// });
 router.post("/update-user", async function (req, res) {
   const userService = new UserService();
   const user = new User();

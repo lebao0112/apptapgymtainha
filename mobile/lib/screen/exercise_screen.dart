@@ -156,7 +156,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
         onPressed: () {
           _showAddExerciseModal(context);
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.check),
         backgroundColor: Colors.orange,
       ),
     );

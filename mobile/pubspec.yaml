@@ -46,6 +46,8 @@ dependencies:
   video_player: ^2.9.2
   flutter_native_splash: ^2.4.1
   carousel_slider: ^5.0.0
+  cached_network_image: ^3.3.1
+  flutter_secure_storage: ^9.2.2
 
 dev_dependencies:
   flutter_test:

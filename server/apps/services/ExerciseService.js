@@ -1,4 +1,5 @@
 const { ObjectId } = require("mongodb");
+var config = require("./../config/setting.json");
 
 class ExerciseService {
   databaseConnection = require("./../database/database");
@@ -23,7 +24,16 @@ class ExerciseService {
   async updateExercise(exercise) {
     return await this.exerciseCollection.updateOne(
       { _id: new ObjectId(exercise._id) },
-      { $set: exercise }
+      {
+        $set: {
+          name: exercise.name,
+          type: exercise.type,
+          muscle: exercise.muscle,
+          equipment: exercise.equipment,
+          difficulty: exercise.difficulty,
+          instructions: exercise.instructions,
+        },
+      }
     );
   }
 
@@ -36,4 +46,5 @@ class ExerciseService {
     return await cursor.toArray();
   }
 }
+
 module.exports = ExerciseService;
