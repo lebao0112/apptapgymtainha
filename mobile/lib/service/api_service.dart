@@ -127,4 +127,28 @@ class ApiService {
       throw Exception('Failed to load exercises');
     }
   }
+
+  static Future<Map<String, dynamic>> fetchUserProfile() async {
+    // Lấy JWT token từ storage
+    String? token = await storage.read(key: 'jwtToken');
+
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    // Gửi yêu cầu tới server để lấy thông tin người dùng
+    final response = await http.get(
+      Uri.parse('$baseUrl/user/profile'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token", // Gửi token qua header
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load user profile');
+    }
+  }
 }
