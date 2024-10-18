@@ -9,8 +9,9 @@ class Challenge {
     this.Days = [];
   }
 
-  adDay(day) {
-    this.Days.push(day);
+  addDay(day, workout) {
+    this.Days.push({ day, workout });
   }
 }
+
 module.exports = Challenge;

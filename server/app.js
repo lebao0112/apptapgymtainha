@@ -2,6 +2,9 @@ var express = require("express");
 var app = express();
 var controller = require(__dirname + "/apps/controllers");
 var bodyParser = require("body-parser");
+var dotenv = require("dotenv");
+
+dotenv.config();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());

@@ -3,9 +3,24 @@ import 'package:doan_tapgymtainha/screen/exercise_sequence/ready_workout_sreen.d
 import 'package:flutter/material.dart';
 
 final List<Map<String, String>> exercises = [
-  {'name': 'Ball Slams', 'reps': '10', 'category': 'Full Body', 'image': 'ballslams.png'},
-  {'name': 'Battle Ropes', 'time': '30', 'category': 'Cardio', 'image': 'battleropes.png'},
-  {'name': 'Bench Dip', 'reps': '10', 'category': 'Arms', 'image': 'benchdips.png'},
+  {
+    'name': 'Ball Slams',
+    'reps': '10',
+    'category': 'Full Body',
+    'image': 'ballslams.png'
+  },
+  {
+    'name': 'Battle Ropes',
+    'time': '30',
+    'category': 'Cardio',
+    'image': 'battleropes.png'
+  },
+  {
+    'name': 'Bench Dip',
+    'reps': '10',
+    'category': 'Arms',
+    'image': 'benchdips.png'
+  },
   {
     'name': 'Bench Press (Barbell)',
     'reps': '10',
@@ -45,11 +60,16 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('MASSIVE UPPER BODY', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        title: Text('MASSIVE UPPER BODY',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
-          IconButton(icon: Icon(Icons.favorite_border, color: Colors.white), onPressed: () {}),
-          IconButton(icon: Icon(Icons.more_vert, color: Colors.white), onPressed: () {}),
+          IconButton(
+              icon: Icon(Icons.favorite_border, color: Colors.white),
+              onPressed: () {}),
+          IconButton(
+              icon: Icon(Icons.more_vert, color: Colors.white),
+              onPressed: () {}),
         ],
       ),
       body: Column(
@@ -61,18 +81,25 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    'DAY 3',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
                   // Tiêu đề chương trình tập
                   Text(
                     'MASSIVE UPPER BODY',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                   const SizedBox(height: 8),
 
                   // Ngày tập
-                  Text(
-                    'DAY 3',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
+
                   const SizedBox(height: 8),
 
                   // Mô tả chương trình tập
@@ -99,22 +126,30 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                     children: [
                       Text(
                         'Workout Settings',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
                       ),
                       TextButton(
                         onPressed: () {},
-                        child: Text('Edit', style: TextStyle(color: Colors.orange)),
+                        child: Text('Edit',
+                            style: TextStyle(color: Colors.orange)),
                       ),
                     ],
                   ),
-                  Text('Sounds, Music, Coach...', style: TextStyle(color: Colors.grey[300])),
+                  Text('Sounds, Music, Coach...',
+                      style: TextStyle(color: Colors.grey[300])),
 
                   const SizedBox(height: 16),
 
                   // Exercises list
                   Text(
                     'Exercises (${exercises.length})',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                   const SizedBox(height: 8),
                   Column(
@@ -135,21 +170,25 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ReadyWorkoutSreen(exercises: [],),
+                      builder: (context) => ReadyWorkoutSreen(
+                        exercises: [],
+                      ),
                     ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,
                   padding: EdgeInsets.symmetric(horizontal: 80, vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
                 ),
                 child: Text(
                   'START',
-                  style: TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.bold),
-
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 23,
+                      fontWeight: FontWeight.bold),
                 ),
-
               ),
             ),
           ),
@@ -162,7 +201,11 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+        Text(title,
+            style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16)),
         const SizedBox(height: 4),
         Text(subtitle, style: TextStyle(color: Colors.grey[300], fontSize: 14)),
       ],
@@ -179,18 +222,20 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
       int timeInSeconds = int.tryParse(exercise['time'] ?? '0') ?? 0;
       int minutes = timeInSeconds ~/ 60;
       int seconds = timeInSeconds % 60;
-      detail = '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      detail =
+          '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     }
 
     return ListTile(
       contentPadding: EdgeInsets.symmetric(vertical: 8.0),
-      leading: Image.asset('assets/exercises/${exercise["image"]}', width: 50, height: 50, fit: BoxFit.cover),
+      leading: Image.asset('assets/exercises/${exercise["image"]}',
+          width: 50, height: 50, fit: BoxFit.cover),
       title: Text(
         exercise['name']!,
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+        style: TextStyle(
+            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
       ),
       subtitle: Text(detail, style: TextStyle(color: Colors.grey[300])),
     );
   }
 }
-

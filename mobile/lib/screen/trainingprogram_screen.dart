@@ -2,7 +2,9 @@ import 'package:doan_tapgymtainha/screen/workoutdetail_screen.dart';
 import 'package:flutter/material.dart';
 
 class TrainingProgramScreen extends StatelessWidget {
-  const TrainingProgramScreen({Key? key}) : super(key: key);
+  final String challengeName;
+
+  const TrainingProgramScreen({super.key, required this.challengeName});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class TrainingProgramScreen extends StatelessWidget {
           children: [
             // Tiêu đề và hình ảnh
             Text(
-              'MASSIVE UPPER BODY',
+              this.challengeName,
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -54,7 +56,6 @@ class TrainingProgramScreen extends StatelessWidget {
                   '4%',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
-
               ],
             ),
             const SizedBox(height: 10),
@@ -66,17 +67,24 @@ class TrainingProgramScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Danh sách các tuần
-            _buildWeekProgress('WEEK 1', [true, true, false, false, false, false, false], context, showContinueButton: true),
-            _buildWeekProgress('WEEK 2', [false, false, false, false, false, false, false], context),
-            _buildWeekProgress('WEEK 3', [false, false, false, false, false, false, false], context),
-            _buildWeekProgress('WEEK 4', [false, false, false, false, false, false, false], context),
+            _buildWeekProgress('WEEK 1',
+                [true, true, false, false, false, false, false], context,
+                showContinueButton: true),
+            _buildWeekProgress('WEEK 2',
+                [false, false, false, false, false, false, false], context),
+            _buildWeekProgress('WEEK 3',
+                [false, false, false, false, false, false, false], context),
+            _buildWeekProgress('WEEK 4',
+                [false, false, false, false, false, false, false], context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildWeekProgress(String weekTitle, List<bool> daysCompleted, BuildContext context, {bool showContinueButton = false}) {
+  Widget _buildWeekProgress(
+      String weekTitle, List<bool> daysCompleted, BuildContext context,
+      {bool showContinueButton = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -86,7 +94,10 @@ class TrainingProgramScreen extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               weekTitle,
-              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -94,11 +105,9 @@ class TrainingProgramScreen extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-
             color: Colors.grey.shade900,
             borderRadius: BorderRadius.circular(10),
           ),
-
           child: Column(
             children: [
               Row(
@@ -111,21 +120,24 @@ class TrainingProgramScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Container(
-                    margin: const EdgeInsets.only(top: 10.0, left: 16.0, right: 16.0),
+                    margin: const EdgeInsets.only(
+                        top: 10.0, left: 16.0, right: 16.0),
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => WorkoutDetailScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => WorkoutDetailScreen()),
                         );
                       },
-
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange, // Sử dụng backgroundColor thay cho primary
+                        backgroundColor: Colors
+                            .orange, // Sử dụng backgroundColor thay cho primary
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                       ),
                       child: Text(
                         'CONTINUE',
@@ -158,6 +170,4 @@ class TrainingProgramScreen extends StatelessWidget {
       ),
     );
   }
-
 }
-

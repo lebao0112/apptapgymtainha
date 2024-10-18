@@ -98,8 +98,15 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+
         onPressed: _saveSelectedExercises, // Save and return to create workout screen
         child: Icon(Icons.save),
+// =======
+//         onPressed: () {
+//           _showAddExerciseModal(context);
+//         },
+//         child: Icon(Icons.check),
+// >>>>>>> bao
         backgroundColor: Colors.orange,
       ),
     );
