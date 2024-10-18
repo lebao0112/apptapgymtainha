@@ -1,11 +1,13 @@
 class Exercise {
   _id;
-  Name;
-  Description;
-  Category;
-  ImageUrl;
-  VideoUrl;
-
+  name;
+  type;
+  muscle;
+  equipment;
+  difficulty;
+  instructions;
+  imageUrl;
   constructor() {}
 }
+
 module.exports = Exercise;

@@ -3,10 +3,20 @@ class Workout {
   Title;
   Description;
   Exercises;
-  UserId; // This will store the ID of the user who created the workout
-
+  UserId;
+  RestTime;
   constructor() {
     this.Exercises = [];
   }
+
+  addExercise(exerciseName, reps, sets, duration) {
+    this.Exercises.push({
+      exerciseName,
+      reps,
+      sets,
+      duration,
+    });
+  }
 }
+
 module.exports = Workout;

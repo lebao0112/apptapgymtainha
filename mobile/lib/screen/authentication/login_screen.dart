@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../dashboard_screen.dart';  // Assuming this is your DashboardScreen
-import 'register_screen.dart';  // Import the RegisterScreen
+import '../dashboard_screen.dart'; // Assuming this is your DashboardScreen
+import 'register_screen.dart'; // Import the RegisterScreen
 import '../../../service/api_service.dart'; // Your API service for backend calls
 
 class LoginScreen extends StatefulWidget {
@@ -31,12 +31,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // Assuming result contains userId in 'userId' key
         final String userId = result['userId'];
+        final String token = result['token'];
         print("userId $userId");
+        print("userId $token");
         // Navigate to the StartScreen and pass the userId
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => DashboardScreen(userId: userId), // Pass userId here
+            builder: (context) =>
+                DashboardScreen(userId: userId), // Pass userId here
           ),
         );
 
@@ -58,13 +61,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
 
+
   Future<void> _loginWithGoogle() async {
     try {
       // Trigger the Google Sign-In process
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       if (googleUser != null) {
-        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
 
         // Create Firebase credential using the Google authentication token
         final AuthCredential credential = GoogleAuthProvider.credential(
@@ -74,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // Sign in to Firebase
         final UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithCredential(credential);
+            await FirebaseAuth.instance.signInWithCredential(credential);
 
         // Get the Firebase User ID
         final String userId = userCredential.user!.uid;
@@ -83,7 +88,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => DashboardScreen(userId: userId), // Pass Firebase userId
+            builder: (context) =>
+                DashboardScreen(userId: userId), // Pass Firebase userId
           ),
         );
         ScaffoldMessenger.of(context).showSnackBar(
@@ -97,7 +103,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/AnhnenTapGym.png'),  // Ensure the path is correct
+                image: AssetImage(
+                    'assets/AnhnenTapGym.png'), // Ensure the path is correct
                 fit: BoxFit.cover,
               ),
             ),
@@ -209,7 +215,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               child: const Text(
                                 "Đăng nhập",
-                                style: TextStyle(fontSize: 18, color: Colors.white),
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white),
                               ),
                             ),
                             const SizedBox(height: 20),
@@ -222,7 +229,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 IconButton(
                                   onPressed: _loginWithGoogle,
                                   icon: Image.asset(
-                                    'assets/google.png',  // Ensure the path is correct
+                                    'assets/google.png', // Ensure the path is correct
                                     width: 35,
                                   ),
                                 ),
@@ -231,16 +238,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () async {
                                     // Add Facebook login functionality
                                     // Trigger the sign-in flow
-                                    final LoginResult loginResult = await FacebookAuth.instance.login();
+                                    final LoginResult loginResult =
+                                        await FacebookAuth.instance.login();
 
                                     // Create a credential from the access token
-                                    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+                                    final OAuthCredential
+                                        facebookAuthCredential =
+                                        FacebookAuthProvider.credential(
+                                            loginResult.accessToken!.token);
 
                                     // Once signed in, return the UserCredential
-                                    FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+                                    FirebaseAuth.instance.signInWithCredential(
+                                        facebookAuthCredential);
                                   },
                                   icon: Image.asset(
-                                    'assets/facebook.png',  // Ensure the path is correct
+                                    'assets/facebook.png', // Ensure the path is correct
                                     width: 35,
                                   ),
                                 ),
@@ -253,7 +265,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 // Navigate to RegisterScreen
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RegisterScreen()),
                                 );
                               },
                               child: const Text(

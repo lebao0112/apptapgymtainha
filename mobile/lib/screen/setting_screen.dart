@@ -1,7 +1,27 @@
+import 'package:doan_tapgymtainha/service/api_service.dart';
 import 'package:flutter/material.dart';
+import 'authentication/login_screen.dart';
 import 'profile_screen.dart'; // Đảm bảo bạn đã tạo ProfileScreen
 
 class SettingScreen extends StatelessWidget {
+  void _logout(BuildContext context) async {
+    // Delete the JWT token from secure storage
+    ApiService.deleteToken();
+
+    // Navigate back to the login screen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+
+    // Optionally, you can show a SnackBar to confirm the logout
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Đăng xuất thành công'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,6 +140,18 @@ class SettingScreen extends StatelessWidget {
               },
             ),
             Divider(color: Colors.grey),
+
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.orangeAccent),
+              title: Text(
+                'Đăng xuất',
+                style: TextStyle(color: Colors.white),
+              ),
+              onTap: () {
+                _logout(context);
+              },
+            ),
+
 
           ],
         ),

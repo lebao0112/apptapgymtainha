@@ -6,6 +6,8 @@ router.use("/exercise", require(__dirname + "/ExerciseController"));
 router.use("/user", require(__dirname + "/UserController"));
 router.use("/workout", require(__dirname + "/WorkoutController"));
 router.use("/progress", require(__dirname + "/ProgressController"));
+router.use("/chalprogress", require(__dirname + "/ChalProgressController"));
+router.use("/challenge", require(__dirname + "/ChallengeController"));
 //duong dan admin
 //router ma get khong co j phia sau thi la index
 router.get("/", function (req, res) {
