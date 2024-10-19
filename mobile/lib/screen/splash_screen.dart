@@ -18,7 +18,8 @@ class SplashScreen extends StatelessWidget {
       if (token != null) {
         // Kiểm tra nếu token đã hết hạn
         bool isTokenExpired = JwtDecoder.isExpired(token);
-
+        Map<String, dynamic> user =  JwtDecoder.decode(token);
+        print(user);
         if (!isTokenExpired) {
           // Token hợp lệ, điều hướng đến Dashboard
           Navigator.of(context).pushReplacement(

@@ -8,8 +8,14 @@ class ApiService {
   static const storage = FlutterSecureStorage(); // Tạo storage để đứa token
 
   // Updated method to include height and weight
-  static Future<Map<String, dynamic>> registerUser(String name, String email,
-      String password, double height, double weight) async {
+  static Future<Map<String, dynamic>> registerUser(
+      String name,
+      String email,
+      String password,
+      double height,
+      double weight,
+      DateTime? dateOfBirth,
+      String? gender) async {
     final response = await http.post(
       Uri.parse('$baseUrl/user/register'),
       headers: {"Content-Type": "application/json"},
@@ -18,7 +24,9 @@ class ApiService {
         'Email': email,
         'Password': password,
         'Height': height, // Send height
-        'Weight': weight // Send weight
+        'Weight': weight,
+        'DateOfBirth': dateOfBirth,
+        'Gender': gender // Send weight
       }),
     );
 
