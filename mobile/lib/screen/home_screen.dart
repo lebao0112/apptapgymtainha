@@ -3,6 +3,7 @@ import 'package:doan_tapgymtainha/service/api_challenge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -39,8 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double carousel_width = MediaQuery.of(context).size.width * 0.8;
-
+    final double bannerHeight = 200;
+    final double bannerWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.black, // Nền đen
       appBar: AppBar(
@@ -65,145 +66,229 @@ class _HomeScreenState extends State<HomeScreen> {
               )),
         ],
       ),
-      body: Column(
-        children: [
-          // Mục tiêu hàng tuần
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Mục tiêu hàng tuần',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white), // Chữ trắng
-                ),
-                SizedBox(height: 20),
-                // Thay đổi Row thành SingleChildScrollView để có thể kéo ngang
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(30, (index) {
-                      int day = index + 1;
-                      return Container(
-                        width: 30,
-                        height: 30,
-                        alignment: Alignment.center,
-                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: day == currentDay &&
-                                  currentMonth == now.month &&
-                                  currentYear == now.year
-                              ? Colors
-                                  .orange // Đổi màu cho ngày hiện tại thành cam
-                              : Colors.grey[800], // Nền xám đậm
-                        ),
-                        child: Text(
-                          '$day',
-                          style: TextStyle(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Mục tiêu hàng tuần
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Mục tiêu hàng tuần',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white), // Chữ trắng
+                  ),
+                  SizedBox(height: 20),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(30, (index) {
+                        int day = index + 1;
+                        return Container(
+                          width: 30,
+                          height: 30,
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
                             color: day == currentDay &&
                                     currentMonth == now.month &&
                                     currentYear == now.year
-                                ? Colors.black // Chữ đen cho ngày hiện tại
-                                : Colors.white, // Chữ trắng cho ngày thường
+                                ? Colors
+                                    .orange // Đổi màu cho ngày hiện tại thành cam
+                                : Colors.grey[800], // Nền xám đậm
+                          ),
+                          child: Text(
+                            '$day',
+                            style: TextStyle(
+                              color: day == currentDay &&
+                                      currentMonth == now.month &&
+                                      currentYear == now.year
+                                  ? Colors.black // Chữ đen cho ngày hiện tại
+                                  : Colors.white, // Chữ trắng cho ngày thường
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Chào mừng trở lại! Hôm nay là cơ hội để bạn tỏa sáng.',
+                    style: TextStyle(
+                        fontSize: 16, color: Colors.white), // Chữ trắng
+                  ),
+                ],
+              ),
+            ),
+
+            // Challenge Carousel
+            Padding(
+              padding: const EdgeInsets.all(0),
+              child: FutureBuilder<List<dynamic>>(
+                future: _challenges,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text("Lỗi tải thử thách"));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(child: Text("Không có thử thách nào"));
+                  } else {
+                    final challenges = snapshot.data!;
+                    return CarouselSlider(
+                      items: challenges.map((challenge) {
+                        return _buildChallengeCard(
+                          context,
+                          challenge['name'],
+                          challenge['description'],
+                          challenge['imageUrl'],
+                        );
+                      }).toList(),
+                      options: CarouselOptions(
+                        height: 250, // Chiều cao của slider
+                        autoPlay: false, // Tự động di chuyển
+                        enlargeCenterPage: false, // Không phóng to item ở giữa
+                        enableInfiniteScroll: true, // Không vòng lặp
+                        viewportFraction:
+                            0.9, // Mỗi trang chiếm 100% chiều rộng của viewport
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
+
+            SizedBox(height: 20),
+
+            // Luyện tập cùng AI Banner
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Luyện tập cùng AI",
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: Stack(
+                      children: [
+                        // Ảnh nền từ assets
+                        Image.asset(
+                          'assets/ai_workout_banner.png', // Đường dẫn tới ảnh trong assets
+                          width: bannerWidth, // Độ rộng của banner
+                          height: bannerHeight, // Chiều cao của banner
+                          fit: BoxFit.cover, // Đảm bảo ảnh vừa khung hình
+                        ),
+                        Positioned(
+                            child: Container(
+                          height: bannerHeight,
+                          width: bannerWidth / 3.5,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color.fromARGB(255, 255, 4, 0),
+                                Colors.white
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                        )),
+                        // Chữ được xếp chồng trên ảnh
+                        Positioned(
+                          left: bannerWidth / 33,
+                          top: 20,
+                          child: Container(
+                            height: bannerHeight,
+                            width: bannerWidth / 3.5,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'AI',
+                                  style: GoogleFonts.audiowide(
+                                      fontSize: 30,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const Text(
+                                  'WORKOUT',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {},
+                                    child: const Text('START'))
+                              ],
+                            ),
                           ),
                         ),
-                      );
-                    }),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Chào mừng trở lại! Hôm nay là cơ hội để bạn tỏa sáng.',
-                  style:
-                      TextStyle(fontSize: 16, color: Colors.white), // Chữ trắng
-                ),
-              ],
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.all(0),
-            child: FutureBuilder<List<dynamic>>(
-              future: _challenges,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text("Lỗi tải thử thách"));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text("Không có thử thách nào"));
-                } else {
-                  final challenges = snapshot.data!;
-                  return CarouselSlider(
-                    items: challenges.map((challenge) {
-                      return _buildChallengeCard(
-                        context,
-                        challenge['name'],
-                        challenge['description'],
-                        challenge['imageUrl'],
-                      );
-                    }).toList(),
-                    options: CarouselOptions(
-                      height: 250, // Chiều cao của slider
-                      autoPlay: false, // Tự động di chuyển
-                      enlargeCenterPage: false, // Không phóng to item ở giữa
-                      enableInfiniteScroll: true, // Không vòng lặp
-                      viewportFraction:
-                          0.9, // Mỗi trang chiếm 100% chiều rộng của viewport
+                      ],
                     ),
-                  );
-                }
-              },
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: CupertinoSegmentedControl<int>(
-              children: {
-                0: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('Người bắt đầu',
-                      style: TextStyle(color: Colors.white)),
-                ),
-                1: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child:
-                      Text('Trung bình', style: TextStyle(color: Colors.white)),
-                ),
-                2: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child:
-                      Text('Nâng cao', style: TextStyle(color: Colors.white)),
-                ),
-              },
-              onValueChanged: (int? value) {
-                setState(() {
-                  _selectedSegment = value ?? 0;
-                });
-              },
-              groupValue: _selectedSegment,
-              unselectedColor:
-                  Colors.grey[800], // Màu xám đậm cho segment chưa chọn
-              selectedColor: Colors.orange, // Màu cam cho segment được chọn
-              borderColor: Colors.orange, // Viền cam
+            // Segment Control
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: CupertinoSegmentedControl<int>(
+                children: const {
+                  0: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('Người bắt đầu',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  1: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('Trung bình',
+                        style: TextStyle(color: Colors.white)),
+                  ),
+                  2: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child:
+                        Text('Nâng cao', style: TextStyle(color: Colors.white)),
+                  ),
+                },
+                onValueChanged: (int? value) {
+                  setState(() {
+                    _selectedSegment = value ?? 0;
+                  });
+                },
+                groupValue: _selectedSegment,
+                unselectedColor: Colors.grey[800],
+                selectedColor: Colors.orange,
+                borderColor: Colors.orange,
+              ),
             ),
-          ),
-          SizedBox(height: 20),
 
-          // Danh sách bài tập
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.all(16),
-              children: _getWorkoutItems(),
+            SizedBox(
+              height: MediaQuery.of(context).size.height *
+                  0.4, // Ví dụ: 40% chiều cao màn hình
+              // height: 20,
+              child: ListView(
+                padding: EdgeInsets.all(16),
+                children: _getWorkoutItems(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
