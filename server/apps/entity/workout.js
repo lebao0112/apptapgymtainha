@@ -9,14 +9,6 @@ class Workout {
     this.Exercises = [];
   }
 
-  addExercise(exerciseName, reps, sets, duration) {
-    this.Exercises.push({
-      exerciseName,
-      reps,
-      sets,
-      duration,
-    });
-  }
 }
 
 module.exports = Workout;

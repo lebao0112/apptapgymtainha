@@ -23,23 +23,17 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() async {
     if (_formKey.currentState!.validate()) {
       try {
-        // Call the login API service
-        final result = await ApiService.loginUser(
+        // Gọi API đăng nhập
+        await ApiService.loginUser(
           _emailController.text,
           _passwordController.text,
         );
 
-        // Assuming result contains userId in 'userId' key
-        final String userId = result['userId'];
-        final String token = result['token'];
-        print("userId $userId");
-        print("userId $token");
-        // Navigate to the StartScreen and pass the userId
+        // Khi đăng nhập thành công, chuyển đến Dashboard
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                DashboardScreen(userId: userId), // Pass userId here
+            builder: (context) => DashboardScreen(),
           ),
         );
 
@@ -49,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       } catch (e) {
-        // If login fails, show an error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Đăng nhập thất bại: $e'),
@@ -58,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
+
 
 
 
@@ -89,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                DashboardScreen(userId: userId), // Pass Firebase userId
+                DashboardScreen(), // Pass Firebase userId
           ),
         );
         ScaffoldMessenger.of(context).showSnackBar(
@@ -106,6 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true, // Giúp giao diện tránh bị che bởi bàn phím
       body: Stack(
         children: [
           // Background image

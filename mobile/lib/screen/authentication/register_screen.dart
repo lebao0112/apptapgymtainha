@@ -20,31 +20,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _register() async {
     if (_formKey.currentState!.validate()) {
       try {
-        // Call the API service to register the user
         final result = await ApiService.registerUser(
           _nameController.text,
           _emailController.text,
           _passwordController.text,
-          double.parse(_heightController.text), // Parse height to double
-          double.parse(_weightController.text), // Parse weight to double
+          double.parse(_heightController.text),
+          double.parse(_weightController.text),
         );
-
-        // If registration is successful, show a success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Đăng ký thành công!'),
             backgroundColor: Colors.greenAccent,
           ),
         );
-
-        // Navigate to the LoginScreen after successful registration
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
-
       } catch (e) {
-        // If registration fails
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Đăng ký thất bại: $e'),
@@ -58,111 +51,114 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('Đăng ký'),
         backgroundColor: Colors.orangeAccent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Đăng ký tài khoản',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Username',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Đăng ký tài khoản',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập tên đăng nhập.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Email',
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Username',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng nhập tên đăng nhập.';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập email.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Mật khẩu',
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Email',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng nhập email.';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập mật khẩu.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _heightController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Chiều cao (cm)',
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Mật khẩu',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng nhập mật khẩu.';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập chiều cao.';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Chiều cao phải là một số hợp lệ.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 10),
-              TextFormField(
-                controller: _weightController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Cân nặng (kg)',
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _heightController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Chiều cao (cm)',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng nhập chiều cao.';
+                    }
+                    if (double.tryParse(value) == null) {
+                      return 'Chiều cao phải là một số hợp lệ.';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Vui lòng nhập cân nặng.';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Cân nặng phải là một số hợp lệ.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: _register,
-                child: const Text('Đăng ký'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                  backgroundColor: Colors.orangeAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
+                const SizedBox(height: 10),
+                TextFormField(
+                  controller: _weightController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Cân nặng (kg)',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Vui lòng nhập cân nặng.';
+                    }
+                    if (double.tryParse(value) == null) {
+                      return 'Cân nặng phải là một số hợp lệ.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: _register,
+                  child: const Text('Đăng ký'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                    backgroundColor: Colors.orangeAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

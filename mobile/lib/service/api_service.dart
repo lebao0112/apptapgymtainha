@@ -85,16 +85,23 @@ class ApiService {
   // }
 
   // Fetch workouts for a specific user
-  static Future<List<dynamic>> fetchUserWorkouts(String userId) async {
+  static Future<List<dynamic>> fetchUserWorkouts() async {
+    String? token = await getToken();
+
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
     final response = await http.get(
-      Uri.parse(
-          '$baseUrl/workout/user-workouts/$userId'), // Đảm bảo userId được truyền đúng vào API
-      headers: {"Content-Type": "application/json"},
+      Uri.parse('$baseUrl/workout/user-workouts'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> workouts = jsonDecode(response.body);
-      return workouts;
+      return jsonDecode(response.body);
     } else {
       throw Exception('Failed to load workouts');
     }
@@ -128,20 +135,19 @@ class ApiService {
     }
   }
 
+  // Fetch thông tin người dùng bằng token
   static Future<Map<String, dynamic>> fetchUserProfile() async {
-    // Lấy JWT token từ storage
-    String? token = await storage.read(key: 'jwtToken');
+    String? token = await getToken();
 
     if (token == null) {
       throw Exception('Token not found');
     }
 
-    // Gửi yêu cầu tới server để lấy thông tin người dùng
     final response = await http.get(
       Uri.parse('$baseUrl/user/profile'),
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer $token", // Gửi token qua header
+        "Authorization": "Bearer $token", // Đính kèm token trong header
       },
     );
 
@@ -151,4 +157,52 @@ class ApiService {
       throw Exception('Failed to load user profile');
     }
   }
+
+  // Thêm bài tập cho người dùng (JWT token sẽ được tự động thêm vào header)
+  static Future<void> addWorkoutWithToken(Map<String, dynamic> workoutData) async {
+    String? token = await getToken(); // Lấy token từ storage
+
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    print('Workout Data: ${jsonEncode(workoutData)}');
+    final response = await http.post(
+      Uri.parse('$baseUrl/workout/insert-workout'), // Đảm bảo đường dẫn chính xác
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token", // Đính kèm token trong header
+      },
+      body: jsonEncode(workoutData), // Gửi dữ liệu bài tập
+    );
+
+    // In ra status code và response body để debug
+    print('Status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to add workout: ${response.body}');
+    }
+  }
+  static Future<Map<String, dynamic>> fetchWorkoutDetails(String workoutId) async {
+    String? token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/workout/workout/$workoutId'),  // Update this endpoint to the new route
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",  // Ensure the token is passed correctly
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);  // Return the workout details
+    } else {
+      print('Failed to fetch workout details: ${response.statusCode}');
+      throw Exception('Failed to fetch workout details');
+    }
+  }
+
 }
