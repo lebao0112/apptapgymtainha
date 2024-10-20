@@ -8,8 +8,14 @@ class ApiService {
   static const storage = FlutterSecureStorage(); // Tạo storage để đứa token
 
   // Updated method to include height and weight
-  static Future<Map<String, dynamic>> registerUser(String name, String email,
-      String password, double height, double weight) async {
+  static Future<Map<String, dynamic>> registerUser(
+      String name,
+      String email,
+      String password,
+      double height,
+      double weight,
+      DateTime? dateOfBirth,
+      String? gender) async {
     final response = await http.post(
       Uri.parse('$baseUrl/user/register'),
       headers: {"Content-Type": "application/json"},
@@ -18,7 +24,9 @@ class ApiService {
         'Email': email,
         'Password': password,
         'Height': height, // Send height
-        'Weight': weight // Send weight
+        'Weight': weight,
+        'DateOfBirth': dateOfBirth.toString(),
+        'Gender': gender // Send weight
       }),
     );
 
@@ -162,9 +170,11 @@ class ApiService {
   static Future<void> addWorkoutWithToken(Map<String, dynamic> workoutData) async {
     String? token = await getToken(); // Lấy token từ storage
 
+
     if (token == null) {
       throw Exception('Token not found');
     }
+
     print('Workout Data: ${jsonEncode(workoutData)}');
     final response = await http.post(
       Uri.parse('$baseUrl/workout/insert-workout'), // Đảm bảo đường dẫn chính xác
@@ -202,6 +212,33 @@ class ApiService {
     } else {
       print('Failed to fetch workout details: ${response.statusCode}');
       throw Exception('Failed to fetch workout details');
+    }
+  }
+
+
+static Future<void> updateUserName(String newName) async {
+    String? token = await storage.read(key: 'jwtToken');
+    // Gửi yêu cầu tới server để cập nhật tên người dùng
+    final response = await http.put(
+      Uri.parse('$baseUrl/user/update-username'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token", // Gửi token qua header
+      },
+      body: jsonEncode({
+        'newName': newName,
+      }),
+    );
+
+    // Kiểm tra phản hồi từ server
+    if (response.statusCode == 200) {
+      // Thành công
+      print('User name updated successfully');
+    } else {
+      // Thất bại, có thể do lỗi từ phía server
+      final errorResponse = jsonDecode(response.body);
+      throw Exception(
+          'Failed to update user name: ${errorResponse['message']}');
     }
   }
 

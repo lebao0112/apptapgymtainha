@@ -52,10 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
-
-
-
   Future<void> _loginWithGoogle() async {
     try {
       // Trigger the Google Sign-In process
