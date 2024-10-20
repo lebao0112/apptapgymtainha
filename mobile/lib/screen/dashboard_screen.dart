@@ -7,11 +7,6 @@ import 'package:doan_tapgymtainha/screen/explore_screen.dart';
 import 'package:doan_tapgymtainha/screen/setting_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
-  final String userId; // Add the userId field
-
-  const DashboardScreen({Key? key, required this.userId})
-      : super(key: key); // Pass the userId in constructor
-
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
@@ -19,7 +14,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
   late List<Widget> _screens;
-  bool _startScreenLoaded = false; // Track if StartScreen is loaded
+  bool _startScreenLoaded = false;
 
   @override
   void initState() {
@@ -27,8 +22,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _screens = [
       HomeScreen(),
       ExploreScreen(),
-      Container(),
-      StatisticsSreen(), // Placeholder for StartScreen until it's loaded
+      Container(), // Placeholder for StartScreen
+      StatisticsSreen(),
       SettingScreen(),
     ];
   }
@@ -37,10 +32,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       _selectedIndex = index;
       if (index == 2 && !_startScreenLoaded) {
-        // Lazy load StartScreen when selected
-        _screens[2] = StartScreen(
-            userId: widget.userId); // Use widget.userId to pass userId
-        print("userId $widget.userId");
+        _screens[2] = StartScreen(); // Không cần truyền userId nữa
         _startScreenLoaded = true;
       }
     });
@@ -80,8 +72,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: Colors.black12,
         type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,
-        selectedLabelStyle: TextStyle(color: Colors.orange),
-        unselectedLabelStyle: TextStyle(color: Colors.white),
       ),
     );
   }

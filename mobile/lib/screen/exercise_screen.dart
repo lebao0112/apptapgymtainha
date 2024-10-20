@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import '../service/api_service.dart'; // Import ApiService for API calls
+import '../service/api_service.dart'; // Import ApiService cho các gọi API
 
 class ExercisesScreen extends StatefulWidget {
-  final List<String> selectedExercises; // Accept selected exercises
+  final List<String> selectedExerciseIds; // Nhận danh sách các exercise đã chọn theo ID
 
-  ExercisesScreen({required this.selectedExercises});
+  ExercisesScreen({required this.selectedExerciseIds});
 
   @override
   State<ExercisesScreen> createState() => _ExercisesScreenState();
 }
 
 class _ExercisesScreenState extends State<ExercisesScreen> {
-  List<dynamic> exercises = []; // Exercises list from API
-  late List<bool> isSelected = []; // Track selected exercises
+  List<dynamic> exercises = []; // Danh sách bài tập từ API
+  late List<bool> isSelected = []; // Theo dõi các bài tập đã được chọn
 
   @override
   void initState() {
@@ -20,43 +20,48 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
     _loadExercises();
   }
 
-  // Load exercises from the server
+  // Tải danh sách các bài tập từ API
   void _loadExercises() async {
     try {
       final fetchedExercises = await ApiService.fetchExercises();
       setState(() {
         exercises = fetchedExercises;
-        isSelected = List<bool>.filled(exercises.length, false); // Track selection
+        isSelected = List<bool>.filled(exercises.length, false); // Theo dõi lựa chọn
 
-        // Preselect already selected exercises
+        // Chọn trước những bài tập đã được chọn
         for (int i = 0; i < exercises.length; i++) {
-          if (widget.selectedExercises.contains(exercises[i]['name'])) {
+          if (widget.selectedExerciseIds.contains(exercises[i]['_id'])) {
             isSelected[i] = true;
           }
         }
       });
     } catch (e) {
-      // Show error if the fetch fails
+      // Hiển thị lỗi nếu không tải được dữ liệu
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to load exercises: $e')),
       );
     }
   }
 
-  // Save selected exercises and pass them back
+  // Lưu các bài tập đã chọn và truyền thông tin lại bằng ID và tên
   void _saveSelectedExercises() {
-    List<String> selected = [];
+    List<Map<String, String>> selectedExercises = [];
     for (int i = 0; i < exercises.length; i++) {
       if (isSelected[i]) {
-        selected.add(exercises[i]['name']);
+        selectedExercises.add({
+          'id': exercises[i]['_id'], // Lưu ID
+          'name': exercises[i]['name'], // Lưu name
+        });
       }
     }
-    Navigator.pop(context, selected); // Pass selected exercises back
+    print(selectedExercises); // Kiểm tra log dữ liệu trả về
+    Navigator.pop(context, selectedExercises); // Trả danh sách ID và name của bài tập đã chọn
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true, // Giúp giao diện tránh bị che bởi bàn phím
       appBar: AppBar(
         title: Text('Exercises', style: TextStyle(color: Colors.white)),
         centerTitle: true,
@@ -66,7 +71,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            // Exercise list
+            // Hiển thị danh sách bài tập
             Expanded(
               child: exercises.isEmpty
                   ? const Center(child: CircularProgressIndicator())
@@ -98,21 +103,14 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-
-        onPressed: _saveSelectedExercises, // Save and return to create workout screen
+        onPressed: _saveSelectedExercises, // Lưu và quay lại màn hình tạo workout
         child: Icon(Icons.save),
-// =======
-//         onPressed: () {
-//           _showAddExerciseModal(context);
-//         },
-//         child: Icon(Icons.check),
-// >>>>>>> bao
         backgroundColor: Colors.orange,
       ),
     );
   }
 
-  // Show exercise details in a modal
+  // Hiển thị chi tiết bài tập trong modal
   void _showExerciseDetails(BuildContext context, Map<String, dynamic> exercise) {
     showModalBottomSheet(
       context: context,
@@ -166,5 +164,4 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
       },
     );
   }
-
 }
