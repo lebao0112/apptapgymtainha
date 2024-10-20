@@ -25,7 +25,7 @@ class ApiService {
         'Password': password,
         'Height': height, // Send height
         'Weight': weight,
-        'DateOfBirth': dateOfBirth,
+        'DateOfBirth': dateOfBirth.toString(),
         'Gender': gender // Send weight
       }),
     );
@@ -157,6 +157,37 @@ class ApiService {
       return jsonDecode(response.body);
     } else {
       throw Exception('Failed to load user profile');
+    }
+  }
+
+  static Future<void> updateUserName(String newName) async {
+    String? token = await storage.read(key: 'jwtToken');
+
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    // Gửi yêu cầu tới server để cập nhật tên người dùng
+    final response = await http.put(
+      Uri.parse('$baseUrl/user/update-username'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token", // Gửi token qua header
+      },
+      body: jsonEncode({
+        'newName': newName,
+      }),
+    );
+
+    // Kiểm tra phản hồi từ server
+    if (response.statusCode == 200) {
+      // Thành công
+      print('User name updated successfully');
+    } else {
+      // Thất bại, có thể do lỗi từ phía server
+      final errorResponse = jsonDecode(response.body);
+      throw Exception(
+          'Failed to update user name: ${errorResponse['message']}');
     }
   }
 }

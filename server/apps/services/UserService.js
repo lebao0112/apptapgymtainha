@@ -39,5 +39,13 @@ class UserService {
   async getUserByEmail(email) {
     return await this.userCollection.findOne({ Email: email });
   }
+
+  async updateUserName(userId, newName) {
+    const result = await this.userCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { Name: newName } }
+    );
+    return result;
+  }
 }
 module.exports = UserService;

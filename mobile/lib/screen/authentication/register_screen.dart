@@ -220,13 +220,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         child: Container(
                           padding: EdgeInsets.all(16.0),
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
+                            border: Border.all(color: Colors.purple),
                             borderRadius: BorderRadius.circular(4.0),
                           ),
                           child: Text(
                             _selectedDate == null
                                 ? 'Chọn ngày sinh'
-                                : 'Ngày sinh: ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
+                                : 'Ngày sinh: ${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
                             style: TextStyle(color: Colors.black),
                           ),
                         ),
