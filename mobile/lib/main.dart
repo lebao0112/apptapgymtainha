@@ -1,4 +1,3 @@
-
 import 'package:doan_tapgymtainha/screen/home_screen.dart';
 import 'package:doan_tapgymtainha/screen/splash_screen.dart';
 import 'package:doan_tapgymtainha/screen/trainingprogram_screen.dart';
@@ -7,6 +6,7 @@ import 'package:doan_tapgymtainha/screen/dashboard_screen.dart';
 import 'package:doan_tapgymtainha/screen/authentication/register_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
