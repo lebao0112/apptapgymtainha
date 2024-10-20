@@ -9,7 +9,7 @@ const signToken = (req, res, next) => {
     process.env.JWT_SECRET_KEY,
     { expiresIn: "30d" }
   );
-
+    console.log("user token:",token);
   res.json({
     message: "Login successful",
     token: token,

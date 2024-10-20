@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ExercisesScreen extends StatefulWidget {
-  const ExercisesScreen({super.key});
+  const ExercisesScreen({super.key, required List<String> selectedExercises});
 
   @override
   State<ExercisesScreen> createState() => _ExercisesScreenState();
