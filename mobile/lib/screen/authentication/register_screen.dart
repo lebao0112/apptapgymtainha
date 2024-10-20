@@ -32,22 +32,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
           _selectedDate,
           _selectedGender,
         );
-
-        // If registration is successful, show a success message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Đăng ký thành công!'),
             backgroundColor: Colors.greenAccent,
           ),
         );
-
-        // Navigate to the LoginScreen after successful registration
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
       } catch (e) {
-        // If registration fails
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Đăng ký thất bại: $e'),
@@ -114,10 +109,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('Đăng ký'),
         backgroundColor: Colors.orangeAccent,
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -190,6 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _weightController,
@@ -207,6 +205,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -293,6 +292,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
+
               ],
             ),
           ),

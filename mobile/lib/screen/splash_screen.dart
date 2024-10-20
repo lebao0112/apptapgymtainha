@@ -24,7 +24,7 @@ class SplashScreen extends StatelessWidget {
           // Token hợp lệ, điều hướng đến Dashboard
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => DashboardScreen(userId: 'someUserId'),
+              builder: (context) => DashboardScreen(),
             ),
           );
         } else {
