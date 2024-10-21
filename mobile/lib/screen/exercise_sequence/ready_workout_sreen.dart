@@ -3,17 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class ReadyWorkoutSreen extends StatefulWidget {
+  List<dynamic> exercises;
 
-  List<Map<String, String>> exercises;
-  ReadyWorkoutSreen( {required this.exercises});
+  ReadyWorkoutSreen({required this.exercises});
   @override
   State<ReadyWorkoutSreen> createState() => _ReadyWorkoutSreenState();
 }
 
-class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen> with SingleTickerProviderStateMixin{
+class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen>
+    with SingleTickerProviderStateMixin {
+
   late AnimationController _controller;
   int totalTimeInSeconds = 20;
   int currentTime = 0;
+  late int remainingTime;
+  late final List<dynamic> exercises = widget.exercises;
+  late final int currentExerciseIndex = 0;
 
   @override
   void initState() {
@@ -22,8 +27,14 @@ class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen> with SingleTicker
       vsync: this,
       duration: Duration(seconds: totalTimeInSeconds),
     )..addListener(() {
-      setState(() {});
-    });
+        setState(() {
+          remainingTime =
+              (_controller.duration!.inSeconds * _controller.value).toInt();
+          if (remainingTime == 0) {
+            _goToExerciseTimerScreen(context); // Trigger event when time is up
+          }
+        });
+      });
 
     // Bắt đầu animation đếm ngược từ 1.0 về 0.0
     _controller.reverse(from: 1.0);
@@ -50,64 +61,63 @@ class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen> with SingleTicker
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 10, left: 10),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  shape: BoxShape.circle,
-                ),
-                child: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: Icon(Icons.close),
-                  color: Colors.black,
-                ),
-              ),
-
-              Column(
-                children: [
-                  // Music Button
-                  Container(
-                    margin: const EdgeInsets.only(top: 10, right: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300], // Background color of the music button
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        // Add action for music button here
-                      },
-                      icon: Icon(Icons.music_note_outlined),
-                      color: Colors.black, // Icon color
-                    ),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 10, left: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    shape: BoxShape.circle,
                   ),
-                  SizedBox(height: 10), // Spacing between buttons
-
-                  // Rotate Screen Button directly below the Music Button
-                  Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300], // Background color of the rotate screen button
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        // Add action for rotate screen button here
-                      },
-                      icon: Icon(Icons.screen_rotation),
-                      color: Colors.black, // Icon color
-                    ),
+                  child: IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: Icon(Icons.close),
+                    color: Colors.black,
                   ),
-                ],
-              ),
+                ),
 
-              // Exercise and Timer Text in the Center
+                Column(
+                  children: [
+                    // Music Button
+                    Container(
+                      margin: const EdgeInsets.only(top: 10, right: 10),
+                      decoration: BoxDecoration(
+                        color: Colors
+                            .grey[300], // Background color of the music button
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          // Add action for music button here
+                        },
+                        icon: Icon(Icons.music_note_outlined),
+                        color: Colors.black, // Icon color
+                      ),
+                    ),
+                    SizedBox(height: 10), // Spacing between buttons
 
-           ]
+                    // Rotate Screen Button directly below the Music Button
+                    Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[
+                            300], // Background color of the rotate screen button
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          // Add action for rotate screen button here
+                        },
+                        icon: Icon(Icons.screen_rotation),
+                        color: Colors.black, // Icon color
+                      ),
+                    ),
+                  ],
+                ),
 
-          ),
+                // Exercise and Timer Text in the Center
+              ]),
           SizedBox(height: 40),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -116,10 +126,9 @@ class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen> with SingleTicker
               Text(
                 'Get Ready!',
                 style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold
-                ),
+                    color: Colors.white,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 20),
               Stack(
@@ -151,7 +160,6 @@ class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen> with SingleTicker
             ],
           ),
           SizedBox(height: 25),
-
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -161,19 +169,17 @@ class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen> with SingleTicker
                   minimumSize: Size(160, 50),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ExerciseTimerScreen(exercises: [],),
-                    ),
-                  );
+                  _goToExerciseTimerScreen(context);
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => ExerciseTimerScreen(),
+                  //   ),
+                  // );
                 },
                 child: Text(
-                    'START',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold
-                    ),
+                  'START',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               )
             ],
@@ -182,6 +188,18 @@ class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen> with SingleTicker
       ),
     );
   }
+
+  void _goToExerciseTimerScreen(
+    BuildContext context,
+  ) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExerciseTimerScreen(
+          exercises: exercises,
+          currentExerciseIndex: currentExerciseIndex,
+        ),
+      ),
+    );
+  }
 }
-
-

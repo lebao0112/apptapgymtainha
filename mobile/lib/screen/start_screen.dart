@@ -1,5 +1,6 @@
+import 'package:doan_tapgymtainha/screen/workoutdetail_screen.dart';
 import 'package:flutter/material.dart';
-import 'createworkout_screen.dart';  // Import the CreateWorkoutScreen
+import 'createworkout_screen.dart'; // Import the CreateWorkoutScreen
 import '../service/api_service.dart';
 import 'exercise_sequence/ready_workout_sreen.dart'; // Import your ApiService
 
@@ -20,11 +21,13 @@ class _StartScreenState extends State<StartScreen> {
   void _loadUserWorkouts() {
     _userWorkouts = ApiService.fetchUserWorkouts(); // Tải dữ liệu từ API
   }
+
   void _showWorkoutDialog(Map<String, dynamic> workoutDetails) {
     // Safely parse the exercises list to be a list of maps with strings
     List<Map<String, String>> exercises = [];
 
-    if (workoutDetails['Exercises'] != null && workoutDetails['Exercises'] is List) {
+    if (workoutDetails['Exercises'] != null &&
+        workoutDetails['Exercises'] is List) {
       exercises = (workoutDetails['Exercises'] as List).map((exercise) {
         return {
           'exerciseName': (exercise['name'] ?? 'Unnamed Exercise').toString(),
@@ -35,6 +38,8 @@ class _StartScreenState extends State<StartScreen> {
         };
       }).toList();
     }
+
+    print(exercises);
 
     showDialog(
       context: context,
@@ -63,7 +68,8 @@ class _StartScreenState extends State<StartScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ReadyWorkoutSreen(exercises: exercises),
+                    builder: (context) =>
+                        ReadyWorkoutSreen(exercises: exercises),
                   ),
                 );
               },
@@ -74,22 +80,20 @@ class _StartScreenState extends State<StartScreen> {
     );
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         title: Text(
           'Start Workout',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
+        
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +102,8 @@ class _StartScreenState extends State<StartScreen> {
               onPressed: () async {
                 final result = await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CreateWorkoutScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => CreateWorkoutScreen()),
                 );
                 if (result == true) {
                   setState(() {
@@ -107,16 +112,16 @@ class _StartScreenState extends State<StartScreen> {
                 }
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: Colors.orange,
                 foregroundColor: Colors.white,
                 minimumSize: Size(double.infinity, 50),
               ),
-              child: Text('Start an Empty Workout'),
+              child: Text('New workout'),
             ),
             SizedBox(height: 20),
             Text(
-              'My Templates',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              'My workouts',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             SizedBox(height: 10),
             FutureBuilder<List<dynamic>>(
@@ -139,7 +144,8 @@ class _StartScreenState extends State<StartScreen> {
                     children: snapshot.data!.map((workout) {
                       // Safely access the title, description, and workoutId
                       final String title = workout['Title'] ?? 'No Title';
-                      final String description = workout['Description'] ?? 'No Description';
+                      final String description =
+                          workout['Description'] ?? 'No Description';
                       final String workoutId = workout['_id'] ?? '';
 
                       return _buildTemplateCard(workoutId, title, description);
@@ -155,15 +161,22 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   // Hàm dựng các Template Card
-  Widget _buildTemplateCard(String workoutId, String title, String description) {
+  Widget _buildTemplateCard(
+      String workoutId, String title, String description) {
     return GestureDetector(
       onTap: () async {
         // Fetch the workout details from the server
         final workoutDetails = await ApiService.fetchWorkoutDetails(workoutId);
-        _showWorkoutDialog(workoutDetails);
+        // _showWorkoutDialog(workoutDetails);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  WorkoutDetailScreen(workoutDetails: workoutDetails)),
+        );
       },
       child: Card(
-        elevation: 3,
+        color: const Color.fromARGB(255, 121, 120, 120),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -172,12 +185,14 @@ class _StartScreenState extends State<StartScreen> {
             children: [
               Text(
                 title,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold, fontSize: 16),
               ),
               SizedBox(height: 5),
               Text(
                 description,
-                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                style: TextStyle(color: Colors.white, fontSize: 12),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -187,5 +202,4 @@ class _StartScreenState extends State<StartScreen> {
       ),
     );
   }
-
 }

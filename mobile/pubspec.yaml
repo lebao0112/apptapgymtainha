@@ -50,6 +50,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   google_fonts: ^4.0.4
   scroll_date_picker: ^3.8.0
+  input_quantity: ^2.4.1
 
 dev_dependencies:
   flutter_test:

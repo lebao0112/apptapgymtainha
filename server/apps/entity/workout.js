@@ -8,7 +8,6 @@ class Workout {
   constructor() {
     this.Exercises = [];
   }
-
 }
 
 module.exports = Workout;

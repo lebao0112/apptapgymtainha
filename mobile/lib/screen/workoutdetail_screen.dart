@@ -2,47 +2,11 @@ import 'package:doan_tapgymtainha/screen/exercise_sequence/exercise_timer_screen
 import 'package:doan_tapgymtainha/screen/exercise_sequence/ready_workout_sreen.dart';
 import 'package:flutter/material.dart';
 
-final List<Map<String, String>> exercises = [
-  {
-    'name': 'Ball Slams',
-    'reps': '10',
-    'category': 'Full Body',
-    'image': 'ballslams.png'
-  },
-  {
-    'name': 'Battle Ropes',
-    'time': '30',
-    'category': 'Cardio',
-    'image': 'battleropes.png'
-  },
-  {
-    'name': 'Bench Dip',
-    'reps': '10',
-    'category': 'Arms',
-    'image': 'benchdips.png'
-  },
-  {
-    'name': 'Bench Press (Barbell)',
-    'reps': '10',
-    'category': 'Chest',
-    'image': 'benchpress_barbell.png'
-  },
-  {
-    'name': 'Bench Press (Cable)',
-    'reps': '10',
-    'category': 'Chest',
-    'image': 'benchpress_cable.png'
-  },
-  {
-    'name': 'Bench Press (Dumbbell)',
-    'category': 'Chest',
-    'reps': '10',
-    'image': 'benchpress_dumbbell.png'
-  },
-];
-
 class WorkoutDetailScreen extends StatefulWidget {
-  const WorkoutDetailScreen({Key? key}) : super(key: key);
+  final Map<String, dynamic>
+      workoutDetails; // Dữ liệu truyền vào chứa thông tin bài tập
+
+  const WorkoutDetailScreen({super.key, required this.workoutDetails});
 
   @override
   _WorkoutDetailScreenState createState() => _WorkoutDetailScreenState();
@@ -51,6 +15,14 @@ class WorkoutDetailScreen extends StatefulWidget {
 class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    // Lấy thông tin từ workoutDetails
+    final String workoutTitle =
+        widget.workoutDetails['Title'] ?? 'Workout Title';
+    final String workoutDescription =
+        widget.workoutDetails['Description'] ?? '';
+    final List<dynamic> exercises = widget.workoutDetails['Exercises'] ?? [];
+    
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -60,7 +32,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('MASSIVE UPPER BODY',
+        title: Text(workoutTitle,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
@@ -82,29 +54,19 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'DAY 3',
+                    workoutTitle,
                     style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
-                  // Tiêu đề chương trình tập
-                  Text(
-                    'MASSIVE UPPER BODY',
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
                   const SizedBox(height: 8),
-
-                  // Ngày tập
 
                   const SizedBox(height: 8),
 
                   // Mô tả chương trình tập
                   Text(
-                    'Lose belly fat, get ripped abs in just 4 weeks with this efficient plan. It also helps pump up your arms, strengthen your back & shoulders. No equipment needed!',
+                    workoutDescription,
                     style: TextStyle(fontSize: 16, color: Colors.grey[300]),
                   ),
                   const SizedBox(height: 16),
@@ -171,7 +133,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ReadyWorkoutSreen(
-                        exercises: [],
+                        exercises: exercises,
                       ),
                     ),
                   );
@@ -182,7 +144,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
                 ),
-                child: Text(
+                child: const Text(
                   'START',
                   style: TextStyle(
                       color: Colors.white,
@@ -202,7 +164,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title,
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 16)),
@@ -212,30 +174,40 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
     );
   }
 
-  Widget _buildExerciseItem(Map<String, String> exercise) {
+  Widget _buildExerciseItem(Map<String, dynamic> exercise) {
     String detail = '';
 
     // Kiểm tra xem bài tập có thuộc tính 'reps' hay 'time' và định dạng tương ứng
-    if (exercise.containsKey('reps')) {
-      detail = 'x${exercise['reps']}';
-    } else if (exercise.containsKey('time')) {
-      int timeInSeconds = int.tryParse(exercise['time'] ?? '0') ?? 0;
+     // Kiểm tra và hiển thị reps nếu có
+    if (exercise.containsKey('reps') && exercise['reps'] != null) {
+      detail = 'Reps: x${exercise['reps']}';
+    }
+
+    // Kiểm tra và hiển thị duration nếu có
+    if (exercise.containsKey('duration') && exercise['duration'] != null) {
+      int timeInSeconds = exercise['duration'];
       int minutes = timeInSeconds ~/ 60;
       int seconds = timeInSeconds % 60;
-      detail =
-          '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      if (detail.isNotEmpty) {
+        detail += ' | '; // Thêm dấu phân cách nếu cả reps và duration cùng có
+      }
+      detail +=
+          'Duration: ${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
     }
 
     return ListTile(
       contentPadding: EdgeInsets.symmetric(vertical: 8.0),
-      leading: Image.asset('assets/exercises/${exercise["image"]}',
-          width: 50, height: 50, fit: BoxFit.cover),
+      leading:
+          Image.network(exercise["imageUrl"], // Đường dẫn URL ảnh từ bài tập
+              width: 50,
+              height: 50,
+              fit: BoxFit.cover),
       title: Text(
         exercise['name']!,
         style: TextStyle(
             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
       ),
-      subtitle: Text(detail, style: TextStyle(color: Colors.grey[300])),
+      subtitle: Text(detail.isEmpty ? 'No data available' : detail, style: TextStyle(color: Colors.grey[300])),
     );
   }
 }
