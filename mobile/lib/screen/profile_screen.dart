@@ -43,8 +43,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             final String email = profile['Email'];
             final int height = profile['Height'];
             final int weight = profile['Weight'];
-            final String dateOfBirth = profile['DateOfBirth'];
-            final String gender = profile['Gender'];
+            final String dateOfBirth = profile['DateOfBirth'] ?? "";
+            final String gender = profile['Gender'] ?? "unknown";
             final String? avatarUrl = profile['AvatarUrl'];
             return Container(
               color: Colors.black,

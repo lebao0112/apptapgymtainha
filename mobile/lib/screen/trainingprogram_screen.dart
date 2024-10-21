@@ -124,11 +124,11 @@ class TrainingProgramScreen extends StatelessWidget {
                         top: 10.0, left: 16.0, right: 16.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => WorkoutDetailScreen()),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => WorkoutDetailScreen()),
+                        // );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors

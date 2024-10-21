@@ -122,7 +122,18 @@ router.get("/workout/:workoutId", authenticateToken, async function (req, res) {
 
     // Fetch the full exercise details for each exercise in the workout
     const exerciseDetails = await Promise.all(
-      workout.Exercises.map(exerciseId => exerciseService.getExercise(exerciseId))
+      workout.Exercises.map(async (exercise) => {
+        const exerciseData = await exerciseService.getExercise(
+          exercise.exerciseId
+        );
+
+        // Merge exercise details with the reps and duration specific to this workout
+        return {
+          ...exerciseData,
+          reps: exercise.reps,
+          duration: exercise.duration,
+        };
+      })
     );
 
     // Return the workout details including exercise details
