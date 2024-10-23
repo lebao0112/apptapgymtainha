@@ -64,7 +64,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '928939982821',
     projectId: 'apptapgym-3152f',
     storageBucket: 'apptapgym-3152f.appspot.com',
-    iosClientId: '928939982821-hiev9hqpgis1vvh978d08mkt82o8qfp7.apps.googleusercontent.com',
+    iosClientId:
+        '928939982821-hiev9hqpgis1vvh978d08mkt82o8qfp7.apps.googleusercontent.com',
     iosBundleId: 'com.example.doanTapgymtainha',
   );
 
@@ -74,7 +75,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '928939982821',
     projectId: 'apptapgym-3152f',
     storageBucket: 'apptapgym-3152f.appspot.com',
-    iosClientId: '928939982821-hiev9hqpgis1vvh978d08mkt82o8qfp7.apps.googleusercontent.com',
+    iosClientId:
+        '928939982821-hiev9hqpgis1vvh978d08mkt82o8qfp7.apps.googleusercontent.com',
     iosBundleId: 'com.example.doanTapgymtainha',
   );
 
