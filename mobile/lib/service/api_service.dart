@@ -198,11 +198,33 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
+      print(jsonDecode(response.body));
       return jsonDecode(response.body);  // Return the workout details
     } else {
       print('Failed to fetch workout details: ${response.statusCode}');
       throw Exception('Failed to fetch workout details');
     }
   }
+  static Future<Map<String, dynamic>> loginWithGoogle(String email, String name, String googleId) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/google-login'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        'Email': email,
+        'Name': name,
+        'googleId': googleId,
+      }),
+    );
 
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+
+      // Store the token in secure storage
+      await storage.write(key: "jwtToken", value: data["token"]);
+
+      return data;
+    } else {
+      throw Exception('Google login failed');
+    }
+  }
 }
