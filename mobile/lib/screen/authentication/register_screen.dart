@@ -232,7 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(
                         width:
-                            20), // Khoảng cách giữa nút chọn ngày sinh và checkbox giới tính
+                        20), // Khoảng cách giữa nút chọn ngày sinh và checkbox giới tính
                     // Lựa chọn giới tính
                     Expanded(
                       child: Row(
