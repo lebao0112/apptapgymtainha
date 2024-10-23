@@ -53,6 +53,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
+
+
+
   Future<void> _loginWithGoogle() async {
     try {
       // Trigger the Google Sign-In process
@@ -60,23 +63,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (googleUser != null) {
         final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+            await googleUser.authentication;
 
-        // Call the backend to handle Google login
-        final result = await ApiService.loginWithGoogle(
-          googleUser.email, // Use the email from Google account
-          googleUser.displayName ?? "", // Use the display name
-          googleAuth.idToken!, // Use the idToken as a temporary password
+        // Create Firebase credential using the Google authentication token
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
         );
-        print('Email: ${googleUser.email}, Name: ${googleUser.displayName}');
-        // Navigate to the Dashboard
+
+        // Sign in to Firebase
+        final UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithCredential(credential);
+
+        // Get the Firebase User ID
+        final String userId = userCredential.user!.uid;
+
+        // Navigate to the StartScreen and pass the userId
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => DashboardScreen(),
+            builder: (context) =>
+                DashboardScreen(), // Pass Firebase userId
           ),
         );
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Đăng nhập Google thành công')),
         );
@@ -87,48 +96,6 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
-
-
-  // Future<void> _loginWithGoogle() async {
-  //   try {
-  //     // Trigger the Google Sign-In process
-  //     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-  //
-  //     if (googleUser != null) {
-  //       final GoogleSignInAuthentication googleAuth =
-  //           await googleUser.authentication;
-  //
-  //       // Create Firebase credential using the Google authentication token
-  //       final AuthCredential credential = GoogleAuthProvider.credential(
-  //         accessToken: googleAuth.accessToken,
-  //         idToken: googleAuth.idToken,
-  //       );
-  //
-  //       // Sign in to Firebase
-  //       final UserCredential userCredential =
-  //           await FirebaseAuth.instance.signInWithCredential(credential);
-  //
-  //       // Get the Firebase User ID
-  //       final String userId = userCredential.user!.uid;
-  //
-  //       // Navigate to the StartScreen and pass the userId
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) =>
-  //               DashboardScreen(), // Pass Firebase userId
-  //         ),
-  //       );
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Đăng nhập Google thành công')),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Đăng nhập Google thất bại: $e')),
-  //     );
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

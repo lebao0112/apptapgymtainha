@@ -22,21 +22,21 @@ router.post("/register", async function (req, res) {
   const user = new User();
 
   try {
-    // Hash the password for security
     const hashedPassword = await bcrypt.hash(req.body.Password, 10);
     user.Name = req.body.Name;
     user.Email = req.body.Email;
     user.Password = hashedPassword;
-    user.Height = req.body.Height; // Add height from the request
-    user.Weight = req.body.Weight; // Add weight from the request
+    user.Height = req.body.Height;
+    user.Weight = req.body.Weight;
+    user.DateOfBirth = req.body.DateOfBirth;
+    user.Gender = req.body.Gender;
 
-    // Insert the user into the database
     const result = await userService.insertUser(user);
     console.log("User registered successfully:", result);
 
     res.status(201).json({
       message: "User registered successfully",
-      userId: result.insertedId,
+      user: user,
     });
   } catch (error) {
     console.error("Error registering user:", error);
@@ -147,15 +147,60 @@ router.post('/google-login', async function (req, res) {
 
 //   res.json({ message: "Login successful", userId: user._id });
 // });
-router.post("/update-user", async function (req, res) {
-  const userService = new UserService();
-  const user = new User();
-  user._id = req.body.Id;
-  user.Name = req.body.Name;
-  user.Email = req.body.Email;
+// router.post("/update-user", authenticateToken, async function (req, res) {
+//   const userId = req.user.userId; // Lấy userId từ token sau khi đã được xác thực
+//   const { Name, Height, Weight, AvatarUrl, Gender } = req.body; // Nhận dữ liệu cập nhật từ client
 
-  await userService.updateUser(user);
-  res.redirect("/user/user-list");
+//   try {
+//     // Kiểm tra xem người dùng có tồn tại không
+//     const userService = new UserService();
+//     const user = await userService.getUser(userId);
+//     if (!user) {
+//       return res.status(404).json({ message: "Người dùng không tồn tại." });
+//     }
+
+//     const updatedUser = {
+//       Name: Name || user.Name,
+//       Height: Height || user.Height,
+//       Weight: Weight || user.Weight,
+//       AvatarUrl: AvatarUrl || user.AvatarUrl,
+//       Gender: Gender || user.Gender,
+//     };
+
+//     await userService.updateUser({ _id: userId, ...updatedUser });
+
+//     return res.json({
+//       message: "Cập nhật thông tin thành công.",
+//       updatedUser,
+//     });
+//   } catch (error) {
+//     console.error("Lỗi khi cập nhật người dùng:", error);
+//     return res.status(500).json({
+//       message: "Có lỗi xảy ra trong quá trình cập nhật.",
+//       error: error.message,
+//     });
+//   }
+// });
+router.put("/update-username", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId; // Lấy userId từ token đã xác thực
+    const { newName } = req.body; // Lấy tên mới từ request body
+
+    if (!newName || newName.trim() === "") {
+      return res.status(400).json({ message: "Tên không hợp lệ." });
+    }
+
+    const userService = new UserService();
+    const result = await userService.updateUserName(userId, newName); // Gọi hàm update
+
+    res.status(200).json({ message: "Tên người dùng đã được cập nhật." });
+  } catch (error) {
+    console.error("Error updating user name:", error);
+    res.status(500).json({
+      message: "Đã xảy ra lỗi khi cập nhật tên.",
+      error: error.message,
+    });
+  }
 });
 
 router.post("/delete-user", async function (req, res) {
