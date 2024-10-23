@@ -6,6 +6,10 @@ class User {
   Height;
   Weight;
   WorkoutHistory;
+  DateOfBirth;
+  AvatarUrl;
+  Gender;
+
 
   constructor() {
     this.WorkoutHistory = [];

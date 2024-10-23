@@ -5,7 +5,7 @@ var User = require("./../entity/user");
 const bcrypt = require("bcrypt");
 const signToken = require("../middleware/generateToken");
 const authenticateToken = require("../middleware/authMiddleware");
-
+const jwt = require("jsonwebtoken");
 router.post("/insert-user", async function (req, res) {
   const userService = new UserService();
   const user = new User();
@@ -70,6 +70,43 @@ router.post(
   },
   signToken
 );
+router.post('/google-login', async function (req, res) {
+  console.log("Request Body:", req.body); // Debug log
+  const { Email, Name, googleId } = req.body;
+
+  const userService = new UserService();
+  let user = await userService.getUserByEmail(Email);
+
+  if (!user) {
+    // If user does not exist, create a new user
+    user = new User(); // Use `user =` instead of `const user =`
+    user.Name = Name;
+    user.Email = Email;
+    user.Password = googleId; // Save googleId as a temporary password
+    user.Height = 0;
+    user.Weight = 0;
+    user.AvatarUrl =null;
+    user.DateOfBirth = "2024-10-20 00:00:00.000";
+    user.Gender = "male";
+
+    // Save new user in MongoDB
+    const result = await userService.insertUser(user);
+    user._id = result.insertedId; // Set the `_id` from the MongoDB result
+  }
+
+  // Create JWT token for the existing or newly created user
+  const token = jwt.sign(
+    { userId: user._id, email: user.Email },
+    process.env.JWT_SECRET_KEY,
+    { expiresIn: "30d" }
+  );
+
+  res.json({
+    message: "Google login successful",
+    token: token,
+    userId: user._id,
+  });
+});
 
 // router.post("/login", async function (req, res) {
 //   const userService = new UserService();
