@@ -67,6 +67,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Expanded(
                 child: ScrollDatePicker(
                   selectedDate: tempPickedDate,
+                  minimumDate: DateTime(1900),
+                  maximumDate: DateTime(2100),
                   locale: Locale('vi'),
                   onDateTimeChanged: (DateTime value) {
                     tempPickedDate = value;
@@ -114,7 +116,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         title: const Text('Đăng ký'),
         backgroundColor: Colors.orangeAccent,
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -187,7 +188,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _weightController,
@@ -205,7 +205,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
-
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -233,7 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     SizedBox(
                         width:
-                            20), // Khoảng cách giữa nút chọn ngày sinh và checkbox giới tính
+                        20), // Khoảng cách giữa nút chọn ngày sinh và checkbox giới tính
                     // Lựa chọn giới tính
                     Expanded(
                       child: Row(
@@ -292,7 +291,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-
               ],
             ),
           ),

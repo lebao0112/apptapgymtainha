@@ -9,7 +9,8 @@ class ApiService {
 
   // Updated method to include height and weight
   static Future<Map<String, dynamic>> registerUser(String name, String email,
-      String password, double height, double weight, DateTime selectedDate, String? selectedGender) async {
+      String password, double height, double weight, DateTime? dateOfBirth,
+      String? gender) async {
     final response = await http.post(
       Uri.parse('$baseUrl/user/register'),
       headers: {"Content-Type": "application/json"},
@@ -18,7 +19,9 @@ class ApiService {
         'Email': email,
         'Password': password,
         'Height': height, // Send height
-        'Weight': weight // Send weight
+        'Weight': weight,// Send weight
+        'DateOfBirth': dateOfBirth.toString(),
+        'Gender': gender
       }),
     );
 
@@ -205,6 +208,30 @@ class ApiService {
     }
   }
 
-  static updateUserName(String text) {}
+  static Future<void> updateUserName(String newName) async {
+    String? token = await getToken();
+    // Gửi yêu cầu tới server để cập nhật tên người dùng
+    final response = await http.put(
+      Uri.parse('$baseUrl/user/update-username'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token", // Gửi token qua header
+      },
+      body: jsonEncode({
+        'newName': newName,
+      }),
+    );
+
+    // Kiểm tra phản hồi từ server
+    if (response.statusCode == 200) {
+      // Thành công
+      print('User name updated successfully');
+    } else {
+      // Thất bại, có thể do lỗi từ phía server
+      final errorResponse = jsonDecode(response.body);
+      throw Exception(
+          'Failed to update user name: ${errorResponse['message']}');
+    }
+  }
 
 }
