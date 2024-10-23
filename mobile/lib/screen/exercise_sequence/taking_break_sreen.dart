@@ -5,9 +5,10 @@ import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:video_player/video_player.dart';
 
 class TakingBreakSreen extends StatefulWidget {
-  List<Map<String, String>> exercises;
+  List<dynamic>exercises;
+  int currentExerciseIndex;
 
-  TakingBreakSreen( {required this.exercises});
+  TakingBreakSreen( {required this.exercises, required this.currentExerciseIndex});
 
   @override
   State<TakingBreakSreen> createState() => _TakingBreakSreenState();
@@ -17,6 +18,8 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
   late AnimationController _controller;
   int totalTimeInSeconds = 20;
   int currentTime = 0;
+  late final List<dynamic> exercises = widget.exercises;
+  late final int currentExerciseIndex = widget.currentExerciseIndex; 
 
   @override
   void initState() {
@@ -157,12 +160,13 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
                     minimumSize: Size(160, 50),
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ExerciseTimerScreen(exercises: [],),
-                      ),
-                    );
+                    _goToExerciseTimerScreen(context);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => ExerciseTimerScreen(exercises: [],),
+                    //   ),
+                    // );
                   },
                   child: Text(
                     'Skip',
@@ -183,4 +187,19 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
       ),
     );
   }
+
+  void _goToExerciseTimerScreen(
+    BuildContext context,
+  ) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExerciseTimerScreen(
+          exercises: exercises,
+          currentExerciseIndex: currentExerciseIndex,
+        ),
+      ),
+    );
+  }
+
 }

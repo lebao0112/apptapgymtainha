@@ -162,7 +162,8 @@ class ApiService {
   }
 
   // Thêm bài tập cho người dùng (JWT token sẽ được tự động thêm vào header)
-  static Future<void> addWorkoutWithToken(Map<String, dynamic> workoutData) async {
+  static Future<void> addWorkoutWithToken(
+      Map<String, dynamic> workoutData) async {
     String? token = await getToken(); // Lấy token từ storage
 
     if (token == null) {
@@ -170,7 +171,8 @@ class ApiService {
     }
     print('Workout Data: ${jsonEncode(workoutData)}');
     final response = await http.post(
-      Uri.parse('$baseUrl/workout/insert-workout'), // Đảm bảo đường dẫn chính xác
+      Uri.parse(
+          '$baseUrl/workout/insert-workout'), // Đảm bảo đường dẫn chính xác
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $token", // Đính kèm token trong header
@@ -186,22 +188,26 @@ class ApiService {
       throw Exception('Failed to add workout: ${response.body}');
     }
   }
-  static Future<Map<String, dynamic>> fetchWorkoutDetails(String workoutId) async {
+
+  static Future<Map<String, dynamic>> fetchWorkoutDetails(
+      String workoutId) async {
     String? token = await getToken();
     if (token == null) {
       throw Exception('Token not found');
     }
 
     final response = await http.get(
-      Uri.parse('$baseUrl/workout/workout/$workoutId'),  // Update this endpoint to the new route
+      Uri.parse(
+          '$baseUrl/workout/workout/$workoutId'), // Update this endpoint to the new route
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer $token",  // Ensure the token is passed correctly
+        "Authorization":
+            "Bearer $token", // Ensure the token is passed correctly
       },
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);  // Return the workout details
+      return jsonDecode(response.body); // Return the workout details
     } else {
       print('Failed to fetch workout details: ${response.statusCode}');
       throw Exception('Failed to fetch workout details');
@@ -233,5 +239,4 @@ class ApiService {
           'Failed to update user name: ${errorResponse['message']}');
     }
   }
-
 }
