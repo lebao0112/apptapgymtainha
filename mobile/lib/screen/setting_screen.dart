@@ -1,3 +1,4 @@
+import 'package:doan_tapgymtainha/cache/user_profile_cache.dart';
 import 'package:doan_tapgymtainha/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -6,6 +7,7 @@ import 'profile_screen.dart'; // Đảm bảo bạn đã tạo ProfileScreen
 
 class SettingScreen extends StatelessWidget {
   final GoogleSignIn _googleSignIn = GoogleSignIn(); // Create a GoogleSignIn instance
+
   void _logout(BuildContext context) async {
     // Sign out from Google
     try {
@@ -15,7 +17,9 @@ class SettingScreen extends StatelessWidget {
       print('Error signing out from Google: $e');
     }
 
+    UserProfileCache.clearCache();
     // Delete the JWT token from secure storage
+
     await ApiService.deleteToken();
 
     // Navigate back to the login screen

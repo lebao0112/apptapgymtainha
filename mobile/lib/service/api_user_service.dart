@@ -1,0 +1,93 @@
+import 'dart:convert';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:doan_tapgymtainha/service/api_config.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'package:http/http.dart' as http;
+
+import '../cache/user_profile_cache.dart';
+
+class ApiUserService {
+  static const String baseUrl = ApiConfig.baseUrl;
+  static const storage = FlutterSecureStorage();
+
+  static Future<String?> getToken() async {
+    return await storage.read(key: "jwtToken");
+  }
+
+  static Future<void> deleteToken() async {
+    await storage.delete(key: "jwtToken");
+  }
+
+  static Future<Map<String, dynamic>> fetchUserProfile() async {
+    String? token = await getToken();
+
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    // Kiểm tra kết nối internet
+    var connectivityResult = await Connectivity().checkConnectivity();
+    bool isOnline = connectivityResult.contains(ConnectivityResult.none);
+    // bool isOnline = false;
+    print(isOnline);
+
+    // Nếu không có internet, lấy dữ liệu từ cache
+
+    final cachedData = UserProfileCache.getUserProfile();
+    if (cachedData != null) {
+      print('there somthing');
+      return cachedData;
+    }
+
+    // Nếu có internet, lấy dữ liệu từ API
+    final response = await http.get(
+      Uri.parse('$baseUrl/user/profile'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+    print('Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+    if (response.statusCode == 200) {
+      final profileData = jsonDecode(response.body);
+
+      // Lưu dữ liệu vào cache
+      UserProfileCache.saveUserProfile(profileData);
+
+      return profileData;
+    } else {
+      throw Exception('Failed to load user profile');
+    }
+  }
+
+  static Future<void> updateUserName(String newName) async {
+    String? token = await getToken();
+    // Gửi yêu cầu tới server để cập nhật tên người dùng
+    final response = await http.put(
+      Uri.parse('$baseUrl/user/update-username'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token", // Gửi token qua header
+      },
+      body: jsonEncode({
+        'newName': newName,
+      }),
+    );
+
+    // Kiểm tra phản hồi từ server
+    if (response.statusCode == 200) {
+      // Thành công
+      print('User name updated successfully');
+
+      //Clear dữ liệu cũ để cập nhật dữ liệu mới
+      UserProfileCache.clearCache();
+    } else {
+      // Thất bại, có thể do lỗi từ phía server
+      final errorResponse = jsonDecode(response.body);
+      throw Exception(
+          'Failed to update user name: ${errorResponse['message']}');
+    }
+  }
+}

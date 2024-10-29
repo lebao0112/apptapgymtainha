@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import '../service/api_service.dart'; // Import ApiService cho các gọi API
 
-class ExercisesScreen extends StatefulWidget {
+class SelectingExercisesScreen extends StatefulWidget {
   final List<String> selectedExerciseIds; // Nhận danh sách các exercise đã chọn theo ID
 
-  ExercisesScreen({required this.selectedExerciseIds});
+  SelectingExercisesScreen({required this.selectedExerciseIds});
 
   @override
-  State<ExercisesScreen> createState() => _ExercisesScreenState();
+  State<SelectingExercisesScreen> createState() => _SelectingExercisesScreenState();
 }
 
-class _ExercisesScreenState extends State<ExercisesScreen> {
+class _SelectingExercisesScreenState extends State<SelectingExercisesScreen> {
   List<dynamic> exercises = []; // Danh sách bài tập từ API
   late List<bool> isSelected = []; // Theo dõi các bài tập đã được chọn
 
@@ -45,13 +45,16 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
 
   // Lưu các bài tập đã chọn và truyền thông tin lại bằng ID và tên
   void _saveSelectedExercises() {
-    List<Map<String, String>> selectedExercises = [];
+    List<Map<String, dynamic>> selectedExercises = [];
     for (int i = 0; i < exercises.length; i++) {
-      if (isSelected[i]) {
-        selectedExercises.add({
-          'id': exercises[i]['_id'], // Lưu ID
-          'name': exercises[i]['name'], // Lưu name
-        });
+      // if (isSelected[i]) {
+      //   selectedExercises.add({
+      //     'id': exercises[i]['_id'], // Lưu ID
+      //     'name': exercises[i]['name'], // Lưu name
+      //   });
+      // }
+      if (isSelected[i]) { // thay thế bằng đoạn code này
+        selectedExercises.add(exercises[i]);
       }
     }
     print(selectedExercises); // Kiểm tra log dữ liệu trả về
