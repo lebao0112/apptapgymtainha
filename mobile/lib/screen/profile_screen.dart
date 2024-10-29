@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:doan_tapgymtainha/service/api_service.dart'; // Import service của bạn
+import 'package:doan_tapgymtainha/service/api_user_service.dart'; // Import service của bạn
 import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _userProfile =
-        ApiService.fetchUserProfile(); // Gọi API để lấy thông tin người dùng
+        ApiUserService.fetchUserProfile();
   }
 
   @override
@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Failed to load profile'));
+            return Center(child: Text('Failed to load profile  ${snapshot.error}'));
           } else {
             final profile = snapshot.data!['userProfile'];
             final String name = profile['Name'];
@@ -188,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Text('Lưu'),
               onPressed: () {
                 // Gọi API để lưu tên mới
-                ApiService.updateUserName(_nameController.text).then((value) {
+                ApiUserService.updateUserName(_nameController.text).then((value) {
                   // Hiển thị snackbar thông báo thành công
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -203,7 +203,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   // Cập nhật lại thông tin người dùng trên màn hình
                   setState(() {
-                    _userProfile = ApiService
+                    _userProfile = ApiUserService
                         .fetchUserProfile(); // Tải lại thông tin người dùng
                   });
                 }).catchError((error) {
