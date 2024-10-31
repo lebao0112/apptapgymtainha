@@ -6,6 +6,8 @@ import 'package:doan_tapgymtainha/screen/profile_screen.dart';
 import 'package:doan_tapgymtainha/screen/explore_screen.dart';
 import 'package:doan_tapgymtainha/screen/setting_screen.dart';
 
+import 'counter_steps/counter_steps_screen.dart';
+
 class DashboardScreen extends StatefulWidget {
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -23,7 +25,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       HomeScreen(),
       ExploreScreen(),
       Container(), // Placeholder for StartScreen
-      StatisticsSreen(),
+      CounterStepsScreen(),
       SettingScreen(),
     ];
   }
