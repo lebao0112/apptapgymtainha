@@ -1,5 +1,5 @@
 const { ObjectId } = require("mongodb");
-
+var config = require("./../config/setting.json");
 class ProgressService {
   databaseConnection = require("./../database/database");
   client;
