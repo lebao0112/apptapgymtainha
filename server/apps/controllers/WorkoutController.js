@@ -11,9 +11,9 @@ router.post("/insert-workout", authenticateToken, async function (req, res) {
   const workout = new Workout();
   workout.Title = req.body.Title;
   workout.Description = req.body.Description;
-  workout.Exercises = req.body.Exercises; // Array of exercise IDs
-  workout.UserId = req.user.userId; // Lấy userId từ token đã xác thực
-
+  workout.Exercises = req.body.Exercises;
+  workout.UserId = req.user.userId;
+  workout.isAvailable  = false;
   try {
     const result = await workoutService.insertWorkout(workout);
     res.status(201).json({
