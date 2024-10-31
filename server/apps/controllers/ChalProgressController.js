@@ -3,17 +3,20 @@ var express = require("express");
 var router = express.Router();
 var ChalProgressService = require("./../services/ChalProgressService");
 var ChalProgress = require("./../entity/chalprogress");
-
+const signToken = require("../middleware/generateToken");
+const authenticateToken = require("../middleware/authMiddleware");
+const jwt = require("jsonwebtoken");
+const { ObjectId } = require("mongodb");
 // Insert a new challenge progress
 router.post(
-  "/insert-chalprogress/:userId/:challengeId",
+  "/insert-chalprogress/:challengeId", authenticateToken,
   async function (req, res) {
     const chalProgressService = new ChalProgressService();
     const chalProgress = new ChalProgress();
 
-    chalProgress.UserId = req.params.userId;
-    chalProgress.ChallengeId = req.params.challengeId;
-    chalProgress.CompletedDays = req.body.CompletedDays || [];
+    chalProgress.UserId = new ObjectId(req.user.userId);
+    chalProgress.ChallengeId = new ObjectId(req.params.challengeId);
+    chalProgress.Progress = 0;
 
     try {
       const result = await chalProgressService.insertChalProgress(chalProgress);
@@ -100,21 +103,18 @@ router.delete(
   }
 );
 
-// Get progress for a user and a specific challenge
-router.get("/chalprogress/:userId/:challengeId", async function (req, res) {
+router.get("/chalprogress-list", authenticateToken, async function (req, res) {
   const chalProgressService = new ChalProgressService();
-  const userId = req.params.userId;
-  const challengeId = req.params.challengeId;
+   const userId = new ObjectId(req.user.userId);
 
   try {
-    const chalProgress = await chalProgressService.getChalProgressByChallenge(
-      userId,
-      challengeId
+    const chalProgressList = await chalProgressService.getChalProgressList(
+      userId
     );
-    if (!chalProgress) {
+    if (!chalProgressList) {
       return res.status(404).json({ message: "Challenge progress not found" });
     }
-    res.status(200).json(chalProgress);
+    res.status(200).json(chalProgressList);
   } catch (error) {
     console.error("Error fetching challenge progress:", error);
     res.status(500).json({

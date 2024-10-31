@@ -1,12 +1,16 @@
 import 'dart:convert';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:doan_tapgymtainha/service/api_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:http/http.dart' as http;
+
+import '../cache/user_profile_cache.dart';
 
 class ApiService {
   static const String baseUrl = ApiConfig.baseUrl; // Your backend URL
-  static const storage = FlutterSecureStorage(); // Tạo storage để đứa token
-
+  static const storage = FlutterSecureStorage();// Tạo storage để đứa token
+  // static final UserProfileCache _cache = UserProfileCache();
   // Updated method to include height and weight
   static Future<Map<String, dynamic>> registerUser(String name, String email,
       String password, double height, double weight, DateTime? dateOfBirth,
@@ -69,25 +73,6 @@ class ApiService {
     await storage.delete(key: "jwtToken");
   }
 
-  // static Future<Map<String, dynamic>> loginUser(
-  //     String email, String password) async {
-  //   final response = await http.post(
-  //     Uri.parse('$baseUrl/user/login'),
-  //     headers: {"Content-Type": "application/json"},
-  //     body: jsonEncode({
-  //       'Email': email,
-  //       'Password': password,
-  //     }),
-  //   );
-
-  //   if (response.statusCode == 200) {
-  //     return jsonDecode(response.body);
-  //   } else {
-  //     throw Exception('Login failed');
-  //   }
-  // }
-
-  // Fetch workouts for a specific user
   static Future<List<dynamic>> fetchUserWorkouts() async {
     String? token = await getToken();
 
@@ -135,29 +120,6 @@ class ApiService {
       return jsonDecode(response.body); // Trả về danh sách các bài tập
     } else {
       throw Exception('Failed to load exercises');
-    }
-  }
-
-  // Fetch thông tin người dùng bằng token
-  static Future<Map<String, dynamic>> fetchUserProfile() async {
-    String? token = await getToken();
-
-    if (token == null) {
-      throw Exception('Token not found');
-    }
-
-    final response = await http.get(
-      Uri.parse('$baseUrl/user/profile'),
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $token", // Đính kèm token trong header
-      },
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load user profile');
     }
   }
 
@@ -277,4 +239,5 @@ class ApiService {
       throw Exception('Failed to send progress data');
     }
   }
+
 }

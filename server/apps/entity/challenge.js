@@ -8,10 +8,6 @@ class Challenge {
   constructor() {
     this.Days = [];
   }
-
-  addDay(day, workout) {
-    this.Days.push({ day, workout });
-  }
 }
 
 module.exports = Challenge;

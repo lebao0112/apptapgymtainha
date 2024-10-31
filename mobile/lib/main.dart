@@ -1,15 +1,26 @@
-import 'package:doan_tapgymtainha/screen/home_screen.dart';
-import 'package:doan_tapgymtainha/screen/splash_screen.dart';
-import 'package:doan_tapgymtainha/screen/trainingprogram_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:doan_tapgymtainha/screen/dashboard_screen.dart';
-import 'package:doan_tapgymtainha/screen/authentication/register_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:doan_tapgymtainha/screen/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter/rendering.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Lock the orientation to portrait mode
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  // Initialize Hive
+  await Hive.initFlutter();
+  await Hive.openBox('userProfileBox');
+
+  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

@@ -2,10 +2,10 @@ class ChalProgress {
   _id;
   UserId;
   ChallengeId;
-  CompletedDays;
+  Progress;
 
   constructor() {
-    this.CompletedDays = 0;
+    this.Progress = 0;
   }
 }
 
