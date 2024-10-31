@@ -175,4 +175,69 @@ class ApiService {
       throw Exception('Failed to fetch workout details');
     }
   }
+
+  static Future<void> updateUserName(String newName) async {
+    String? token = await getToken();
+    // Gửi yêu cầu tới server để cập nhật tên người dùng
+    final response = await http.put(
+      Uri.parse('$baseUrl/user/update-username'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token", // Gửi token qua header
+      },
+      body: jsonEncode({
+        'newName': newName,
+      }),
+    );
+
+    // Kiểm tra phản hồi từ server
+    if (response.statusCode == 200) {
+      // Thành công
+      print('User name updated successfully');
+    } else {
+      // Thất bại, có thể do lỗi từ phía server
+      final errorResponse = jsonDecode(response.body);
+      throw Exception(
+          'Failed to update user name: ${errorResponse['message']}');
+    }
+  }
+
+  static Future<Map<String, dynamic>> loginWithGoogle(String email, String name, String googleId) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/google-login'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        'Email': email,
+        'Name': name,
+        'googleId': googleId,
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+
+      // Store the token in secure storage
+      await storage.write(key: "jwtToken", value: data["token"]);
+
+      return data;
+    } else {
+      throw Exception('Google login failed');
+    }
+  }
+  static Future<void> sendProgressData(Map<String, dynamic> data) async {
+    String? token = await getToken();  // Retrieve the user's token if necessary
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/progress/update-progress'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",  // If using JWT
+      },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to send progress data');
+    }
+  }
+
 }
