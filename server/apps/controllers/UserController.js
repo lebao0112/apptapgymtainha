@@ -22,6 +22,13 @@ router.post("/register", async function (req, res) {
   const user = new User();
 
   try {
+      // Kiểm tra email đã tồn tại chưa
+      const existingUser = await userService.getUserByEmail(req.body.Email);
+      if (existingUser) {
+        return res.status(400).json({
+          message: "Email đã tồn tại, vui lòng chọn email khác.",
+        });
+      }
     const hashedPassword = await bcrypt.hash(req.body.Password, 10);
     user.Name = req.body.Name;
     user.Email = req.body.Email;
