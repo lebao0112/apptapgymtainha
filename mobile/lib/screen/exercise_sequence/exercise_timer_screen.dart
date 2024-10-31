@@ -23,8 +23,9 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
   late final List<dynamic> exercises = widget.exercises;
   late int currentExerciseIndex = widget.currentExerciseIndex;
   late final int exerciseLength = exercises.length;
-  late final String videoUrl = widget.exercises[currentExerciseIndex]['videoUrl'];
-  
+  late final String? videoUrl = widget.exercises[currentExerciseIndex]['videoUrl'];
+
+
   late int _remainingSeconds;
   Timer? _timer;
   bool isPaused = false;
@@ -36,7 +37,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
     if(!exercises[currentExerciseIndex]['isRep'])
       _startTimer();
 
-    _videoPlayerController = VideoPlayerController.network(videoUrl);
+    _videoPlayerController = VideoPlayerController.network(videoUrl.toString());
       _initializeVideoPlayerFuture =
           _videoPlayerController.initialize().then((_) {
         _videoPlayerController.setLooping(true);
@@ -171,7 +172,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
             future: _initializeVideoPlayerFuture,
             builder: (context, snapshot) {
               // Check if the videoUrl is valid
-              if (videoUrl == null || videoUrl.isEmpty) {
+              if (videoUrl == null) {
                 return Center(
                   child: Text(
                     "No video loaded",
