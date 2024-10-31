@@ -1,9 +1,11 @@
+import 'package:doan_tapgymtainha/provider/challenge_provider.dart';
 import 'package:doan_tapgymtainha/screen/trainingprogram_screen.dart';
 import 'package:doan_tapgymtainha/service/api_challenge.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,17 +21,18 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentMonth = DateTime.now().month;
   int currentYear = DateTime.now().year;
 
-  late Future<List<dynamic>> _challenges;
+  // late Future<List<dynamic>> _challenges;
 
-  void _loadChallenge() {
-    _challenges = ApiChallenge.fetchChallenges();
+  List<dynamic> _chalprogress = [];
 
-    // In ra dữ liệu workouts để kiểm tra
-    _challenges.then((challenges) {
-      print("Challenges from server: $challenges");
-    }).catchError((error) {
+  void _loadChallenge() async {
+    try {
+      _chalprogress = await ApiChallenge.fetchChallenges();
+      print("Challenges from server: $_chalprogress");
+      setState(() {}); // Cập nhật lại trạng thái sau khi nhận dữ liệu
+    } catch (error) {
       print("Error fetching workouts: $error");
-    });
+    }
   }
 
   @override
@@ -128,38 +131,53 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             // Challenge Carousel
+            // Padding(
+            //   padding: const EdgeInsets.all(0),
+            //   child: _chalprogress.isEmpty
+            //       ? Center(child: Text("Không có thử thách nào"))
+            //       : CarouselSlider(
+            //           items: _chalprogress.map((challenge) {
+            //             return _buildChallengeCard(
+            //               context,
+            //               challenge,
+            //             );
+            //           }).toList(),
+            //           options: CarouselOptions(
+            //             height: 270, // Chiều cao của slider
+            //             autoPlay: false, // Tự động di chuyển
+            //             enlargeCenterPage: false, // Không phóng to item ở giữa
+            //             enableInfiniteScroll: true, // Không vòng lặp
+            //             viewportFraction:
+            //                 0.9, // Mỗi trang chiếm 90% chiều rộng của viewport
+            //           ),
+            //         ),
+            // ),
+
+
             Padding(
               padding: const EdgeInsets.all(0),
-              child: FutureBuilder<List<dynamic>>(
-                future: _challenges,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text("Lỗi tải thử thách"));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text("Không có thử thách nào"));
-                  } else {
-                    final challenges = snapshot.data!;
-                    return CarouselSlider(
-                      items: challenges.map((challenge) {
-                        return _buildChallengeCard(
-                          context,
-                          challenge['name'],
-                          challenge['description'],
-                          challenge['imageUrl'],
+              child: Consumer<ChallengeProvider>(
+                builder: (context, challengeProvider, child) {
+                  return challengeProvider.chalprogress.isEmpty
+                      ? Center(child: Text("Không có thử thách nào"))
+                      : CarouselSlider(
+                          items:
+                              challengeProvider.chalprogress.map((challenge) {
+                            return _buildChallengeCard(
+                              context,
+                              challenge,
+                            );
+                          }).toList(),
+                          options: CarouselOptions(
+                            height: 270, // Chiều cao của slider
+                            autoPlay: false, // Tự động di chuyển
+                            enlargeCenterPage:
+                                false, // Không phóng to item ở giữa
+                            enableInfiniteScroll: true, // Không vòng lặp
+                            viewportFraction:
+                                0.9, // Mỗi trang chiếm 90% chiều rộng của viewport
+                          ),
                         );
-                      }).toList(),
-                      options: CarouselOptions(
-                        height: 250, // Chiều cao của slider
-                        autoPlay: false, // Tự động di chuyển
-                        enlargeCenterPage: false, // Không phóng to item ở giữa
-                        enableInfiniteScroll: true, // Không vòng lặp
-                        viewportFraction:
-                            0.9, // Mỗi trang chiếm 100% chiều rộng của viewport
-                      ),
-                    );
-                  }
                 },
               ),
             ),
@@ -340,8 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-Widget _buildChallengeCard(
-    BuildContext context, String name, String description, String imageUrl) {
+Widget _buildChallengeCard(BuildContext context, dynamic challenge) {
   return Container(
     margin: EdgeInsets.all(4),
     padding: EdgeInsets.all(20),
@@ -361,7 +378,7 @@ Widget _buildChallengeCard(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          name,
+          challenge['name'],
           style: const TextStyle(
             color: Colors.white,
             fontSize: 24,
@@ -370,29 +387,81 @@ Widget _buildChallengeCard(
         ),
         const SizedBox(height: 10),
         Text(
-          description,
+          challenge['description'],
           style: TextStyle(color: Colors.white),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '1 / 28 Days Finished',
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+            Text(
+              '4%',
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        LinearProgressIndicator(
+          value: 0.04, // Tỷ lệ tiến độ
+          backgroundColor: Colors.grey.shade800,
+          color: Colors.orange,
         ),
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => TrainingProgramScreen(
-                        challengeName: name,
-                      )),
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Xác nhận"),
+                  content: Text("Bạn có chắc chắn muốn bắt đầu không?"),
+                  actions: [
+                    TextButton(
+                      child: Text("Không"),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pop(); // Đóng hộp thoại mà không làm gì thêm
+                      },
+                    ),
+                    TextButton(
+                      child: Text("Có"),
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Đóng hộp thoại
+                        // Điều hướng sang màn hình mới
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TrainingProgramScreen(
+                              challenge: challenge,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              },
             );
+           
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
             foregroundColor: Colors.orange,
           ),
-          child: Text('KHỞI ĐẦU'),
+          child: Text(
+            'BẮT ĐẦU',
+            style: TextStyle(
+              fontWeight: FontWeight.w900
+            ),
+            ),
         ),
       ],
     ),
   );
+
 }
 
 class WorkoutItem extends StatelessWidget {

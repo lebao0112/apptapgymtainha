@@ -1,13 +1,21 @@
 import 'package:doan_tapgymtainha/screen/workoutdetail_screen.dart';
 import 'package:flutter/material.dart';
 
-class TrainingProgramScreen extends StatelessWidget {
-  final String challengeName;
+import '../service/api_service.dart';
+import '../service/api_challenge.dart';
 
-  const TrainingProgramScreen({super.key, required this.challengeName});
+class TrainingProgramScreen extends StatelessWidget {
+
+  final dynamic challenge;
+
+  const TrainingProgramScreen({super.key, this.challenge});
+
 
   @override
   Widget build(BuildContext context) {
+    List<String> days = (challenge['days'] as List).cast<String>();
+
+
     return Scaffold(
       backgroundColor: Colors.black, // Màu nền chính của màn hình
       appBar: AppBar(
@@ -31,11 +39,11 @@ class TrainingProgramScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Tiêu đề và hình ảnh
             Text(
-              this.challengeName,
+              this.challenge['name'],
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -67,40 +75,19 @@ class TrainingProgramScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Danh sách các tuần
-            _buildWeekProgress('WEEK 1',
-                [true, true, false, false, false, false, false], context,
-                showContinueButton: true),
-            _buildWeekProgress('WEEK 2',
-                [false, false, false, false, false, false, false], context),
-            _buildWeekProgress('WEEK 3',
-                [false, false, false, false, false, false, false], context),
-            _buildWeekProgress('WEEK 4',
-                [false, false, false, false, false, false, false], context),
+            _buildDayCheck(days, context)
           ],
         ),
       ),
     );
   }
 
-  Widget _buildWeekProgress(
-      String weekTitle, List<bool> daysCompleted, BuildContext context,
-      {bool showContinueButton = false}) {
+  Widget _buildDayCheck(
+      List<String> days, BuildContext context,
+      {bool showContinueButton = true}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Icon(Icons.flash_on, color: Colors.orange, size: 20),
-            const SizedBox(width: 8),
-            Text(
-              weekTitle,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
         const SizedBox(height: 10),
         Container(
           padding: EdgeInsets.symmetric(vertical: 10),
@@ -110,10 +97,11 @@ class TrainingProgramScreen extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(daysCompleted.length, (index) {
-                  return _buildDayButton(index + 1, daysCompleted[index]);
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: List.generate(days.length, (index) {
+                  return _buildDayButton(index + 1, days[index], context);
                 }),
               ),
               if (showContinueButton) // Chỉ hiển thị nút "Continue" nếu đúng tuần
@@ -158,14 +146,37 @@ class TrainingProgramScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDayButton(int dayNumber, bool isCompleted) {
-    return CircleAvatar(
-      backgroundColor: isCompleted ? Colors.orange : Colors.grey.shade800,
-      child: Text(
-        dayNumber.toString(),
-        style: TextStyle(
-          color: isCompleted ? Colors.white : Colors.grey,
-          fontWeight: FontWeight.bold,
+  Widget _buildDayButton(int dayNumber, String workoutId, BuildContext context) {
+    print(workoutId);
+    return Padding(
+      padding: EdgeInsets.all(7),
+      child: GestureDetector(
+        onTap: () async {
+          // Fetch the workout details from the server
+          final workoutDetails = await ApiChallenge.fetchChallengeWorkoutDetails(workoutId);
+          // _showWorkoutDialog(workoutDetails);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    WorkoutDetailScreen(workoutDetails: workoutDetails)),
+          );
+        },
+        child: Container(
+          width: 40, // Đặt kích thước cho nút (chiều rộng = chiều cao để tạo hình tròn)
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.grey.shade800, // Màu nền
+            shape: BoxShape.circle, // Tạo hình tròn
+          ),
+          alignment: Alignment.center, // Canh giữa nội dung trong hình tròn
+          child: Text(
+            dayNumber.toString(),
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
     );
