@@ -5,6 +5,7 @@ class Workout {
   Exercises;
   UserId;
   RestTime;
+  isAvailable
   constructor() {
     this.Exercises = [];
   }

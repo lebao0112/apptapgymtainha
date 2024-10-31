@@ -1,10 +1,10 @@
 import 'package:doan_tapgymtainha/screen/exercise_sequence/completed_workout_screen.dart';
 import 'package:doan_tapgymtainha/screen/exercise_sequence/taking_break_sreen.dart';
-import 'package:doan_tapgymtainha/screen/workoutdetail_screen.dart';
+import 'package:doan_tapgymtainha/shared/format.dart';
 import 'package:flutter/material.dart';
-import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:video_player/video_player.dart';
+import 'dart:async';
 
 class ExerciseTimerScreen extends StatefulWidget {
   List<dynamic> exercises;
@@ -21,26 +21,55 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
   late final VideoPlayerController _videoPlayerController;
   late Future<void> _initializeVideoPlayerFuture;
   late final List<dynamic> exercises = widget.exercises;
-  late final int currentExerciseIndex = widget.currentExerciseIndex;
+  late int currentExerciseIndex = widget.currentExerciseIndex;
   late final int exerciseLength = exercises.length;
   late final String videoUrl = widget.exercises[currentExerciseIndex]['videoUrl'];
+  
+  late int _remainingSeconds;
+  Timer? _timer;
+  bool isPaused = false;
+  @override
+  void initState() {
+    super.initState();
+    _remainingSeconds = exercises[currentExerciseIndex]['duration'];
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //    _videoPlayerController = VideoPlayerController.network(videoUrl);
-  //   _initializeVideoPlayerFuture =
-  //       _videoPlayerController.initialize().then((_) {
-  //     _videoPlayerController.setLooping(true);
-  //     setState(() {});
-  //   });
-  // }
+    if(!exercises[currentExerciseIndex]['isRep'])
+      _startTimer();
 
-  // @override
-  // void dispose() {
-  //   _videoPlayerController.dispose();
-  //   super.dispose();
-  // }
+    _videoPlayerController = VideoPlayerController.network(videoUrl);
+      _initializeVideoPlayerFuture =
+          _videoPlayerController.initialize().then((_) {
+        _videoPlayerController.setLooping(true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _videoPlayerController.dispose();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (!isPaused) {
+        setState(() {
+          if (_remainingSeconds > 0) {
+            _remainingSeconds--;
+          } else {
+            _timer?.cancel();
+            _goToTakingBreakScreen(context);
+          }
+        });
+      }
+    });
+  }
+
+  void _togglePauseResume() {
+    setState(() {
+      isPaused = !isPaused;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,130 +83,120 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-            margin: const EdgeInsets.only(left: 30, right: 30, bottom: 5),
-            child: StepProgressIndicator(
-              totalSteps: exerciseLength,
-              currentStep: currentExerciseIndex + 1,
-              size: 5,
-              selectedColor: Colors.orange,
-              unselectedColor: Colors.grey,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
             children: [
               Container(
-                margin: const EdgeInsets.only(top: 10, left: 10),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  shape: BoxShape.circle,
-                ),
-                child: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: Icon(Icons.close),
-                  color: Colors.black,
+                margin: const EdgeInsets.only(left: 30, right: 30, bottom: 5),
+                child: StepProgressIndicator(
+                  totalSteps: exerciseLength,
+                  currentStep: currentExerciseIndex,
+                  size: 5,
+                  selectedColor: Colors.orange,
+                  unselectedColor: Colors.grey,
                 ),
               ),
-
-              // Exercise and Timer Text in the Center
-              Container(
-                margin: const EdgeInsets.only(top: 10, left: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Exercises ${currentExerciseIndex+1}/$exerciseLength',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      '00:15',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Music Button and Rotate Screen Button on the Right
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Music Button
                   Container(
-                    margin: const EdgeInsets.only(top: 10, right: 10),
+                    margin: const EdgeInsets.only(top: 10, left: 10),
                     decoration: BoxDecoration(
-                      color: Colors
-                          .grey[300], // Background color of the music button
+                      color: Colors.grey[300],
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      onPressed: () {
-                        // Add action for music button here
-                      },
-                      icon: Icon(Icons.music_note_outlined),
-                      color: Colors.black, // Icon color
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: Icon(Icons.close),
+                      color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 10), // Spacing between buttons
 
-                  // Rotate Screen Button directly below the Music Button
+                  // Exercise and Timer Text in the Center
                   Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[
-                          300], // Background color of the rotate screen button
-                      shape: BoxShape.circle,
+                    margin: const EdgeInsets.only(top: 10, left: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Exercises ${currentExerciseIndex+1}/$exerciseLength',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          '00:15',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: IconButton(
-                      onPressed: () {
-                        // Add action for rotate screen button here
-                      },
-                      icon: Icon(Icons.screen_rotation),
-                      color: Colors.black, // Icon color
-                    ),
+                  ),
+
+                  // Music Button and Rotate Screen Button on the Right
+                  Column(
+                    children: [
+                      // Music Button
+                      Container(
+                        margin: const EdgeInsets.only(top: 10, right: 10),
+                        decoration: BoxDecoration(
+                          color: Colors
+                              .grey[300], // Background color of the music button
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            // Add action for music button here
+                          },
+                          icon: Icon(Icons.music_note_outlined),
+                          color: Colors.black, // Icon color
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ],
           ),
-          SizedBox(height: 100), // Sp
+
+          SizedBox(height: 100), 
 
           // Video Player Section
-        
-          // FutureBuilder(
-          //   future: _initializeVideoPlayerFuture,
-          //   builder: (context, snapshot) {
-          //     // Check if the videoUrl is valid
-          //     if (videoUrl == null || videoUrl.isEmpty) {
-          //       return Center(
-          //         child: Text(
-          //           "No video loaded",
-          //           style: TextStyle(color: Colors.black, fontSize: 16),
-          //         ),
-          //       );
-          //     }
 
-          //     if (snapshot.connectionState == ConnectionState.done) {
-          //       _videoPlayerController.play();
-          //       return AspectRatio(
-          //         aspectRatio: _videoPlayerController.value.aspectRatio,
-          //         child: VideoPlayer(_videoPlayerController),
-          //       );
-          //     } else {
-          //       // If the VideoPlayerController is still initializing, show a loading spinner.
-          //       return const Center(
-          //         child: CircularProgressIndicator(),
-          //       );
-          //     }
-          //   },
-          // ),
+          FutureBuilder(
+            future: _initializeVideoPlayerFuture,
+            builder: (context, snapshot) {
+              // Check if the videoUrl is valid
+              if (videoUrl == null || videoUrl.isEmpty) {
+                return Center(
+                  child: Text(
+                    "No video loaded",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  ),
+                );
+              }
+
+              if (snapshot.connectionState == ConnectionState.done) {
+                _videoPlayerController.play();
+                return SizedBox(
+                  height: 200,
+                  child: AspectRatio(
+                    aspectRatio: _videoPlayerController.value.aspectRatio,
+                    child: VideoPlayer(_videoPlayerController),
+                  ),
+                );
+              } else {
+                // If the VideoPlayerController is still initializing, show a loading spinner.
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          ),
 
 
           SizedBox(height: 100), // Sp
@@ -232,51 +251,86 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
                 ),
                 SizedBox(height: 10),
 
-                // Timer Display
+                !exercises[currentExerciseIndex]['isRep'] ?
                 Text(
-                  '00:25',
+                  Format.formatDuration(_remainingSeconds),
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 40,
                   ),
-                ),
+                ) :
+                Text(
+                  "x ${exercises[currentExerciseIndex]['reps']}",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 40,
+                  ),
+                )
+                ,
+                // Text(
+                //   'x 10',
+                //   style: TextStyle(
+                //     color: Colors.white,
+                //     fontWeight: FontWeight.bold,
+                //     fontSize: 40,
+                //   ),
+                // ),
                 SizedBox(height: 20),
-
-                // Control Buttons Row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[800],
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          // Action for next button
-                        },
-                        icon: Icon(Icons.skip_previous),
-                        color: Colors.white,
+                    Visibility(
+                      visible: currentExerciseIndex != 0, // Chỉ hiển thị khi currentExerciseIndex khác 0
+                      maintainSize: true, // Duy trì kích thước của widget ngay cả khi ẩn
+                      maintainAnimation: true,
+                      maintainState: true,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[800],
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            currentExerciseIndex--;
+                            _goToExerciseTimerScreen(context);
+                          },
+                          icon: Icon(Icons.skip_previous),
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-
                     SizedBox(width: 20),
-                    // Pause Button
+                    !exercises[currentExerciseIndex]['isRep'] ?
+                    ElevatedButton(
+                      onPressed: _togglePauseResume,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                      ),
+                      child: Icon(
+                        isPaused ? Icons.play_arrow : Icons.pause, // Toggle icon
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ) :
                     ElevatedButton(
                       onPressed: () {
-                        // Action for pause button
+                        _goToTakingBreakScreen(context);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                       ),
                       child: Icon(
-                        Icons.pause,
+                        Icons.check_sharp, // Toggle icon
                         color: Colors.white,
                         size: 24,
                       ),
@@ -317,7 +371,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
 
   void _goToTakingBreakScreen(BuildContext context) {
     if (currentExerciseIndex < exercises.length - 1) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => TakingBreakSreen(
@@ -334,5 +388,19 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
         ),
       );
     }
+  }
+
+  void _goToExerciseTimerScreen(
+      BuildContext context,
+      ) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExerciseTimerScreen(
+          exercises: exercises,
+          currentExerciseIndex: currentExerciseIndex,
+        ),
+      ),
+    );
   }
 }

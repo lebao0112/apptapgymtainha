@@ -1,7 +1,10 @@
 var express = require("express");
 var router = express.Router();
+var ChalProgressService = require("./../services/ChalProgressService");
 var ChallengeService = require("./../services/ChallengeService");
 var Challenge = require("./../entity/Challenge");
+const WorkoutService = require("./../services/WorkoutService");
+const ExerciseService = require("./../services/ExerciseService");
 
 router.post("/insert-challenge", async function (req, res) {
   const ChallengeService = new ChallengeService();
@@ -42,6 +45,53 @@ router.get("/challenge-list", async function (req, res) {
     res
       .status(500)
       .json({ message: "Failed to fetch exercise list", error: error.message });
+  }
+});
+
+
+
+router.get("/get-challenge-workouts/:workoutId", async function (req, res) {
+  const workoutService = new WorkoutService();
+  const exerciseService = new ExerciseService();
+  const workoutId = req.params.workoutId;
+
+  try {
+    // Fetch the workout by ID
+    const workout = await workoutService.getWorkout(workoutId);
+
+    // Check if the workout exists and belongs to the authenticated user
+    if (!workout) {
+      return res
+        .status(404)
+        .json({ message: "Workout not found or not owned by user" });
+    }
+
+    // Fetch the full exercise details for each exercise in the workout
+    const exerciseDetails = await Promise.all(
+      workout.Exercises.map(async (exercise) => {
+        const exerciseData = await exerciseService.getExercise(
+          exercise.exerciseId
+        );
+
+      
+        return {
+          ...exerciseData,
+          reps: exercise.reps,
+          duration: exercise.duration,
+        };
+      })
+    );
+
+
+    res.status(200).json({
+      ...workout,
+      Exercises: exerciseDetails, 
+    });
+  } catch (error) {
+    console.error("Error fetching workout:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch workout", error: error.message });
   }
 });
 

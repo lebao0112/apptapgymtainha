@@ -37,6 +37,11 @@ class ChalProgressService {
     return await cursor.toArray();
   }
 
+  async getChalProgressListByUserId(userId) {
+    const cursor = await this.progressCollection.find(userId).skip(0).limit(100);
+    return await cursor.toArray();
+  }
+
   async getChalProgressByUserId(userId) {
     try {
       const objectId = new ObjectId(userId);

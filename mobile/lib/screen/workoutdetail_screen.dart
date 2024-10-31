@@ -1,6 +1,7 @@
 import 'package:doan_tapgymtainha/screen/exercise_sequence/exercise_timer_screen.dart';
 import 'package:doan_tapgymtainha/screen/exercise_sequence/ready_workout_sreen.dart';
 import 'package:flutter/material.dart';
+import 'package:doan_tapgymtainha/shared/format.dart';
 
 class WorkoutDetailScreen extends StatefulWidget {
   final Map<String, dynamic>
@@ -175,25 +176,30 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   }
 
   Widget _buildExerciseItem(Map<String, dynamic> exercise) {
-    String detail = '';
+    String detail;
 
-    // Kiểm tra xem bài tập có thuộc tính 'reps' hay 'time' và định dạng tương ứng
-     // Kiểm tra và hiển thị reps nếu có
-    if (exercise.containsKey('reps') && exercise['reps'] != null) {
-      detail = 'Reps: x${exercise['reps']}';
+    if(exercise['isRep']){
+      detail = "Reps: x${exercise['reps']}";
+    } else{
+      var fomatDuration = Format.formatDuration(exercise['duration']);
+      detail = "Duration: $fomatDuration";
     }
 
-    // Kiểm tra và hiển thị duration nếu có
-    if (exercise.containsKey('duration') && exercise['duration'] != null) {
-      int timeInSeconds = exercise['duration'];
-      int minutes = timeInSeconds ~/ 60;
-      int seconds = timeInSeconds % 60;
-      if (detail.isNotEmpty) {
-        detail += ' | '; // Thêm dấu phân cách nếu cả reps và duration cùng có
-      }
-      detail +=
-          'Duration: ${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-    }
+    // if (exercise.containsKey('reps') && exercise['reps'] != null) {
+    //   detail = 'Reps: x${exercise['reps']}';
+    // }
+    //
+    // // Kiểm tra và hiển thị duration nếu có
+    // if (exercise.containsKey('duration') && exercise['duration'] != null) {
+    //   int timeInSeconds = exercise['duration'];
+    //   int minutes = timeInSeconds ~/ 60;
+    //   int seconds = timeInSeconds % 60;
+    //   if (detail.isNotEmpty) {
+    //     detail += ' | '; // Thêm dấu phân cách nếu cả reps và duration cùng có
+    //   }
+    //   detail +=
+    //       'Duration: ${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    // }
 
     return ListTile(
       contentPadding: EdgeInsets.symmetric(vertical: 8.0),
@@ -209,5 +215,12 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
       ),
       subtitle: Text(detail.isEmpty ? 'No data available' : detail, style: TextStyle(color: Colors.grey[300])),
     );
+  }
+  String formatDuration(int seconds) {
+    int minutes = seconds ~/ 60;
+    int remainingSeconds = seconds % 60;
+    String minutesStr = minutes.toString().padLeft(2, '0');
+    String secondsStr = remainingSeconds.toString().padLeft(2, '0');
+    return "$minutesStr:$secondsStr";
   }
 }
