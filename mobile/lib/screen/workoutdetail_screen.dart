@@ -73,36 +73,36 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                   const SizedBox(height: 16),
 
                   // Level, Time, Focus Area
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildInfoCard('Adjustable', 'Level'),
-                      _buildInfoCard('19 mins', 'Time'),
-                      _buildInfoCard('Arm', 'Focus Area'),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Workout Settings
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Workout Settings',
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text('Edit',
-                            style: TextStyle(color: Colors.orange)),
-                      ),
-                    ],
-                  ),
-                  Text('Sounds, Music, Coach...',
-                      style: TextStyle(color: Colors.grey[300])),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     _buildInfoCard('Adjustable', 'Level'),
+                  //     _buildInfoCard('19 mins', 'Time'),
+                  //     _buildInfoCard('Arm', 'Focus Area'),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 16),
+                  //
+                  // // Workout Settings
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       'Workout Settings',
+                  //       style: TextStyle(
+                  //           fontSize: 18,
+                  //           fontWeight: FontWeight.bold,
+                  //           color: Colors.white),
+                  //     ),
+                  //     TextButton(
+                  //       onPressed: () {},
+                  //       child: Text('Edit',
+                  //           style: TextStyle(color: Colors.orange)),
+                  //     ),
+                  //   ],
+                  // ),
+                  // Text('Sounds, Music, Coach...',
+                  //     style: TextStyle(color: Colors.grey[300])),
 
                   const SizedBox(height: 16),
 
