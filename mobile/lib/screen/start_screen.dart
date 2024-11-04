@@ -1,5 +1,7 @@
 import 'package:doan_tapgymtainha/screen/workoutdetail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../provider/workout_provider.dart';
 import 'createworkout_screen.dart'; // Import the CreateWorkoutScreen
 import '../service/api_service.dart';
 import 'exercise_sequence/ready_workout_sreen.dart'; // Import your ApiService
@@ -10,20 +12,12 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
-  late Future<List<dynamic>> _userWorkouts;
-
   @override
   void initState() {
     super.initState();
-    _loadUserWorkouts(); // Tải dữ liệu workouts khi khởi tạo
-  }
-
-  void _loadUserWorkouts() {
-    _userWorkouts = ApiService.fetchUserWorkouts(); // Tải dữ liệu từ API
   }
 
   void _showWorkoutDialog(Map<String, dynamic> workoutDetails) {
-    // Safely parse the exercises list to be a list of maps with strings
     List<Map<String, String>> exercises = [];
 
     if (workoutDetails['Exercises'] != null &&
@@ -32,14 +26,12 @@ class _StartScreenState extends State<StartScreen> {
         return {
           'exerciseName': (exercise['name'] ?? 'Unnamed Exercise').toString(),
           'videoUrl': (exercise['videoUrl'] ?? '').toString(),
-          'reps': '3', // Hardcoding reps for now
-          'sets': '3', // Hardcoding sets for now
-          'duration': '30' // Hardcoding duration for now
+          'reps': '3',
+          'sets': '3',
+          'duration': '30'
         };
       }).toList();
     }
-
-    print(exercises);
 
     showDialog(
       context: context,
@@ -49,7 +41,6 @@ class _StartScreenState extends State<StartScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Display the list of exercises
               for (var exercise in exercises)
                 ListTile(
                   title: Text(exercise['exerciseName'] ?? 'Unnamed Exercise'),
@@ -64,7 +55,6 @@ class _StartScreenState extends State<StartScreen> {
               child: Text('Start Workout'),
               onPressed: () {
                 Navigator.of(context).pop();
-                // Navigate to ReadyWorkoutScreen with the exercises
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -93,7 +83,6 @@ class _StartScreenState extends State<StartScreen> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,9 +95,7 @@ class _StartScreenState extends State<StartScreen> {
                       builder: (context) => CreateWorkoutScreen()),
                 );
                 if (result == true) {
-                  setState(() {
-                    _loadUserWorkouts(); // Tải lại dữ liệu sau khi thêm workout
-                  });
+                  Provider.of<WorkoutProvider>(context, listen: false).loadWorkouts();
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -124,28 +111,23 @@ class _StartScreenState extends State<StartScreen> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
             ),
             SizedBox(height: 10),
-            FutureBuilder<List<dynamic>>(
-              future: _userWorkouts,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+            Consumer<WorkoutProvider>(
+              builder: (context, workoutProvider, child) {
+                if (workoutProvider.isLoading) {
                   return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Failed to load workouts'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No workouts found'));
+                } else if (workoutProvider.workouts.isEmpty) {
+                  return Center(child: Text('No workouts found', style: TextStyle(color: Colors.white)));
                 } else {
                   return GridView.count(
                     shrinkWrap: true,
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
-                    childAspectRatio: 1.5, // Điều chỉnh tỷ lệ cho phù hợp
+                    childAspectRatio: 1.5,
                     physics: NeverScrollableScrollPhysics(),
-                    children: snapshot.data!.map((workout) {
-                      // Safely access the title, description, and workoutId
+                    children: workoutProvider.workouts.map((workout) {
                       final String title = workout['Title'] ?? 'No Title';
-                      final String description =
-                          workout['Description'] ?? 'No Description';
+                      final String description = workout['Description'] ?? 'No Description';
                       final String workoutId = workout['_id'] ?? '';
 
                       return _buildTemplateCard(workoutId, title, description);
@@ -160,20 +142,21 @@ class _StartScreenState extends State<StartScreen> {
     );
   }
 
-  // Hàm dựng các Template Card
   Widget _buildTemplateCard(
       String workoutId, String title, String description) {
     return GestureDetector(
       onTap: () async {
-        // Fetch the workout details from the server
         final workoutDetails = await ApiService.fetchWorkoutDetails(workoutId);
-        // _showWorkoutDialog(workoutDetails);
-        Navigator.push(
+        final result = await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) =>
                   WorkoutDetailScreen(workoutDetails: workoutDetails)),
         );
+
+        if (result == true) {
+          Provider.of<WorkoutProvider>(context, listen: false).loadWorkouts();
+        }
       },
       child: Card(
         color: const Color.fromARGB(255, 121, 120, 120),

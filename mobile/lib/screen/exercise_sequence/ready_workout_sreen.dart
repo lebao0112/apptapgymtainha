@@ -4,8 +4,11 @@ import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class ReadyWorkoutSreen extends StatefulWidget {
   List<dynamic> exercises;
+  final Map<String, dynamic>? chalProgress;
 
-  ReadyWorkoutSreen({required this.exercises});
+  ReadyWorkoutSreen({required this.exercises, this.chalProgress});
+
+
   @override
   State<ReadyWorkoutSreen> createState() => _ReadyWorkoutSreenState();
 }
@@ -19,6 +22,8 @@ class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen>
   late int remainingTime;
   late final List<dynamic> exercises = widget.exercises;
   late final int currentExerciseIndex = 0;
+  late final Map<String , dynamic>? chalProgress = widget.chalProgress;
+
 
   @override
   void initState() {
@@ -31,7 +36,7 @@ class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen>
           remainingTime =
               (_controller.duration!.inSeconds * _controller.value).toInt();
           if (remainingTime == 0) {
-            _goToExerciseTimerScreen(context); // Trigger event when time is up
+            _goToExerciseTimerScreen(context, chalProgress); // Trigger event when time is up
           }
         });
       });
@@ -48,6 +53,7 @@ class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen>
 
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic>? chalprogress = widget.chalProgress;
     int remainingTime = (totalTimeInSeconds * _controller.value).ceil();
 
     return Scaffold(
@@ -169,13 +175,7 @@ class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen>
                   minimumSize: Size(160, 50),
                 ),
                 onPressed: () {
-                  _goToExerciseTimerScreen(context);
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => ExerciseTimerScreen(),
-                  //   ),
-                  // );
+                    _goToExerciseTimerScreen(context, chalprogress);
                 },
                 child: Text(
                   'START',
@@ -189,15 +189,17 @@ class _ReadyWorkoutSreenState extends State<ReadyWorkoutSreen>
     );
   }
 
+
   void _goToExerciseTimerScreen(
-    BuildContext context,
-  ) {
+      BuildContext context, Map<String, dynamic>? chalprogress
+      ) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => ExerciseTimerScreen(
           exercises: exercises,
           currentExerciseIndex: currentExerciseIndex,
+          chalProgress: chalprogress,
         ),
       ),
     );

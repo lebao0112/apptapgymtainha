@@ -38,8 +38,26 @@ class ApiChallenge {
     }
   }
 
+  static Future<void> createChalProgress(String challengeId) async {
+    String? token = await Storage.getToken();
+    final response = await http.post(
+      Uri.parse('$baseUrl/chalprogress/insert-chalprogress/$challengeId'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ${token}"
+      },
+    );
+
+    if (response.statusCode == 201) {
+      print("Challenge progress created successfully");
+    } else {
+      throw Exception('Failed to create challenge progress');
+    }
+  }
+
   static Future<List<dynamic>> fetchChallengeProgressData() async {
     String? token = await Storage.getToken();
+    print("token trong chalprogress $token");
     final response = await http.get(
       Uri.parse(
           '$baseUrl/chalprogress/chalprogress-list'), 
@@ -52,6 +70,30 @@ class ApiChallenge {
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body); 
+    } else {
+      print('Failed to fetch workout details: ${response.statusCode}');
+      throw Exception('Failed to fetch workout details');
+    }
+  }
+
+
+  static Future<void>  increaseChalProgress(String? chalprogressId) async {
+    if(chalprogressId == null || chalprogressId.isEmpty)
+      return;
+
+    String? token = await Storage.getToken();
+    print("token trong chalprogress $token");
+    final response = await http.put(
+      Uri.parse(
+          '$baseUrl/chalprogress/increase-chalprogress/$chalprogressId'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('cap nhat chalprogress thanh cong');
     } else {
       print('Failed to fetch workout details: ${response.statusCode}');
       throw Exception('Failed to fetch workout details');

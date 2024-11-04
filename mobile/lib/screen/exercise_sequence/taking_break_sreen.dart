@@ -1,5 +1,6 @@
 import 'package:doan_tapgymtainha/screen/exercise_sequence/exercise_timer_screen.dart';
 import 'package:doan_tapgymtainha/screen/workoutdetail_screen.dart';
+import 'package:doan_tapgymtainha/shared/format.dart';
 import 'package:flutter/material.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:video_player/video_player.dart';
@@ -7,8 +8,8 @@ import 'package:video_player/video_player.dart';
 class TakingBreakSreen extends StatefulWidget {
   List<dynamic>exercises;
   int currentExerciseIndex;
-
-  TakingBreakSreen( {required this.exercises, required this.currentExerciseIndex});
+  final Map<String, dynamic>? chalProgress;
+  TakingBreakSreen( {required this.exercises, required this.currentExerciseIndex, this.chalProgress});
 
   @override
   State<TakingBreakSreen> createState() => _TakingBreakSreenState();
@@ -46,6 +47,7 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic>? chalprogress = widget.chalProgress;
     int remainingTime = (totalTimeInSeconds * _controller.value).ceil();
 
     return Scaffold(
@@ -70,23 +72,28 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'NEXT 2/6',
+                        'Tiếp theo',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                          'ARM RAISES',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.6, // Đặt giới hạn chiều rộng
+                        child: Text(
+                          exercises[currentExerciseIndex]['name'].toString().toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 2, // Giới hạn số dòng
+                          overflow: TextOverflow.ellipsis, // Thêm dấu ... nếu quá dài
                         ),
-                      )
+                      ),
                     ],
                   ),
                   Text(
-                    'X14',
+                    exercises[currentExerciseIndex]['isRep'] ? "x ${exercises[currentExerciseIndex]['reps']}"  : "${Format.formatDuration(exercises[currentExerciseIndex]['duration'])}" ,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -160,7 +167,7 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
                     minimumSize: Size(160, 50),
                   ),
                   onPressed: () {
-                    _goToExerciseTimerScreen(context);
+                    _goToExerciseTimerScreen(context, chalprogress);
                     // Navigator.push(
                     //   context,
                     //   MaterialPageRoute(
@@ -189,7 +196,7 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
   }
 
   void _goToExerciseTimerScreen(
-    BuildContext context,
+    BuildContext context, Map<String, dynamic>? chalprogress
   ) {
     Navigator.pushReplacement(
       context,
@@ -197,6 +204,7 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
         builder: (context) => ExerciseTimerScreen(
           exercises: exercises,
           currentExerciseIndex: currentExerciseIndex,
+          chalProgress: chalprogress,
         ),
       ),
     );

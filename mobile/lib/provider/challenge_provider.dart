@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:doan_tapgymtainha/service/api_challenge.dart';
 
 class ChallengeProvider with ChangeNotifier {
-  List<dynamic> _chalprogress = [];
+  List<dynamic> _challenges = [];
   bool _isLoading = true;
 
-  List<dynamic> get chalprogress => _chalprogress;
+  List<dynamic> get challenges => _challenges;
   bool get isLoading => _isLoading;
 
   ChallengeProvider() {
@@ -14,7 +14,7 @@ class ChallengeProvider with ChangeNotifier {
 
   Future<void> loadChallenges() async {
     try {
-      _chalprogress = await ApiChallenge.fetchChallenges();
+      _challenges = await ApiChallenge.fetchChallenges();
     } catch (error) {
       print("Error fetching workouts: $error");
     } finally {

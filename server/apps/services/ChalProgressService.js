@@ -37,10 +37,10 @@ class ChalProgressService {
     return await cursor.toArray();
   }
 
-  async getChalProgressListByUserId(userId) {
-    const cursor = await this.progressCollection.find(userId).skip(0).limit(100);
-    return await cursor.toArray();
-  }
+  // async getChalProgressListByUserId(UserId) {
+  //   const cursor = await this.progressCollection.find(UserId).skip(0).limit(100);
+  //   return await cursor.toArray();
+  // }
 
   async getChalProgressByUserId(userId) {
     try {
