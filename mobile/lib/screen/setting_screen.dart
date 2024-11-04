@@ -4,7 +4,7 @@ import 'package:doan_tapgymtainha/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import '../theme_provider.dart';
+import '../provider/theme_provider.dart';
 import 'authentication/login_screen.dart';
 import 'profile_screen.dart'; // Đảm bảo bạn đã tạo ProfileScreen
 
@@ -43,12 +43,11 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('CÀI ĐẶT',style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.black,
+        title: Text('CÀI ĐẶT',style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
       ),
       body: Container(
-        color: Colors.black, // Nền đen
         child: ListView(
           padding: const EdgeInsets.all(16.0),
           children: [
@@ -57,7 +56,7 @@ class SettingScreen extends StatelessWidget {
               leading: Icon(Icons.person, color: Colors.orangeAccent),
               title: Text(
                 'Hồ sơ cá nhân',
-                style: TextStyle(color: Colors.white), // Chữ trắng
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color), // Chữ trắng
               ),
               onTap: () {
                 Navigator.push(
@@ -73,7 +72,7 @@ class SettingScreen extends StatelessWidget {
               leading: Icon(Icons.notifications, color: Colors.orangeAccent),
               title: Text(
                 'Thông báo',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
               ),
               onTap: () {
                 // Điều hướng đến màn hình Notifications
@@ -86,7 +85,7 @@ class SettingScreen extends StatelessWidget {
               leading: Icon(Icons.history, color: Colors.orangeAccent),
               title: Text(
                 'Lịch sử tập luyện',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
               ),
               onTap: () {
                 Navigator.push(
@@ -102,7 +101,7 @@ class SettingScreen extends StatelessWidget {
               leading: Icon(Icons.flag, color: Colors.orangeAccent),
               title: Text(
                 'Mục tiêu tập luyện',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
               ),
               onTap: () {
                 // Điều hướng đến màn hình Workout Goals
@@ -115,7 +114,7 @@ class SettingScreen extends StatelessWidget {
               leading: Icon(Icons.privacy_tip, color: Colors.orangeAccent),
               title: Text(
                 'Quyền bảo mật và riêng tư',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
               ),
               onTap: () {
                 // Điều hướng đến cài đặt bảo mật
@@ -128,13 +127,14 @@ class SettingScreen extends StatelessWidget {
               leading: Icon(Icons.brightness_6, color: Colors.orangeAccent),
               title: Text(
                 'Chỉnh màu sáng/tối',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
               ),
               trailing: Switch(
                 value: themeProvider.isDarkMode,
                 onChanged: (value) {
                   themeProvider.toggleTheme(value);
                 },
+                activeColor: Colors.orange,
               ),
             ),
             Divider(color: Colors.grey),
@@ -144,7 +144,7 @@ class SettingScreen extends StatelessWidget {
               leading: Icon(Icons.language, color: Colors.orangeAccent),
               title: Text(
                 'Ngôn ngữ',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
               ),
               onTap: () {
                 // Xử lý logic cho lựa chọn ngôn ngữ
@@ -157,7 +157,7 @@ class SettingScreen extends StatelessWidget {
               leading: Icon(Icons.help, color: Colors.orangeAccent),
               title: Text(
                 'Hỗ trợ',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
               ),
               onTap: () {
                 // Điều hướng đến mục hỗ trợ
@@ -169,7 +169,7 @@ class SettingScreen extends StatelessWidget {
               leading: Icon(Icons.logout, color: Colors.orangeAccent),
               title: Text(
                 'Đăng xuất',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
               ),
               onTap: () {
                 _logout(context);
