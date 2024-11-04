@@ -1,13 +1,23 @@
 import 'package:doan_tapgymtainha/screen/exercise_sequence/exercise_timer_screen.dart';
 import 'package:doan_tapgymtainha/screen/exercise_sequence/ready_workout_sreen.dart';
+import 'package:doan_tapgymtainha/shared/confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_tapgymtainha/shared/format.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/workout_provider.dart';
+import '../provider/workout_timer_provider.dart';
 
 class WorkoutDetailScreen extends StatefulWidget {
   final Map<String, dynamic>
-      workoutDetails; // Dữ liệu truyền vào chứa thông tin bài tập
+      workoutDetails;
 
-  const WorkoutDetailScreen({super.key, required this.workoutDetails});
+  final Map<String, dynamic>? chalProgress;
+
+  const WorkoutDetailScreen({super.key, required this.workoutDetails, this.chalProgress});
+
+  //WorkoutDetailScreen.WorkoutOfChallenge chỉ dùng cho những workout thuộc một challenge
+  // const WorkoutDetailScreen.WorkoutOfChallenge({super.key, required this.workoutDetails, required  this.chalProgress});
 
   @override
   _WorkoutDetailScreenState createState() => _WorkoutDetailScreenState();
@@ -22,8 +32,9 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
     final String workoutDescription =
         widget.workoutDetails['Description'] ?? '';
     final List<dynamic> exercises = widget.workoutDetails['Exercises'] ?? [];
-    
+    final bool isAvailable = widget.workoutDetails['isAvailable'];
 
+    Map<String, dynamic>? chalprogress = widget.chalProgress;
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -37,6 +48,24 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
+          if (!isAvailable)
+            IconButton(
+              icon: Icon(Icons.delete_outline_outlined, color: Colors.white),
+              onPressed: () async {
+                final confirmed = await ConfirmationDialog.showConfirmationDialog(
+                  context,
+                  'Xác nhận',
+                  'Bạn có chắc chắn muốn xoá workout này không?',
+                );
+
+                if (confirmed) {
+                  final workoutProvider = Provider.of<WorkoutProvider>(context, listen: false);
+                  await workoutProvider.deleteWorkout(widget.workoutDetails['_id']);
+                  print("id là ${widget.workoutDetails['_id']}");
+                  Navigator.pop(context, true); // Quay lại sau khi xóa
+                }
+              },
+            ),
           IconButton(
               icon: Icon(Icons.favorite_border, color: Colors.white),
               onPressed: () {}),
@@ -130,11 +159,15 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
               margin: const EdgeInsets.only(bottom: 50),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
+                  final workoutTimer = Provider.of<WorkoutTimerProvider>(context, listen: false);
+                  workoutTimer.startTimer();
+
+                  print("co progress");
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ReadyWorkoutSreen(
-                        exercises: exercises,
+                        exercises: exercises, chalProgress: chalprogress,
                       ),
                     ),
                   );
