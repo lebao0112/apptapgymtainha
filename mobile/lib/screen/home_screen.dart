@@ -20,16 +20,13 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentDay = DateTime.now().day;
   int currentMonth = DateTime.now().month;
   int currentYear = DateTime.now().year;
-
-  // late Future<List<dynamic>> _challenges;
-
   List<dynamic> _chalprogress = [];
 
   void _loadChallenge() async {
     try {
       _chalprogress = await ApiChallenge.fetchChallenges();
       print("Challenges from server: $_chalprogress");
-      setState(() {}); // Cập nhật lại trạng thái sau khi nhận dữ liệu
+      setState(() {});
     } catch (error) {
       print("Error fetching workouts: $error");
     }
@@ -46,34 +43,39 @@ class _HomeScreenState extends State<HomeScreen> {
     final double bannerHeight = 200;
     final double bannerWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.black, // Nền đen
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text('TẬP LUYỆN TẠI NHÀ',
-            style: TextStyle(color: Colors.white)), // Chữ trắng
+        title: Text(
+          'TẬP LUYỆN TẠI NHÀ',
+          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
+        ),
         actions: [
           Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Image(
-                      image: AssetImage('assets/fire_streak.png'),
-                      height: 45,
-                      width: 45),
-                  Text(
-                    '10',
-                    style: TextStyle(fontSize: 24, color: Colors.white),
-                  )
-                ],
-              )),
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Image(
+                  image: AssetImage('assets/fire_streak.png'),
+                  height: 45,
+                  width: 45,
+                ),
+                Text(
+                  '10',
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Mục tiêu hàng tuần
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -82,9 +84,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     'Mục tiêu hàng tuần',
                     style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white), // Chữ trắng
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                   ),
                   SizedBox(height: 20),
                   SingleChildScrollView(
@@ -100,20 +103,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: day == currentDay &&
-                                    currentMonth == now.month &&
-                                    currentYear == now.year
-                                ? Colors
-                                    .orange // Đổi màu cho ngày hiện tại thành cam
-                                : Colors.grey[800], // Nền xám đậm
+                                currentMonth == now.month &&
+                                currentYear == now.year
+                                ? Colors.orange
+                                : Colors.grey[800],
                           ),
                           child: Text(
                             '$day',
                             style: TextStyle(
                               color: day == currentDay &&
-                                      currentMonth == now.month &&
-                                      currentYear == now.year
-                                  ? Colors.black // Chữ đen cho ngày hiện tại
-                                  : Colors.white, // Chữ trắng cho ngày thường
+                                  currentMonth == now.month &&
+                                  currentYear == now.year
+                                  ? Colors.black
+                                  : Colors.white,
                             ),
                           ),
                         );
@@ -124,35 +126,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     'Chào mừng trở lại! Hôm nay là cơ hội để bạn tỏa sáng.',
                     style: TextStyle(
-                        fontSize: 16, color: Colors.white), // Chữ trắng
+                      fontSize: 16,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                   ),
                 ],
               ),
             ),
-
-            // Challenge Carousel
-            // Padding(
-            //   padding: const EdgeInsets.all(0),
-            //   child: _chalprogress.isEmpty
-            //       ? Center(child: Text("Không có thử thách nào"))
-            //       : CarouselSlider(
-            //           items: _chalprogress.map((challenge) {
-            //             return _buildChallengeCard(
-            //               context,
-            //               challenge,
-            //             );
-            //           }).toList(),
-            //           options: CarouselOptions(
-            //             height: 270, // Chiều cao của slider
-            //             autoPlay: false, // Tự động di chuyển
-            //             enlargeCenterPage: false, // Không phóng to item ở giữa
-            //             enableInfiniteScroll: true, // Không vòng lặp
-            //             viewportFraction:
-            //                 0.9, // Mỗi trang chiếm 90% chiều rộng của viewport
-            //           ),
-            //         ),
-            // ),
-
 
             Padding(
               padding: const EdgeInsets.all(0),
@@ -161,70 +141,63 @@ class _HomeScreenState extends State<HomeScreen> {
                   return challengeProvider.chalprogress.isEmpty
                       ? Center(child: Text("Không có thử thách nào"))
                       : CarouselSlider(
-                          items:
-                              challengeProvider.chalprogress.map((challenge) {
-                            return _buildChallengeCard(
-                              context,
-                              challenge,
-                            );
-                          }).toList(),
-                          options: CarouselOptions(
-                            height: 270, // Chiều cao của slider
-                            autoPlay: false, // Tự động di chuyển
-                            enlargeCenterPage:
-                                false, // Không phóng to item ở giữa
-                            enableInfiniteScroll: true, // Không vòng lặp
-                            viewportFraction:
-                                0.9, // Mỗi trang chiếm 90% chiều rộng của viewport
-                          ),
-                        );
+                    items: challengeProvider.chalprogress.map((challenge) {
+                      return _buildChallengeCard(context, challenge);
+                    }).toList(),
+                    options: CarouselOptions(
+                      height: 270,
+                      autoPlay: false,
+                      enlargeCenterPage: false,
+                      enableInfiniteScroll: true,
+                      viewportFraction: 0.9,
+                    ),
+                  );
                 },
               ),
             ),
 
             SizedBox(height: 20),
 
-            // Luyện tập cùng AI Banner
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "Luyện tập cùng AI",
                     style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
+                      fontSize: 16,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 20),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(30),
                     child: Stack(
                       children: [
-                        // Ảnh nền từ assets
                         Image.asset(
-                          'assets/ai_workout_banner.png', // Đường dẫn tới ảnh trong assets
-                          width: bannerWidth, // Độ rộng của banner
-                          height: bannerHeight, // Chiều cao của banner
-                          fit: BoxFit.cover, // Đảm bảo ảnh vừa khung hình
+                          'assets/ai_workout_banner.png',
+                          width: bannerWidth,
+                          height: bannerHeight,
+                          fit: BoxFit.cover,
                         ),
                         Positioned(
-                            child: Container(
-                          height: bannerHeight,
-                          width: bannerWidth / 3.5,
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Color.fromARGB(255, 255, 4, 0),
-                                Colors.white
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                          child: Container(
+                            height: bannerHeight,
+                            width: bannerWidth / 3.5,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color.fromARGB(255, 255, 4, 0),
+                                  Colors.white
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
                             ),
                           ),
-                        )),
-                        // Chữ được xếp chồng trên ảnh
+                        ),
                         Positioned(
                           left: bannerWidth / 33,
                           top: 20,
@@ -238,20 +211,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Text(
                                   'AI',
                                   style: GoogleFonts.audiowide(
-                                      fontSize: 30,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 30,
+                                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                const Text(
+                                Text(
                                   'WORKOUT',
                                   style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.white,
+                                    color: Theme.of(context).textTheme.bodyLarge?.color,
                                   ),
                                 ),
                                 ElevatedButton(
-                                    onPressed: () {},
-                                    child: const Text('START'))
+                                  onPressed: () {},
+                                  child: Text('START'),
+                                ),
                               ],
                             ),
                           ),
@@ -263,25 +237,30 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Segment Control
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: CupertinoSegmentedControl<int>(
-                children: const {
+                children: {
                   0: Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text('Người bắt đầu',
-                        style: TextStyle(color: Colors.white)),
+                    child: Text(
+                      'Người bắt đầu',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   1: Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text('Trung bình',
-                        style: TextStyle(color: Colors.white)),
+                    child: Text(
+                      'Trung bình',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   2: Padding(
                     padding: EdgeInsets.all(8.0),
-                    child:
-                        Text('Nâng cao', style: TextStyle(color: Colors.white)),
+                    child: Text(
+                      'Nâng cao',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 },
                 onValueChanged: (int? value) {
@@ -297,9 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             SizedBox(
-              height: MediaQuery.of(context).size.height *
-                  0.4, // Ví dụ: 40% chiều cao màn hình
-              // height: 20,
+              height: MediaQuery.of(context).size.height * 0.4,
               child: ListView(
                 padding: EdgeInsets.all(16),
                 children: _getWorkoutItems(),
@@ -313,44 +290,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> _getWorkoutItems() {
     switch (_selectedSegment) {
-      case 0: // Người bắt đầu
+      case 0:
         return [
-          WorkoutItem(
-            title: 'BỤNG NGƯỜI BẮT ĐẦU',
-            duration: '20 PHÚT',
-            exercises: '16 BÀI TẬP',
-          ),
-          WorkoutItem(
-            title: 'NGỰC NGƯỜI BẮT ĐẦU',
-            duration: '9 PHÚT',
-            exercises: '11 BÀI TẬP',
-          ),
+          WorkoutItem(title: 'BỤNG NGƯỜI BẮT ĐẦU', duration: '20 PHÚT', exercises: '16 BÀI TẬP'),
+          WorkoutItem(title: 'NGỰC NGƯỜI BẮT ĐẦU', duration: '9 PHÚT', exercises: '11 BÀI TẬP'),
         ];
-      case 1: // Trung bình
+      case 1:
         return [
-          WorkoutItem(
-            title: 'BỤNG TRUNG BÌNH',
-            duration: '25 PHÚT',
-            exercises: '20 BÀI TẬP',
-          ),
-          WorkoutItem(
-            title: 'NGỰC TRUNG BÌNH',
-            duration: '15 PHÚT',
-            exercises: '12 BÀI TẬP',
-          ),
+          WorkoutItem(title: 'BỤNG TRUNG BÌNH', duration: '25 PHÚT', exercises: '20 BÀI TẬP'),
+          WorkoutItem(title: 'NGỰC TRUNG BÌNH', duration: '15 PHÚT', exercises: '12 BÀI TẬP'),
         ];
-      case 2: // Nâng cao
+      case 2:
         return [
-          WorkoutItem(
-            title: 'BỤNG NÂNG CAO',
-            duration: '30 PHÚT',
-            exercises: '25 BÀI TẬP',
-          ),
-          WorkoutItem(
-            title: 'NGỰC NÂNG CAO',
-            duration: '20 PHÚT',
-            exercises: '15 BÀI TẬP',
-          ),
+          WorkoutItem(title: 'BỤNG NÂNG CAO', duration: '30 PHÚT', exercises: '25 BÀI TẬP'),
+          WorkoutItem(title: 'NGỰC NÂNG CAO', duration: '20 PHÚT', exercises: '15 BÀI TẬP'),
         ];
       default:
         return [];
@@ -364,7 +317,7 @@ Widget _buildChallengeCard(BuildContext context, dynamic challenge) {
     padding: EdgeInsets.all(20),
     width: 400,
     decoration: BoxDecoration(
-      gradient: const LinearGradient(
+      gradient: LinearGradient(
         begin: Alignment.centerLeft,
         end: Alignment.centerRight,
         colors: [
@@ -379,40 +332,40 @@ Widget _buildChallengeCard(BuildContext context, dynamic challenge) {
       children: [
         Text(
           challenge['name'],
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.bodyLarge?.color,
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         Text(
           challenge['description'],
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               '1 / 28 Days Finished',
-              style: TextStyle(color: Colors.white, fontSize: 16),
+              style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 16),
             ),
             Text(
               '4%',
-              style: TextStyle(color: Colors.white, fontSize: 16),
+              style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 16),
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         LinearProgressIndicator(
-          value: 0.04, // Tỷ lệ tiến độ
+          value: 0.04,
           backgroundColor: Colors.grey.shade800,
           color: Colors.orange,
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
         ElevatedButton(
           onPressed: () {
-          showDialog(
+            showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
@@ -422,15 +375,13 @@ Widget _buildChallengeCard(BuildContext context, dynamic challenge) {
                     TextButton(
                       child: Text("Không"),
                       onPressed: () {
-                        Navigator.of(context)
-                            .pop(); // Đóng hộp thoại mà không làm gì thêm
+                        Navigator.of(context).pop();
                       },
                     ),
                     TextButton(
                       child: Text("Có"),
                       onPressed: () {
-                        Navigator.of(context).pop(); // Đóng hộp thoại
-                        // Điều hướng sang màn hình mới
+                        Navigator.of(context).pop();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -445,23 +396,18 @@ Widget _buildChallengeCard(BuildContext context, dynamic challenge) {
                 );
               },
             );
-           
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.orange,
+            backgroundColor: Theme.of(context).primaryColor,
           ),
           child: Text(
             'BẮT ĐẦU',
-            style: TextStyle(
-              fontWeight: FontWeight.w900
-            ),
-            ),
+            style: TextStyle(fontWeight: FontWeight.w900,color:Theme.of(context).textTheme.bodyLarge?.color),
+          ),
         ),
       ],
     ),
   );
-
 }
 
 class WorkoutItem extends StatelessWidget {
@@ -469,30 +415,36 @@ class WorkoutItem extends StatelessWidget {
   final String duration;
   final String exercises;
 
-  WorkoutItem(
-      {required this.title, required this.duration, required this.exercises});
+  WorkoutItem({required this.title, required this.duration, required this.exercises});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[900], // Nền xám đậm cho bài tập
+      color: Colors.grey[900],
       margin: EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)), // Chữ trắng
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
             SizedBox(height: 8),
-            Text(duration,
-                style: TextStyle(color: Colors.grey[500])), // Chữ xám nhạt
+            Text(
+              duration,
+              style: TextStyle(color: Colors.grey[500]),
+            ),
             SizedBox(height: 4),
-            Text(exercises,
-                style: TextStyle(color: Colors.grey[500])), // Chữ xám nhạt
+            Text(
+              exercises,
+              style: TextStyle(color: Colors.grey[500]),
+            ),
           ],
         ),
       ),

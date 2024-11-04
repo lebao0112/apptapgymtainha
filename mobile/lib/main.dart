@@ -1,42 +1,28 @@
 import 'package:doan_tapgymtainha/provider/challenge_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:doan_tapgymtainha/screen/splash_screen.dart';
+import 'package:doan_tapgymtainha/theme_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-import 'package:flutter/rendering.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Lock the orientation to portrait mode
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-
-  // Initialize Hive
   await Hive.initFlutter();
   await Hive.openBox('userProfileBox');
 
-  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  //Remove this method to stop OneSignal Debugging
-  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
 
-  OneSignal.initialize("39ade0ad-e5a0-4f74-8822-b6fb2d766c35");
-
-// The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-  OneSignal.Notifications.requestPermission(true);
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ChallengeProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: MyApp(),
     ),
@@ -44,17 +30,32 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: Colors.white,
+        primaryColor: Colors.deepPurple,
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: Colors.black), // Black text for light mode
+          bodyMedium: TextStyle(color: Colors.black),
+        ),
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Colors.black,
+        primaryColor: Colors.deepPurple,
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: Colors.white), // White text for dark mode
+          bodyMedium: TextStyle(color: Colors.white),
+        ),
+      ),
+      themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       home: SplashScreen(),
     );
   }

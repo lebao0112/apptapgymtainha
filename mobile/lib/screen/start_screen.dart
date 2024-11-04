@@ -83,12 +83,11 @@ class _StartScreenState extends State<StartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.black,
         title: Text(
           'Start Workout',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
         ),
         centerTitle: true,
       ),
@@ -121,7 +120,7 @@ class _StartScreenState extends State<StartScreen> {
             SizedBox(height: 20),
             Text(
               'My workouts',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyLarge?.color),
             ),
             SizedBox(height: 10),
             FutureBuilder<List<dynamic>>(
@@ -186,13 +185,13 @@ class _StartScreenState extends State<StartScreen> {
               Text(
                 title,
                 style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                     fontWeight: FontWeight.bold, fontSize: 16),
               ),
               SizedBox(height: 5),
               Text(
                 description,
-                style: TextStyle(color: Colors.white, fontSize: 12),
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 12),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),

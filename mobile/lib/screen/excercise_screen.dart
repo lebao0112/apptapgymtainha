@@ -184,7 +184,7 @@ class _ExercisesScreenState extends State<ExercisesScreen> {
       appBar: AppBar(
         title: Text('CÁC BÀI TẬP', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.black,
+
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
