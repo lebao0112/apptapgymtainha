@@ -41,7 +41,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: _getScreen(_selectedIndex), // Lấy màn hình từ hàm _getScreen()
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[

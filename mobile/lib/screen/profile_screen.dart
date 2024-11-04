@@ -28,7 +28,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           'Hồ Sơ Cá Nhân',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.black,
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: _userProfile,

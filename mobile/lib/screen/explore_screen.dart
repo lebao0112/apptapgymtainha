@@ -81,9 +81,9 @@ class ExploreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text('KHÁM PHÁ', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.black,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -99,7 +99,6 @@ class ExploreScreen extends StatelessWidget {
           ],
         ),
       ),
-      backgroundColor: Colors.black,
     );
   }
 
