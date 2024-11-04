@@ -1,4 +1,8 @@
 import 'package:doan_tapgymtainha/provider/challenge_provider.dart';
+import 'package:doan_tapgymtainha/provider/chalprogress_provider.dart';
+import 'package:doan_tapgymtainha/provider/complete_workout_status_provider.dart';
+import 'package:doan_tapgymtainha/provider/workout_provider.dart';
+import 'package:doan_tapgymtainha/provider/workout_timer_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:doan_tapgymtainha/screen/splash_screen.dart';
@@ -37,6 +41,10 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ChallengeProvider()),
+        ChangeNotifierProvider(create: (_) => ChalprogressProvider()),
+        ChangeNotifierProvider(create: (_) => CompleteWorkoutStatusProvider()),
+        ChangeNotifierProvider(create: (_) => WorkoutProvider()),
+        ChangeNotifierProvider(create: (_) => WorkoutTimerProvider()),
       ],
       child: MyApp(),
     ),

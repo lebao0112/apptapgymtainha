@@ -79,7 +79,8 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
         Map<String, dynamic> workoutData = {
           'Title': _titleController.text,
           'Description': _descriptionController.text,
-          'Exercises': exercisesData, // Lưu reps và duration cùng bài tập
+          'Exercises': exercisesData,
+          'isAvailable': false
         };
         await ApiService.addWorkoutWithToken(workoutData);
         Navigator.pop(context, true);

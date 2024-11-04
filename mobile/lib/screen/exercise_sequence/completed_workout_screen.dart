@@ -1,11 +1,33 @@
+import 'package:doan_tapgymtainha/provider/chalprogress_provider.dart';
+import 'package:doan_tapgymtainha/provider/complete_workout_status_provider.dart';
+import 'package:doan_tapgymtainha/service/api_challenge.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import '../../provider/workout_timer_provider.dart';
 
 class CompletedWorkoutScreen extends StatelessWidget {
-  const CompletedWorkoutScreen({super.key});
+  List<dynamic>? exercises;
+  final Map<String, dynamic>? chalProgress;
+
+  CompletedWorkoutScreen({super.key,this.exercises, this.chalProgress});
+
+
+
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final workoutTimer = Provider.of<WorkoutTimerProvider>(context, listen: false);
+      workoutTimer.stopTimer();
+    });
+
+    final workoutTimer = Provider.of<WorkoutTimerProvider>(context);
+    final int totalTime = workoutTimer.totalTime;
+
+    print("tong thoi gian là: ${totalTime}");
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -17,7 +39,7 @@ class CompletedWorkoutScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "HOÀN THÀNH",
+             "HOÀN THÀNH",
               style: TextStyle(
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
@@ -32,14 +54,14 @@ class CompletedWorkoutScreen extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildStatsCard(context, '16', 'Exercise'),
-                _buildStatsCard(context, '0', 'Calories'),
-                _buildStatsCard(context, '12', 'Duration'),
-              ],
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: [
+            //     _buildStatsCard(context, '16', 'Exercise'),
+            //     _buildStatsCard(context, '0', 'Calories'),
+            //     _buildStatsCard(context, '12', 'Duration'),
+            //   ],
+            // ),
             SizedBox(
               height: 30,
             ),
@@ -47,14 +69,14 @@ class CompletedWorkoutScreen extends StatelessWidget {
               "Bạn cảm thấy thế nào",
               style: TextStyle(
                 fontSize: 25,
-                color: Colors.white
-              )
+                color: Colors.white,
+              ),
             ),
             SizedBox(
               height: 30,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Space widgets evenly
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 buildDifficultyCircle('Dễ', Colors.green),
                 buildDifficultyCircle('Thường', Colors.orange),
@@ -66,65 +88,60 @@ class CompletedWorkoutScreen extends StatelessWidget {
             ),
             SizedBox(
               width: double.infinity,
-
               child: TextButton(
+                onPressed: () {
 
-                  onPressed: () {
-
-                  },
-                  child: const Text(''
-                      'KẾT THÚC',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold
-                      ),
+                },
+                child: const Text(
+                  'KẾT THÚC',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
                   ),
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all<Color>(Colors.orange), // Background color
-                    foregroundColor: WidgetStateProperty.all<Color>(Colors.white),padding: MaterialStateProperty.all<EdgeInsets>(
-                    EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0), // Adjust padding here
+                ),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.orange),
+                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                  padding: MaterialStateProperty.all<EdgeInsets>(
+                    EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
                   ),
-                    // Text color
-                  ),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
     );
-
   }
 
-  Widget _buildStatsCard(BuildContext context, String stats, String nameStats){
-    return(
-      Column(
-        children: [
-          Text(
-            stats,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white
-            ),
+  Widget _buildStatsCard(BuildContext context, String stats, String nameStats) {
+    return Column(
+      children: [
+        Text(
+          stats,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white,
           ),
-          Text(
-            nameStats,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white
-            ),
-          )
-        ],
-      )
+        ),
+        Text(
+          nameStats,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 
   Widget buildDifficultyCircle(String label, Color color) {
     return Container(
-      width: 75, // Width of the circle
-      height: 75, // Height of the circle
+      width: 75,
+      height: 75,
       decoration: BoxDecoration(
         color: color,
-        shape: BoxShape.circle, // Circular shape
+        shape: BoxShape.circle,
       ),
       child: Center(
         child: Text(

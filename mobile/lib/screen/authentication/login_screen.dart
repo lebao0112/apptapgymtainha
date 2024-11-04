@@ -1,9 +1,12 @@
+import 'package:doan_tapgymtainha/provider/workout_provider.dart';
 import 'package:doan_tapgymtainha/screen/home_screen.dart';
 import 'package:doan_tapgymtainha/screen/start_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import '../../provider/chalprogress_provider.dart';
 import '../dashboard_screen.dart'; // Assuming this is your DashboardScreen
 import 'register_screen.dart'; // Import the RegisterScreen
 import '../../../service/api_service.dart'; // Your API service for backend calls
@@ -20,28 +23,67 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  // void _login() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     try {
+  //       // Gọi API đăng nhập
+  //       await ApiService.loginUser(
+  //         _emailController.text,
+  //         _passwordController.text,
+  //       );
+  //
+  //       await Provider.of<ChalprogressProvider>(context, listen: false).loadChalProgresses;
+  //
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => DashboardScreen(),
+  //         ),
+  //       );
+  //
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('Đăng nhập thành công'),
+  //         ),
+  //       );
+  //     } catch (e) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('Đăng nhập thất bại: $e'),
+  //         ),
+  //       );
+  //     }
+  //   }
+  // }
+
   void _login() async {
     if (_formKey.currentState!.validate()) {
       try {
         // Gọi API đăng nhập
-        await ApiService.loginUser(
+        final data = await ApiService.loginUser(
           _emailController.text,
           _passwordController.text,
         );
 
-        // Khi đăng nhập thành công, chuyển đến Dashboard
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DashboardScreen(),
-          ),
-        );
+        if (data.containsKey("token")) {
+          await Provider.of<ChalprogressProvider>(context, listen: false)
+              .loadChalProgresses();
+          await Provider.of<WorkoutProvider>(context, listen: false)
+              .loadWorkouts();
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Đăng nhập thành công'),
-          ),
-        );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DashboardScreen(),
+            ),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Đăng nhập thành công'),
+            ),
+          );
+        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -51,10 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
-
-
-
-
 
   Future<void> _loginWithGoogle() async {
     try {
@@ -73,15 +111,25 @@ class _LoginScreenState extends State<LoginScreen> {
         );
         print('Email: ${googleUser.email}, Name: ${googleUser.displayName}');
         // Navigate to the Dashboard
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DashboardScreen(),
-          ),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Đăng nhập Google thành công')),
-        );
+        if (result.containsKey("token")) {
+          await Provider.of<ChalprogressProvider>(context, listen: false)
+              .loadChalProgresses();
+          await Provider.of<WorkoutProvider>(context, listen: false)
+              .loadWorkouts();
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DashboardScreen(),
+            ),
+          );
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Đăng nhập Google thành công'),
+            ),
+          );
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
