@@ -147,12 +147,12 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: Text(
+          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
           'Create Workout',
-          style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
       ),
@@ -165,6 +165,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
             child: Column(
               children: [
                 TextFormField(
+                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                   controller: _titleController,
                   decoration: InputDecoration(labelText: "Workout Title"),
                   validator: (value) {
@@ -176,6 +177,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
+                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                   controller: _descriptionController,
                   decoration: InputDecoration(labelText: "Workout Description"),
                   validator: (value) {
@@ -206,6 +208,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                 //     : Text("No exercises selected"),
                 _selectedExercises.isNotEmpty
                     ? Column(
+
                   children: _selectedExercises
                       .asMap() // asMap để có thể lấy được index của từng bài tập
                       .entries
@@ -217,12 +220,13 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                 SizedBox(height: 20),
           
                 ElevatedButton(
+
                   onPressed: _selectExercises,
-                  child: Text('Add Exercises'),
+                  child: Text(style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),'Add Exercises'),
                 ),
                 ElevatedButton(
                   onPressed: _addWorkout,
-                  child: Text('Add Workout'),
+                  child: Text(style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),'Add Workout'),
                 ),
               ],
             ),
@@ -259,7 +263,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                   exercise['name'] ?? 'Unnamed', // Lấy tên bài tập từ object
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.bodyLarge?.color),
                 ),
               ),
             ],

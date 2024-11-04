@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pedometer_2/pedometer_2.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'dart:async';
 
 class CounterStepsScreen extends StatefulWidget {
@@ -25,25 +28,46 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
   int _lastStepCount = 0;
   bool _initialLoadCompleted = false;
 
+  Position? _currentPosition;
+  late StreamSubscription<Position> _positionStreamSubscription;
+  bool _locationPermissionGranted = false;
+
   @override
   void initState() {
     super.initState();
     _requestPermissionsAndStartListening();
     _fetchCurrentDaySteps();
     _fetchLast7DaysSteps();
+    _initializeLocation();
   }
 
   Future<void> _requestPermissionsAndStartListening() async {
-    var status = await Permission.activityRecognition.status;
-    if (status.isDenied) {
-      status = await Permission.activityRecognition.request();
+    var activityStatus = await Permission.activityRecognition.status;
+    if (activityStatus.isDenied) {
+      activityStatus = await Permission.activityRecognition.request();
     }
 
-    if (status.isGranted) {
+    if (activityStatus.isGranted) {
       _startListening();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Permission denied. Step counting will not work.')),
+      );
+    }
+  }
+
+  Future<void> _initializeLocation() async {
+    var locationStatus = await Permission.location.status;
+    if (locationStatus.isDenied) {
+      locationStatus = await Permission.location.request();
+    }
+
+    if (locationStatus.isGranted) {
+      _locationPermissionGranted = true;
+      _startLocationTracking();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Location permission denied. Map will not work.')),
       );
     }
   }
@@ -137,16 +161,18 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
     );
   }
 
-  String _formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+  void _startLocationTracking() {
+    _positionStreamSubscription = Geolocator.getPositionStream().listen((Position position) {
+      setState(() {
+        _currentPosition = position;
+      });
+    });
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _positionStreamSubscription.cancel();
     super.dispose();
   }
 
@@ -163,8 +189,13 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
+        title: Text(
+          "Home",
+          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
+        ),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -184,7 +215,11 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
                 child: Text(
                   '$_steps\n/$_stepGoal',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
                 ),
               ),
             ),
@@ -198,7 +233,14 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
               ],
             ),
             SizedBox(height: 20),
-            Text("Your Progress", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              "Your Progress",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
+              ),
+            ),
             SizedBox(height: 10),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -210,7 +252,9 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
                       margin: EdgeInsets.symmetric(horizontal: 5),
                       padding: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey[800]
+                            : Colors.grey[300],
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.purple),
                       ),
@@ -224,7 +268,13 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
                               color: Colors.purple,
                             ),
                           ),
-                          Text(dayLabels[index], style: TextStyle(fontSize: 12)),
+                          Text(
+                            dayLabels[index],
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context).textTheme.bodySmall?.color,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -241,6 +291,30 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
                 backgroundColor: Colors.purple,
               ),
             ),
+            SizedBox(height: 20),
+            if (_locationPermissionGranted && _currentPosition != null)
+              Expanded(
+                child: FlutterMap(
+                  options: MapOptions(
+                    center: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+                    zoom: 15.0,
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                      subdomains: ['a', 'b', 'c'],
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        Marker(
+                          point: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+                          builder: (ctx) => Icon(Icons.location_pin, color: Colors.red, size: 40),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),
@@ -252,13 +326,27 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
       children: [
         Text(
           value,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).textTheme.bodyLarge?.color,
+          ),
         ),
         Text(
           label,
-          style: TextStyle(fontSize: 14, color: Colors.grey),
+          style: TextStyle(
+            fontSize: 14,
+            color: Theme.of(context).textTheme.bodySmall?.color,
+          ),
         ),
       ],
     );
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 }

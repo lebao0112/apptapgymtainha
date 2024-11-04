@@ -68,7 +68,6 @@ class _SelectingExercisesScreenState extends State<SelectingExercisesScreen> {
       appBar: AppBar(
         title: Text('Exercises', style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.black,
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),

@@ -3,6 +3,8 @@ import 'package:doan_tapgymtainha/screen/workout_history_screen.dart';
 import 'package:doan_tapgymtainha/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import '../theme_provider.dart';
 import 'authentication/login_screen.dart';
 import 'profile_screen.dart'; // Đảm bảo bạn đã tạo ProfileScreen
 
@@ -39,6 +41,7 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('CÀI ĐẶT',style: TextStyle(color: Colors.white)),
@@ -127,9 +130,12 @@ class SettingScreen extends StatelessWidget {
                 'Chỉnh màu sáng/tối',
                 style: TextStyle(color: Colors.white),
               ),
-              onTap: () {
-                // Điều hướng đến cài đặt chế độ sáng/tối
-              },
+              trailing: Switch(
+                value: themeProvider.isDarkMode,
+                onChanged: (value) {
+                  themeProvider.toggleTheme(value);
+                },
+              ),
             ),
             Divider(color: Colors.grey),
 
