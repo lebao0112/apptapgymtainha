@@ -1,4 +1,5 @@
 import 'package:doan_tapgymtainha/cache/user_profile_cache.dart';
+import 'package:doan_tapgymtainha/screen/workout_history_screen.dart';
 import 'package:doan_tapgymtainha/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -88,7 +89,10 @@ class SettingScreen extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
               onTap: () {
-                // Điều hướng đến màn hình Workout History
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => WorkoutHistoryScreen()),
+                );
               },
             ),
             Divider(color: Colors.grey),

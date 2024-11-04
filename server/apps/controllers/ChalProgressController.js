@@ -2,6 +2,7 @@
 var express = require("express");
 var router = express.Router();
 var ChalProgressService = require("./../services/ChalProgressService");
+var ChallengeService = require("./../services/ChallengeService");
 var ChalProgress = require("./../entity/chalprogress");
 const signToken = require("../middleware/generateToken");
 const authenticateToken = require("../middleware/authMiddleware");
@@ -12,6 +13,7 @@ router.post(
   "/insert-chalprogress/:challengeId", authenticateToken,
   async function (req, res) {
     const chalProgressService = new ChalProgressService();
+   
     const chalProgress = new ChalProgress();
 
     chalProgress.UserId = new ObjectId(req.user.userId);
@@ -36,30 +38,34 @@ router.post(
 
 // Update progress for a specific challenge
 router.put(
-  "/update-chalprogress/:userId/:challengeId",
+  "/increase-chalprogress/:chalprogressId", authenticateToken,
   async function (req, res) {
     const chalProgressService = new ChalProgressService();
-    const userId = req.params.userId;
-    const challengeId = req.params.challengeId;
+     const challengeService = new ChallengeService();
+    const userId = req.body.userId;
+    const chalprogressId = req.params.chalprogressId;
 
     try {
-      const chalProgress = await chalProgressService.getChalProgressByChallenge(
-        userId,
-        challengeId
-      );
-      if (!chalProgress) {
+      const chalProgress = await chalProgressService.getChalProgress(chalprogressId);
+      const challenge = await challengeService.getChallenge(chalProgress.ChallengeId);
+      if (!chalProgress || !challenge) {
         return res
           .status(404)
           .json({ message: "Challenge progress not found" });
       }
 
-      chalProgress.CompletedDays =
-        req.body.CompletedDays || chalProgress.CompletedDays;
+      if(chalProgress.Progress < challenge.days.length){
+        chalProgress.Progress = chalProgress.Progress + 1;
+        await chalProgressService.updateChalProgress(chalProgress);
+         res
+           .status(200)
+           .json({ message: "Challenge progress updated successfully" });
+      }
+       
+      else
+        res.json({message: "Your challenge already completed!"});
 
-      await chalProgressService.updateChalProgress(chalProgress);
-      res
-        .status(200)
-        .json({ message: "Challenge progress updated successfully" });
+     
     } catch (error) {
       console.error("Error updating challenge progress:", error);
       res.status(500).json({
@@ -106,9 +112,9 @@ router.delete(
 router.get("/chalprogress-list", authenticateToken, async function (req, res) {
   const chalProgressService = new ChalProgressService();
    const userId = new ObjectId(req.user.userId);
-
+  
   try {
-    const chalProgressList = await chalProgressService.getChalProgressList(
+    const chalProgressList = await chalProgressService.getChalProgressByUserId(
       userId
     );
     if (!chalProgressList) {

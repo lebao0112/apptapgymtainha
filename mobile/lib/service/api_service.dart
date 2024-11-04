@@ -59,6 +59,29 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> loginWithGoogle(String email, String name, String googleId) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/google-login'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        'Email': email,
+        'Name': name,
+        'googleId': googleId,
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+
+      // Store the token in secure storage
+      await storage.write(key: "jwtToken", value: data["token"]);
+
+      return data;
+    } else {
+      throw Exception('Google login failed');
+    }
+  }
+
+
   static Future<void> logout() async {
     deleteToken();
   }
@@ -151,6 +174,29 @@ class ApiService {
     }
   }
 
+  static Future<void> deleteWorkoutWithToken(String workoutId) async {
+    String? token = await getToken(); // Lấy token từ storage
+
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.delete(
+      Uri.parse(
+          '$baseUrl/workout/delete-workout/${workoutId}'), // Đảm bảo đường dẫn chính xác
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token", //
+      },
+
+    );
+
+    if (response.statusCode != 201) {
+      throw Exception('Failed to add workout: ${response.body}');
+    }
+  }
+
+
   static Future<Map<String, dynamic>> fetchWorkoutDetails(
       String workoutId) async {
     String? token = await getToken();
@@ -202,27 +248,7 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> loginWithGoogle(String email, String name, String googleId) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/user/google-login'),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        'Email': email,
-        'Name': name,
-        'googleId': googleId,
-      }),
-    );
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
 
-      // Store the token in secure storage
-      await storage.write(key: "jwtToken", value: data["token"]);
-
-      return data;
-    } else {
-      throw Exception('Google login failed');
-    }
-  }
   static Future<void> sendProgressData(Map<String, dynamic> data) async {
     String? token = await getToken();  // Retrieve the user's token if necessary
 

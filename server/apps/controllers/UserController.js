@@ -22,13 +22,13 @@ router.post("/register", async function (req, res) {
   const user = new User();
 
   try {
-      // Kiểm tra email đã tồn tại chưa
-      const existingUser = await userService.getUserByEmail(req.body.Email);
-      if (existingUser) {
-        return res.status(400).json({
-          message: "Email đã tồn tại, vui lòng chọn email khác.",
-        });
-      }
+    // Kiểm tra email đã tồn tại chưa
+    const existingUser = await userService.getUserByEmail(req.body.Email);
+    if (existingUser) {
+      return res.status(400).json({
+        message: "Email đã tồn tại, vui lòng chọn email khác.",
+      });
+    }
     const hashedPassword = await bcrypt.hash(req.body.Password, 10);
     user.Name = req.body.Name;
     user.Email = req.body.Email;
@@ -77,117 +77,50 @@ router.post(
   },
   signToken
 );
-router.post('/google-login', async function (req, res) {
-  console.log("Request Body:", req.body); // Debug log
-  const { Email, Name, googleId } = req.body;
+router.post(
+  "/google-login",
+  async function (req, res, next) {
+    console.log("Request Body:", req.body); // Debug log
+    const { Email, Name, googleId } = req.body;
 
-  const userService = new UserService();
-  let user = await userService.getUserByEmail(Email);
+    const userService = new UserService();
+    let user = await userService.getUserByEmail(Email);
 
-  if (!user) {
-    // If user does not exist, create a new user
-    user = new User(); // Use `user =` instead of `const user =`
-    user.Name = Name;
-    user.Email = Email;
-    user.Password = googleId; // Save googleId as a temporary password
-    user.Height = 0;
-    user.Weight = 0;
-    user.AvatarUrl =null;
-    user.DateOfBirth = "2024-10-20 00:00:00.000";
-    user.Gender = "male";
+    if (!user) {
+      user = new User();
+      user.Name = Name;
+      user.Email = Email;
+      user.Password = googleId;
+      user.Height = 0;
+      user.Weight = 0;
+      user.AvatarUrl = null;
+      user.DateOfBirth = "2024-10-20 00:00:00.000";
+      user.Gender = "male";
 
-    // Save new user in MongoDB
-    const result = await userService.insertUser(user);
-    user._id = result.insertedId; // Set the `_id` from the MongoDB result
-  }
+      // Save new user in MongoDB
+      const result = await userService.insertUser(user);
+      user._id = result.insertedId; // Set the `_id` from the MongoDB result
+    }
 
-  // Create JWT token for the existing or newly created user
-  const token = jwt.sign(
-    { userId: user._id, email: user.Email },
-    process.env.JWT_SECRET_KEY,
-    { expiresIn: "30d" }
-  );
+    // Create JWT token for the existing or newly created user
+    //  const token = jwt.sign(
+    //    { userId: user._id, email: user.Email },
+    //    process.env.JWT_SECRET_KEY,
+    //    { expiresIn: "30d" }
+    //  );
 
-  res.json({
-    message: "Google login successful",
-    token: token,
-    userId: user._id,
-  });
-});
+    req.user = user; // Đặt thông tin người dùng vào req để middleware sử dụng
+    next(); //
 
-// router.post("/login", async function (req, res) {
-//   const userService = new UserService();
-//   const user = await userService.getUserByEmail(req.body.Email);
+    //  res.json({
+    //    message: "Google login successful",
+    //    token: token,
+    //    userId: user._id,
+    //  });
+  },
+  signToken
+);
 
-//   if (!user) {
-//     return res.status(400).json({ message: "User not found" });
-//   }
-
-//   const isPasswordValid = await bcrypt.compare(
-//     req.body.Password,
-//     user.Password
-//   );
-//   if (!isPasswordValid) {
-//     return res.status(400).json({ message: "Invalid password" });
-//   }
-
-//   const token = jwt.sign({ userId: user._id }, secretKey, { expiresIn: "7d" });
-
-//   res.json({ message: "Login successful", userId: user._id, token });
-// });
-
-// router.post("/login", async function (req, res) {
-//   const userService = new UserService();
-//   const user = await userService.getUserByEmail(req.body.Email);
-
-//   if (!user) {
-//     return res.status(400).json({ message: "User not found" });
-//   }
-
-//   const isPasswordValid = await bcrypt.compare(
-//     req.body.Password,
-//     user.Password
-//   );
-//   if (!isPasswordValid) {
-//     return res.status(400).json({ message: "Invalid password" });
-//   }
-
-//   res.json({ message: "Login successful", userId: user._id });
-// });
-// router.post("/update-user", authenticateToken, async function (req, res) {
-//   const userId = req.user.userId; // Lấy userId từ token sau khi đã được xác thực
-//   const { Name, Height, Weight, AvatarUrl, Gender } = req.body; // Nhận dữ liệu cập nhật từ client
-
-//   try {
-//     // Kiểm tra xem người dùng có tồn tại không
-//     const userService = new UserService();
-//     const user = await userService.getUser(userId);
-//     if (!user) {
-//       return res.status(404).json({ message: "Người dùng không tồn tại." });
-//     }
-
-//     const updatedUser = {
-//       Name: Name || user.Name,
-//       Height: Height || user.Height,
-//       Weight: Weight || user.Weight,
-//       AvatarUrl: AvatarUrl || user.AvatarUrl,
-//       Gender: Gender || user.Gender,
-//     };
-
-//     await userService.updateUser({ _id: userId, ...updatedUser });
-
-//     return res.json({
-//       message: "Cập nhật thông tin thành công.",
-//       updatedUser,
-//     });
-//   } catch (error) {
-//     console.error("Lỗi khi cập nhật người dùng:", error);
-//     return res.status(500).json({
-//       message: "Có lỗi xảy ra trong quá trình cập nhật.",
-//       error: error.message,
-//     });
-//   }
-// });
 router.put("/update-username", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.userId; // Lấy userId từ token đã xác thực

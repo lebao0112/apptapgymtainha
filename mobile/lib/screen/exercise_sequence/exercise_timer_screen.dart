@@ -2,16 +2,21 @@ import 'package:doan_tapgymtainha/screen/exercise_sequence/completed_workout_scr
 import 'package:doan_tapgymtainha/screen/exercise_sequence/taking_break_sreen.dart';
 import 'package:doan_tapgymtainha/shared/format.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:async';
 
+import '../../provider/chalprogress_provider.dart';
+import '../../service/api_challenge.dart';
+
 class ExerciseTimerScreen extends StatefulWidget {
   List<dynamic> exercises;
   final int currentExerciseIndex;
+  final Map<String, dynamic>? chalProgress;
 
   ExerciseTimerScreen(
-      {super.key, required this.exercises, required this.currentExerciseIndex});
+      {super.key, required this.exercises, required this.currentExerciseIndex, this.chalProgress});
 
   @override
   State<ExerciseTimerScreen> createState() => _ExerciseTimerScreenState();
@@ -25,6 +30,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
   late final int exerciseLength = exercises.length;
   late final String? videoUrl = widget.exercises[currentExerciseIndex]['videoUrl'];
 
+  late final Map<String , dynamic>? chalProgress = widget.chalProgress;
 
   late int _remainingSeconds;
   Timer? _timer;
@@ -59,7 +65,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
             _remainingSeconds--;
           } else {
             _timer?.cancel();
-            _goToTakingBreakScreen(context);
+            _goToTakingBreakScreen(context, chalProgress);
           }
         });
       }
@@ -74,6 +80,8 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic>? chalprogress = widget.chalProgress;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -321,7 +329,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
                     ) :
                     ElevatedButton(
                       onPressed: () {
-                        _goToTakingBreakScreen(context);
+                        _goToTakingBreakScreen(context, chalprogress);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orange,
@@ -346,7 +354,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          _goToTakingBreakScreen(context);
+                          _goToTakingBreakScreen(context, chalprogress);
                           // Navigator.push(
                           //   context,
                           //   MaterialPageRoute(
@@ -370,7 +378,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
     );
   }
 
-  void _goToTakingBreakScreen(BuildContext context) {
+  void _goToTakingBreakScreen(BuildContext context, Map<String, dynamic>? chalProgress) {
     if (currentExerciseIndex < exercises.length - 1) {
       Navigator.pushReplacement(
         context,
@@ -378,14 +386,16 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
           builder: (context) => TakingBreakSreen(
             exercises: exercises,
             currentExerciseIndex: currentExerciseIndex + 1,
+            chalProgress: chalProgress,
           ),
         ),
       );
     } else{
+        completeWorkout(context, chalProgress?['_id']);
         Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => CompletedWorkoutScreen(),
+          builder: (context) => CompletedWorkoutScreen(exercises: exercises, chalProgress: chalProgress),
         ),
       );
     }
@@ -404,4 +414,14 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
       ),
     );
   }
+
+  void completeWorkout(BuildContext context, String? chalProgressId) async {
+    if(chalProgressId == null || chalProgressId.isEmpty)
+      return;
+
+    print("chalprogress id là: ${chalProgressId}");
+    // await ApiChallenge.increaseChalProgress(chalProgressId);
+     Provider.of<ChalprogressProvider>(context, listen: false).increaseChalProgress(chalProgressId);
+  }
+
 }
