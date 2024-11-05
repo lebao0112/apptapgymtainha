@@ -135,6 +135,8 @@ class SettingScreen extends StatelessWidget {
                 onChanged: (value) {
                   themeProvider.toggleTheme(value);
                 },
+                activeColor: Colors.orange,
+
               ),
             ),
             Divider(color: Colors.grey),

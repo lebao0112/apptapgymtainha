@@ -40,6 +40,7 @@ router.get("/user-history", authenticateToken, async function (req, res) {
 
   try {
     const histories = await historyService.getHistoryByUserId(userId);
+    console.log("🚀 ~ histories:", histories)
     res.json(histories);
   } catch (error) {
     console.error("Error fetching user history:", error);
