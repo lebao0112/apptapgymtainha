@@ -18,16 +18,6 @@ class CompletedWorkoutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final workoutTimer = Provider.of<WorkoutTimerProvider>(context, listen: false);
-      workoutTimer.stopTimer();
-    });
-
-    final workoutTimer = Provider.of<WorkoutTimerProvider>(context);
-    final int totalTime = workoutTimer.totalTime;
-
-    print("tong thoi gian là: ${totalTime}");
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
