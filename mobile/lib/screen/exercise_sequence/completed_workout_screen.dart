@@ -1,6 +1,7 @@
 import 'package:doan_tapgymtainha/provider/chalprogress_provider.dart';
 import 'package:doan_tapgymtainha/provider/complete_workout_status_provider.dart';
 import 'package:doan_tapgymtainha/service/api_challenge.dart';
+import 'package:doan_tapgymtainha/shared/format.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -13,11 +14,11 @@ class CompletedWorkoutScreen extends StatelessWidget {
 
   CompletedWorkoutScreen({super.key,this.exercises, this.chalProgress});
 
-
-
-
   @override
   Widget build(BuildContext context) {
+    final workoutHistoryProvider = Provider.of<WorkoutTimerProvider>(context);
+    final workoutName = workoutHistoryProvider.currentWorkoutName;
+    final time = workoutHistoryProvider.totalTime;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -37,9 +38,17 @@ class CompletedWorkoutScreen extends StatelessWidget {
               ),
             ),
             Text(
-              "<workout name>",
+              workoutName,
               style: TextStyle(
                 fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              "Thời gian: ${Format.formatDuration(time)}",
+              style: TextStyle(
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
