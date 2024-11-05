@@ -17,6 +17,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+
+  OneSignal.initialize("39ade0ad-e5a0-4f74-8822-b6fb2d766c35");
+
+  // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+  OneSignal.Notifications.requestPermission(true);
+
   await Hive.initFlutter();
   await Hive.openBox('userProfileBox');
 

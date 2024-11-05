@@ -1,30 +1,26 @@
 import 'package:doan_tapgymtainha/screen/exercise_sequence/exercise_timer_screen.dart';
+import 'package:doan_tapgymtainha/screen/workoutdetail_screen.dart';
 import 'package:doan_tapgymtainha/shared/format.dart';
 import 'package:flutter/material.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
+import 'package:video_player/video_player.dart';
 
 class TakingBreakSreen extends StatefulWidget {
-  final List<dynamic> exercises;
-  final int currentExerciseIndex;
+  List<dynamic>exercises;
+  int currentExerciseIndex;
   final Map<String, dynamic>? chalProgress;
-
-  TakingBreakSreen({
-    required this.exercises,
-    required this.currentExerciseIndex,
-    this.chalProgress,
-  });
+  TakingBreakSreen( {required this.exercises, required this.currentExerciseIndex, this.chalProgress});
 
   @override
   State<TakingBreakSreen> createState() => _TakingBreakSreenState();
 }
 
-class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerProviderStateMixin {
+class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerProviderStateMixin{
   late AnimationController _controller;
   int totalTimeInSeconds = 20;
-  late int remainingTime;
+  int currentTime = 0;
   late final List<dynamic> exercises = widget.exercises;
   late final int currentExerciseIndex = widget.currentExerciseIndex;
-  late final Map<String , dynamic>? chalProgress = widget.chalProgress;
 
   @override
   void initState() {
@@ -34,15 +30,16 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
       duration: Duration(seconds: totalTimeInSeconds),
     )..addListener(() {
       setState(() {
-        remainingTime =
-            (_controller.duration!.inSeconds * _controller.value).toInt();
+        int remainingTime = (totalTimeInSeconds * _controller.value).ceil();
+
+        // Khi remainingTime bằng 0, chuyển sang màn hình tập tiếp theo
         if (remainingTime == 0) {
-          _goToExerciseTimerScreen(context, chalProgress); // Trigger event when time is up
+          _goToExerciseTimerScreen(context, widget.chalProgress);
         }
       });
     });
 
-    // Bắt đầu đếm ngược từ 1.0 về 0.0
+    // Bắt đầu animation đếm ngược từ 1.0 về 0.0
     _controller.reverse(from: 1.0);
   }
 
@@ -52,8 +49,12 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
     super.dispose();
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic>? chalprogress = widget.chalProgress;
     int remainingTime = (totalTimeInSeconds * _controller.value).ceil();
 
     return Scaffold(
@@ -72,6 +73,7 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
+
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,28 +86,26 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
                         ),
                       ),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.6,
+                        width: MediaQuery.of(context).size.width * 0.6, // Đặt giới hạn chiều rộng
                         child: Text(
                           exercises[currentExerciseIndex]['name'].toString().toUpperCase(),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2, // Giới hạn số dòng
+                          overflow: TextOverflow.ellipsis, // Thêm dấu ... nếu quá dài
                         ),
                       ),
                     ],
                   ),
                   Text(
-                    exercises[currentExerciseIndex]['isRep']
-                        ? "x ${exercises[currentExerciseIndex]['reps']}"
-                        : "${Format.formatDuration(exercises[currentExerciseIndex]['duration'])}",
+                    exercises[currentExerciseIndex]['isRep'] ? "x ${exercises[currentExerciseIndex]['reps']}"  : "${Format.formatDuration(exercises[currentExerciseIndex]['duration'])}" ,
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -113,9 +113,9 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
             Text(
               'Rest',
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold
               ),
             ),
             Stack(
@@ -148,59 +148,73 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent,
-                    minimumSize: Size(160, 50),
-                  ),
-                  onPressed: () {
-                    _controller.reset();
-                    _controller.reverse(from: 1.0);
-                  },
-                  child: Text(
-                    'Rest more',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                // TextButton(
+                //   style: TextButton.styleFrom(
+                //     backgroundColor: Colors.orangeAccent,
+                //     minimumSize: Size(160, 50),
+                //   ),
+                //   onPressed: () {
+                //     _controller.reset();
+                //     _controller.reverse(from: 1.0);
+                //   },
+                //   child: Text(
+                //     'Rest more',
+                //     style: TextStyle(
+                //         color: Colors.white,
+                //         fontSize: 24,
+                //         fontWeight: FontWeight.bold
+                //     ),
+                //   ),
+                // ),
                 SizedBox(height: 10),
+
                 TextButton(
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.white,
                     minimumSize: Size(160, 50),
                   ),
                   onPressed: () {
-                    _goToExerciseTimerScreen(context, widget.chalProgress);
+                    _goToExerciseTimerScreen(context, chalprogress);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => ExerciseTimerScreen(exercises: [],),
+                    //   ),
+                    // );
                   },
                   child: Text(
                     'Skip',
                     style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
               ],
-            ),
+            ),// Sp
+
+
+
+
           ],
         ),
       ),
     );
   }
 
-  void _goToExerciseTimerScreen(BuildContext context, Map<String, dynamic>? chalProgress) {
+  void _goToExerciseTimerScreen(
+      BuildContext context, Map<String, dynamic>? chalprogress
+      ) {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => ExerciseTimerScreen(
           exercises: exercises,
           currentExerciseIndex: currentExerciseIndex,
-          chalProgress: chalProgress,
+          chalProgress: chalprogress,
         ),
       ),
     );
   }
+
 }
