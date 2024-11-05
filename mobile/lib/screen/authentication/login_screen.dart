@@ -1,4 +1,5 @@
 import 'package:doan_tapgymtainha/provider/workout_provider.dart';
+import 'package:doan_tapgymtainha/provider/workout_timer_provider.dart';
 import 'package:doan_tapgymtainha/screen/home_screen.dart';
 import 'package:doan_tapgymtainha/screen/start_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -70,6 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
               .loadChalProgresses();
           await Provider.of<WorkoutProvider>(context, listen: false)
               .loadWorkouts();
+          await Provider.of<WorkoutTimerProvider>(context, listen: false)
+              .loadHistory();
 
           Navigator.pushReplacement(
             context,
@@ -116,6 +119,8 @@ class _LoginScreenState extends State<LoginScreen> {
               .loadChalProgresses();
           await Provider.of<WorkoutProvider>(context, listen: false)
               .loadWorkouts();
+          await Provider.of<WorkoutTimerProvider>(context, listen: false)
+              .loadHistory();
 
           Navigator.pushReplacement(
             context,

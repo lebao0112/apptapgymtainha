@@ -27,6 +27,8 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   @override
   Widget build(BuildContext context) {
     // Lấy thông tin từ workoutDetails
+    final String workoutId =
+        widget.workoutDetails['_id'];
     final String workoutTitle =
         widget.workoutDetails['Title'] ?? 'Workout Title';
     final String workoutDescription =
@@ -159,10 +161,13 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
               margin: const EdgeInsets.only(bottom: 50),
               child: ElevatedButton(
                 onPressed: () {
-                  final workoutTimer = Provider.of<WorkoutTimerProvider>(context, listen: false);
-                  workoutTimer.startTimer();
 
-                  print("co progress");
+                  print("tên workout là ${workoutTitle}");
+                  print("tên workout là ${workoutId}");
+
+                  final workoutTimer = Provider.of<WorkoutTimerProvider>(context, listen: false);
+                  workoutTimer.startTimer(workoutTitle, workoutId, 0);
+
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(

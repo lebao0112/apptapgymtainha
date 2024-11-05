@@ -8,6 +8,7 @@ import 'package:video_player/video_player.dart';
 import 'dart:async';
 
 import '../../provider/chalprogress_provider.dart';
+import '../../provider/workout_timer_provider.dart';
 import '../../service/api_challenge.dart';
 
 class ExerciseTimerScreen extends StatefulWidget {
@@ -30,6 +31,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
   late final int exerciseLength = exercises.length;
   late final String? videoUrl = widget.exercises[currentExerciseIndex]['videoUrl'];
 
+
   late final Map<String , dynamic>? chalProgress = widget.chalProgress;
 
   late int _remainingSeconds;
@@ -40,6 +42,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
     super.initState();
     _remainingSeconds = exercises[currentExerciseIndex]['duration'];
 
+    print("video url là: ${videoUrl}");
     if(!exercises[currentExerciseIndex]['isRep'])
       _startTimer();
 
@@ -135,13 +138,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
                             fontSize: 16,
                           ),
                         ),
-                        Text(
-                          '00:15',
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 14,
-                          ),
-                        ),
+
                       ],
                     ),
                   ),
@@ -392,6 +389,13 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
       );
     } else{
         completeWorkout(context, chalProgress?['_id']);
+
+
+        final workoutTimer = Provider.of<WorkoutTimerProvider>(context, listen: false);
+        workoutTimer.stopTimer();
+        workoutTimer.addHistory();
+        final totalTime = workoutTimer.totalTime;
+
         Navigator.pushReplacement(
         context,
         MaterialPageRoute(
