@@ -44,7 +44,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey[700],
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
                 ),
                 SizedBox(height: 8),
@@ -109,7 +109,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
-                                      color: Colors.black87,
+                                      color: Theme.of(context).textTheme.bodyLarge?.color,
                                     ),
                                   ),
                                   SizedBox(height: 4),
@@ -124,7 +124,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                           Text(
                                             "Thời gian: ${workout['TotalTime'] ?? '00:00'}",
                                             style: TextStyle(
-                                              color: Colors.grey[600],
+                                              color: Theme.of(context).textTheme.bodyLarge?.color,
                                               fontSize: 14,
                                             ),
                                           ),
@@ -138,7 +138,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                                           Text(
                                             "Calories: ${workout['Calories'] ?? 0} kcal",
                                             style: TextStyle(
-                                              color: Colors.grey[600],
+                                              color: Theme.of(context).textTheme.bodyLarge?.color,
                                               fontSize: 14,
                                             ),
                                           ),

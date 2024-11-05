@@ -18,43 +18,6 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
   List<int> _selectedReps = [];
   List<int> _selectedDurations = [];
 
-
-
-// void _addWorkout() async {
-//     if (_formKey.currentState!.validate()) {
-//       try {
-//         final existingWorkouts = await ApiService.fetchUserWorkouts();
-//         if (existingWorkouts
-//             .any((workout) => workout['Title'] == _titleController.text)) {
-//           ScaffoldMessenger.of(context).showSnackBar(
-//             SnackBar(content: Text('Workout title already exists')),
-//           );
-//           return;
-//         }
-//         List<Map<String, dynamic>> exercisesData = _selectedExerciseIds
-//             .asMap()
-//             .entries
-//             .map((entry) => {
-//                   'exerciseId': entry.value,
-//                   'reps': _selectedReps[entry.key],
-//                   'duration': _selectedDurations[entry.key],
-//                 })
-//             .toList();
-//
-//         Map<String, dynamic> workoutData = {
-//           'Title': _titleController.text,
-//           'Description': _descriptionController.text,
-//           'Exercises': exercisesData, // Lưu reps và duration cùng bài tập
-//         };
-//         await ApiService.addWorkoutWithToken(workoutData);
-//         Navigator.pop(context, true);
-//       } catch (e) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           SnackBar(content: Text('Failed to add workout: $e')),
-//         );
-//       }
-//     }
-//   }
   void _addWorkout() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -244,18 +207,18 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(5.0),
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 12.0,
-                ),
-              ),
+              // Container(
+              //   padding: const EdgeInsets.all(5.0),
+              //   decoration: const BoxDecoration(
+              //     color: Colors.red,
+              //     shape: BoxShape.circle,
+              //   ),
+              //   child: const Icon(
+              //     Icons.close,
+              //     color: Colors.white,
+              //     size: 12.0,
+              //   ),
+              // ),
               SizedBox(width: 8),
               Container(
                 width: 150,
