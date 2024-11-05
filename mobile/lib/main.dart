@@ -6,7 +6,7 @@ import 'package:doan_tapgymtainha/provider/workout_timer_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:doan_tapgymtainha/screen/splash_screen.dart';
-import 'package:doan_tapgymtainha/theme_provider.dart';
+import 'package:doan_tapgymtainha/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
