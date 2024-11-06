@@ -88,9 +88,7 @@ class CompletedWorkoutScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: TextButton(
-                onPressed: () {
-
-                },
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text(
                   'KẾT THÚC',
                   style: TextStyle(

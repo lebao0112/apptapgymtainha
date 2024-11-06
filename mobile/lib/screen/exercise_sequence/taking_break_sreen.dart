@@ -148,24 +148,24 @@ class _TakingBreakSreenState extends State<TakingBreakSreen> with SingleTickerPr
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // TextButton(
-                //   style: TextButton.styleFrom(
-                //     backgroundColor: Colors.orangeAccent,
-                //     minimumSize: Size(160, 50),
-                //   ),
-                //   onPressed: () {
-                //     _controller.reset();
-                //     _controller.reverse(from: 1.0);
-                //   },
-                //   child: Text(
-                //     'Rest more',
-                //     style: TextStyle(
-                //       color: Colors.white,
-                //       fontSize: 24,
-                //       fontWeight: FontWeight.bold,
-                //     ),
-                //   ),
-                // ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.orangeAccent,
+                    minimumSize: Size(160, 50),
+                  ),
+                  onPressed: () {
+                    _controller.reset();
+                    _controller.reverse(from: 1.0);
+                  },
+                  child: Text(
+                    'Rest more',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 SizedBox(height: 10),
                 TextButton(
                   style: TextButton.styleFrom(
