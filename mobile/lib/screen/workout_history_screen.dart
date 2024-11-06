@@ -166,6 +166,38 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
   }
 
   // Hàm để nhóm lịch sử theo ngày và sắp xếp giảm dần
+  // Map<String, List<Map<String, dynamic>>> _groupHistoriesByDate(List<dynamic> histories) {
+  //   // Khởi tạo một Map để lưu trữ lịch sử tập luyện được nhóm theo ngày
+  //   final Map<String, List<Map<String, dynamic>>> groupedHistory = {};
+  //
+  //   // Lặp qua từng lịch sử trong danh sách histories
+  //   for (var history in histories) {
+  //     // Lấy ngày từ trường 'Date' của mỗi lịch sử và định dạng thành chuỗi 'yyyy-MM-dd'
+  //     // Sử dụng DateTime.now() làm giá trị mặc định nếu trường 'Date' không hợp lệ hoặc là null
+  //     final date = DateFormat('dd-MM-yyyy').format(
+  //         DateTime.tryParse(history['Date'] ?? '') ?? DateTime.now());
+  //
+  //     // Nếu Map chưa có key cho ngày này, khởi tạo một danh sách trống
+  //     if (!groupedHistory.containsKey(date)) {
+  //       groupedHistory[date] = [];
+  //     }
+  //
+  //     // Thêm thông tin buổi tập vào danh sách của ngày tương ứng
+  //     groupedHistory[date]!.add({
+  //       'Name': history['WorkoutName'] ?? 'Unnamed Workout',  // Tên buổi tập, dùng tên mặc định nếu null
+  //       'TotalTime': history['TotalTime'] ?? '00:00',         // Thời gian tập, dùng '00:00' nếu null
+  //       'Calories': history['Calories'] ?? 0,                 // Lượng calo, dùng 0 nếu null
+  //     });
+  //   }
+  //
+  //   // Sắp xếp ngày theo thứ tự giảm dần
+  //   // Tạo danh sách các ngày và sắp xếp theo thứ tự từ mới nhất đến cũ nhất
+  //   final sortedKeys = groupedHistory.keys.toList()..sort((a, b) => b.compareTo(a));
+  //
+  //   // Trả về Map đã được sắp xếp theo thứ tự ngày giảm dần
+  //   return {for (var key in sortedKeys) key: groupedHistory[key]!};
+  // }
+
   Map<String, List<Map<String, dynamic>>> _groupHistoriesByDate(List<dynamic> histories) {
     // Khởi tạo một Map để lưu trữ lịch sử tập luyện được nhóm theo ngày
     final Map<String, List<Map<String, dynamic>>> groupedHistory = {};
@@ -173,7 +205,6 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
     // Lặp qua từng lịch sử trong danh sách histories
     for (var history in histories) {
       // Lấy ngày từ trường 'Date' của mỗi lịch sử và định dạng thành chuỗi 'yyyy-MM-dd'
-      // Sử dụng DateTime.now() làm giá trị mặc định nếu trường 'Date' không hợp lệ hoặc là null
       final date = DateFormat('dd-MM-yyyy').format(
           DateTime.tryParse(history['Date'] ?? '') ?? DateTime.now());
 
@@ -187,14 +218,28 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
         'Name': history['WorkoutName'] ?? 'Unnamed Workout',  // Tên buổi tập, dùng tên mặc định nếu null
         'TotalTime': history['TotalTime'] ?? '00:00',         // Thời gian tập, dùng '00:00' nếu null
         'Calories': history['Calories'] ?? 0,                 // Lượng calo, dùng 0 nếu null
+        'DateTime': DateTime.tryParse(history['Date'] ?? '') ?? DateTime.now() // Lưu lại DateTime để sắp xếp
       });
     }
 
     // Sắp xếp ngày theo thứ tự giảm dần
-    // Tạo danh sách các ngày và sắp xếp theo thứ tự từ mới nhất đến cũ nhất
     final sortedKeys = groupedHistory.keys.toList()..sort((a, b) => b.compareTo(a));
+
+    // Sắp xếp buổi tập trong mỗi ngày theo thứ tự thời gian giảm dần
+    for (var key in sortedKeys) {
+      groupedHistory[key]!.sort((a, b) => b['DateTime'].compareTo(a['DateTime']));
+    }
+
+    // Loại bỏ trường 'DateTime' khỏi mỗi buổi tập trước khi trả về kết quả
+    for (var key in groupedHistory.keys) {
+      groupedHistory[key] = groupedHistory[key]!.map((workout) {
+        workout.remove('DateTime');
+        return workout;
+      }).toList();
+    }
 
     // Trả về Map đã được sắp xếp theo thứ tự ngày giảm dần
     return {for (var key in sortedKeys) key: groupedHistory[key]!};
   }
+
 }
