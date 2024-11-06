@@ -13,14 +13,18 @@ class CounterStepsScreen extends StatefulWidget {
 }
 
 class _CounterStepsScreenState extends State<CounterStepsScreen> {
+  //create pedometer to count steps
   final Pedometer pedometer = Pedometer();
+  //steam cua so buoc
   late Stream<int> _stepCountStream;
   int _steps = 0;
   int _startingStepsToday = 0;
   double _kcal = 0.0;
   double _km = 0.0;
   bool _isCounting = false;
+  //dem thoi gian di bo
   Timer? _timer;
+  //luu tong thoi gian
   Duration _duration = Duration();
   int _stepGoal = 6000;
   List<int> _last7DaysSteps = List.filled(7, 0);
@@ -28,6 +32,7 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
   int _lastStepCount = 0;
   bool _initialLoadCompleted = false;
 
+  //theo doi vi tri hien tai
   Position? _currentPosition;
   late StreamSubscription<Position> _positionStreamSubscription;
   bool _locationPermissionGranted = false;
@@ -47,7 +52,9 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
       activityStatus = await Permission.activityRecognition.request();
     }
 
+    //neu true
     if (activityStatus.isGranted) {
+      //count steps
       _startListening();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -80,10 +87,14 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
   }
 
   Future<void> _fetchCurrentDaySteps() async {
+    //lẩy thoi gian hien tai
     DateTime now = DateTime.now();
+    //lay ra ngay hom nay
     DateTime startOfDay = DateTime(now.year, now.month, now.day);
+    //lay ra step tu pedemoter
     _startingStepsToday = await pedometer.getStepCount(from: startOfDay, to: now);
     _lastStepCount = _startingStepsToday;
+    //cap nhat bien step
     setState(() {
       _steps = _startingStepsToday;
       _kcal = _steps * 0.04;
@@ -112,9 +123,13 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
   Future<void> _fetchLast7DaysSteps() async {
     DateTime now = DateTime.now();
     for (int i = 1; i <= 7; i++) {
+      //lay thoi diem bat dau
       DateTime from = DateTime(now.year, now.month, now.day - i);
+      //lay thoi diem ket thuc
       DateTime to = from.add(Duration(days: 1));
+      //tinh step
       int steps = await pedometer.getStepCount(from: from, to: to);
+      //hien thị
       setState(() {
         _last7DaysSteps[7 - i] = steps;
       });
@@ -245,9 +260,11 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
+                //tao ra cac widget hien thị số bước từng ngày
                 children: List.generate(7, (index) {
                   return GestureDetector(
                     onTap: () => _showStepDetails(index),
+                    //tao ra các o có viền tím nền xám
                     child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 5),
                       padding: EdgeInsets.all(8),
@@ -272,6 +289,7 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
                             dayLabels[index],
                             style: TextStyle(
                               fontSize: 12,
+                              // bodySmall của TextTheme trong ThemeData hiện tại của ứng dụng.
                               color: Theme.of(context).textTheme.bodySmall?.color,
                             ),
                           ),
