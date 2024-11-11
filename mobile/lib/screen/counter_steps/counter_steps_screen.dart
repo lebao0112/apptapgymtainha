@@ -218,13 +218,16 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
             CircularStepProgressIndicator(
               totalSteps: _stepGoal,
               currentStep: _steps,
+              //Độ rộng vòng tròn
               stepSize: 10,
               selectedColor: Colors.purple,
               unselectedColor: Colors.grey.shade200,
               padding: 0,
               width: 150,
               height: 150,
+              //độ rộng vòng tròn các bước đã hoàn thành
               selectedStepSize: 15,
+              //bo tròn phần đã hoàn thành
               roundedCap: (_, __) => true,
               child: Center(
                 child: Text(
@@ -311,17 +314,21 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
             ),
             SizedBox(height: 20),
             if (_locationPermissionGranted && _currentPosition != null)
+              //expanded giúp chiểm hêt không gian theo chiều dọc
               Expanded(
                 child: FlutterMap(
                   options: MapOptions(
+                    //xac dịnh vị trí trung tâm
                     center: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
                     zoom: 15.0,
                   ),
                   children: [
                     TileLayer(
+                      //x ,y,z đại diện cho mức thu phóng
                       urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                       subdomains: ['a', 'b', 'c'],
                     ),
+                    //hiển thị các điểm đánh dấu trên bản đồ
                     MarkerLayer(
                       markers: [
                         Marker(
