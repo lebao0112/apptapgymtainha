@@ -4,7 +4,7 @@ var controller = require(__dirname + "/apps/controllers");
 var bodyParser = require("body-parser");
 var dotenv = require("dotenv");
 var cron = require("node-cron"); // For scheduling cron jobs
-
+var cors = require("cors");
 dotenv.config();
 
 app.use(express.json());
@@ -15,6 +15,8 @@ app.set("views", __dirname + "/apps/views");
 app.set("view engine", "ejs");
 app.use("/static", express.static(__dirname + "/public"));
 
+
+app.use(cors());
 // Start the server
 var server = app.listen(3000, async function () {
   console.log("server is running");
