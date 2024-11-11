@@ -78,14 +78,17 @@ class _SelectingExercisesScreenState extends State<SelectingExercisesScreen> {
               child: exercises.isEmpty
                   ? const Center(child: CircularProgressIndicator())
                   : ListView.builder(
+                //tao danh sahcs bài tập
                 itemCount: exercises.length,
                 itemBuilder: (context, index) {
                   final exercise = exercises[index];
                   return ListTile(
+                    //hien thị hình ảnh
                     leading: exercise['imageUrl'] != null
                         ? Image.network(exercise['imageUrl'], width: 50, height: 50)
                         : const Icon(Icons.image),
                     title: Text(exercise['name'] ?? 'No Name'),
+                    //checkbox đã chọn hay chưa
                     trailing: Checkbox(
                       value: isSelected[index],
                       onChanged: (bool? value) {
@@ -126,6 +129,7 @@ class _SelectingExercisesScreenState extends State<SelectingExercisesScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    //t widget để phát hiện các cử chỉ của người dùng, như chạm (tap), vuốt (swipe), kéo (drag),
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context);

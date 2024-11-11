@@ -1,4 +1,5 @@
 import 'package:doan_tapgymtainha/screen/exercise_sequence/completed_workout_screen.dart';
+import 'package:doan_tapgymtainha/screen/exercise_sequence/record_video.dart';
 import 'package:doan_tapgymtainha/screen/exercise_sequence/taking_break_sreen.dart';
 import 'package:doan_tapgymtainha/shared/format.dart';
 import 'package:flutter/material.dart';
@@ -144,22 +145,37 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
                   ),
 
                   // Music Button and Rotate Screen Button on the Right
+                  // Music Button and Camera Button on the Right
                   Column(
                     children: [
-                      // Music Button
                       Container(
                         margin: const EdgeInsets.only(top: 10, right: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors
-                              .grey[300], // Background color of the music button
-                          shape: BoxShape.circle,
+                          color: Colors.grey[300], // Background color of the container
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        child: IconButton(
-                          onPressed: () {
-                            // Add action for music button here
-                          },
-                          icon: Icon(Icons.music_note_outlined),
-                          color: Colors.black, // Icon color
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                // Add action for music button here
+                              },
+                              icon: Icon(Icons.music_note_outlined),
+                              color: Colors.black, // Icon color
+                            ),
+                            SizedBox(width: 8), // Space between the icons
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => RecordVideoScreen()),
+                                );
+                              },
+                              icon: Icon(Icons.videocam),
+                              color: Colors.black, // Icon color
+                            ),
+                          ],
                         ),
                       ),
                     ],
