@@ -9,6 +9,7 @@ class User {
   DateOfBirth;
   AvatarUrl;
   Gender;
+  Role;
   constructor() {
     this.WorkoutHistory = [];
   }

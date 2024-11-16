@@ -5,7 +5,7 @@ const signToken = (req, res, next) => {
   console.log("🚀 ~ signToken ~ user:", user);
 
   const token = jwt.sign(
-    { userId: user._id, email: user.email },
+    { userId: user._id, email: user.Email, role: user.Role },
     process.env.JWT_SECRET_KEY,
     { expiresIn: "30d" }
   );
