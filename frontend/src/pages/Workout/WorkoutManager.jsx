@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-import Sidebar from '../partials/Sidebar';
-import Header from '../partials/Header';
-import FilterButton from '../components/DropdownFilter';
-import Datepicker from '../components/Datepicker';
+import Sidebar from '../../partials/Sidebar';
+import Header from '../../partials/Header';
+import FilterButton from '../../components/DropdownFilter';
+import Datepicker from '../../components/Datepicker';
 
-import DashboardCard07 from '../partials/dashboard/ExercisesTable';
+import ExercisesTable from '../Exercise/ExercisesTable';
 
 
 
@@ -55,7 +55,7 @@ function WorkoutManager() {
 
                         {/* Cards */}
                         <div className="">
-                            <DashboardCard07 />
+                            <ExercisesTable />
                         </div>
 
                     </div>
