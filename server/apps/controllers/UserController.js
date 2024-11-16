@@ -6,16 +6,7 @@ const bcrypt = require("bcrypt");
 const signToken = require("../middleware/generateToken");
 const authenticateToken = require("../middleware/authMiddleware");
 const jwt = require("jsonwebtoken");
-router.post("/insert-user", async function (req, res) {
-  const userService = new UserService();
-  const user = new User();
-  user.Name = req.body.Name;
-  user.Email = req.body.Email;
-  user.Password = req.body.Password; // Hash the password in production
 
-  const result = await userService.insertUser(user);
-  res.redirect("/user/user-list");
-});
 // Register user
 router.post("/register", async function (req, res) {
   const userService = new UserService();
@@ -37,7 +28,7 @@ router.post("/register", async function (req, res) {
     user.Weight = req.body.Weight;
     user.DateOfBirth = req.body.DateOfBirth;
     user.Gender = req.body.Gender;
-
+    user.Role = "user";
     const result = await userService.insertUser(user);
     console.log("User registered successfully:", result);
 
@@ -77,6 +68,7 @@ router.post(
   },
   signToken
 );
+
 router.post(
   "/google-login",
   async function (req, res, next) {
@@ -96,7 +88,7 @@ router.post(
       user.AvatarUrl = null;
       user.DateOfBirth = "2024-10-20 00:00:00.000";
       user.Gender = "male";
-
+      user.Role = "user";
       // Save new user in MongoDB
       const result = await userService.insertUser(user);
       user._id = result.insertedId; // Set the `_id` from the MongoDB result

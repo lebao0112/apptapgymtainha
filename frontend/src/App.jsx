@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import {
   Routes,
   Route,
@@ -6,13 +6,13 @@ import {
 } from 'react-router-dom';
 
 import './css/style.css';
-
+import './App.css';
 import './charts/ChartjsConfig';
 
 // Import pages
 import DefaultLayout from './components/layouts/DefaultLayout';
-import WorkoutManager from './pages/WorkoutManager';
-import ExercisesManager from './pages/ExercisesManager';
+import WorkoutManager from './pages/Workout/WorkoutManager';
+import ExercisesManager from './pages/Exercise/ExercisesManager';
 import { privateRoutes } from './routes';
 
 function App() {
@@ -29,8 +29,15 @@ function App() {
     <>
       <Routes>
         {privateRoutes.map((route, index) => {
-          const Layout = route.layout || DefaultLayout;
-          const Page = route.component
+          const Page = route.component;
+          let Layout  = DefaultLayout;
+
+          if(route.layout){
+            Layout = route.layout;
+          }else if(route.layout === null){
+            Layout = Fragment;
+          }
+           
           return <Route key={index} path={route.path} element={
             <Layout>
               <Page />

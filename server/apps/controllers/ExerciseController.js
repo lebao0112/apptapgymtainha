@@ -57,27 +57,6 @@ router.put("/update-exercise/:exerciseId", async function (req, res) {
   }
 });
 
-// Delete an exercise
-router.delete("/delete-exercise/:exerciseId", async function (req, res) {
-  const exerciseService = new ExerciseService();
-  const exerciseId = req.params.exerciseId;
-
-  try {
-    const exercise = await exerciseService.getExercise(exerciseId);
-    if (!exercise) {
-      return res.status(404).json({ message: "Exercise not found" });
-    }
-
-    await exerciseService.deleteExercise(exerciseId);
-    res.status(200).json({ message: "Exercise deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting exercise:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to delete exercise", error: error.message });
-  }
-});
-
 // Get a list of all exercises
 router.get("/exercise-list", async function (req, res) {
   const exerciseService = new ExerciseService();

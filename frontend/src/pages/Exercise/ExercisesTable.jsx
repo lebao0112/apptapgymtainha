@@ -5,16 +5,26 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/outline';
 function ExerciseTable(props) {
   const [exercises, setExercises] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 8;
 
   useEffect(() => {
-    // Gọi API khi component được mount
-    axios.get('/api/exercise/exercise-list')
+    // Lấy token từ localStorage
+    const token = localStorage.getItem('token');
+
+    // Gọi API khi component được mount với token trong headers
+    axios.get('/api/admin/exercise/exercise-list', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then(response => {
         setExercises(response.data);
+        setIsLoading(false);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
+        setIsLoading(false);
       });
   }, []);
 
@@ -39,9 +49,30 @@ function ExerciseTable(props) {
     }
   };
 
+  const deleteExercise = (id) => {
+    const token = localStorage.getItem('token');
+
+    axios.delete(`/api/admin/exercise/delete-exercise/${id}`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(response => {
+      console.log(response.data.message);
+      setExercises(exercises.filter(exercise => exercise._id !== id));
+    }).catch(error => {
+      console.error("Error deleting exercise:", error);
+    });
+  }
+
   return (
     <div className="col-span-full xl:col-span-8 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
       <div className="p-3">
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-orange-500"></div>
+            <span className="ml-4 text-gray-600 dark:text-gray-400">Đang tải...</span>
+          </div>
+        ) : (
         <div className="overflow-x-auto">
           <table className="table-auto w-full dark:text-gray-300">
             <thead className="text-xs uppercase text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700 dark:bg-opacity-50 rounded-sm">
@@ -69,7 +100,11 @@ function ExerciseTable(props) {
                         <PencilIcon
                           className="w-5 h-5 text-blue-500 cursor-pointer hover:text-blue-700 hover:scale-110 transition transform duration-150"
                         />
-                        <TrashIcon
+                        <TrashIcon onClick={() => {
+                          if (window.confirm("Are you sure you want to delete this exercise?")) {
+                            deleteExercise(exercise._id);
+                          }
+                        }}
                           className="w-5 h-5 text-red-500 cursor-pointer hover:text-red-700 hover:scale-110 transition transform duration-150"
                         />
                       </div>
@@ -99,6 +134,9 @@ function ExerciseTable(props) {
             </button>
           </div>
         </div>
+        )}
+
+        
       </div>
     </div>
   );

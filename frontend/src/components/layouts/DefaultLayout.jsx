@@ -5,7 +5,7 @@ import Header from '../../partials/Header';
 import FilterButton from '../DropdownFilter';
 import Datepicker from '../Datepicker';
 
-import ExercisesManager from '../../pages/ExercisesManager';
+import ExercisesManager from '../../pages/Exercise/ExercisesManager';
 
 
 function DefaultLayout({ children }) {

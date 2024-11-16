@@ -1,7 +1,6 @@
 var express = require("express");
 var router = express.Router();
 //cau hinh cho localhost:3000/home
-router.use("/product", require(__dirname + "/productcontroller"));
 router.use("/exercise", require(__dirname + "/ExerciseController"));
 router.use("/user", require(__dirname + "/UserController"));
 router.use("/workout", require(__dirname + "/WorkoutController"));
@@ -10,6 +9,8 @@ router.use("/chalprogress", require(__dirname + "/ChalProgressController"));
 router.use("/challenge", require(__dirname + "/ChallengeController"));
 router.use("/history", require(__dirname + "/HistoryController"));
 //duong dan admin
+router.use("/admin/exercise", require(__dirname + "/admin/AdminExerciseController"));
+router.use("/admin/user", require(__dirname + "/admin/AdminUserController"));
 //router ma get khong co j phia sau thi la index
 router.get("/", function (req, res) {
   // res.json({ message: "this is index page" });

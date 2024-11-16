@@ -8,7 +8,7 @@ class Exercise {
   instructions;   // Hướng dẫn thực hiện bài tập
   imageUrl;       // URL hình ảnh minh họa
   videoUrl;       // URL video bài tập
-
+  isRep;
 
   constructor() {}
 }
