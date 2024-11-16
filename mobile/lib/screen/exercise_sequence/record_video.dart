@@ -4,8 +4,11 @@ import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';//chức năng định dạng tên file
 import 'package:permission_handler/permission_handler.dart';
+import 'package:video_player/video_player.dart';
 
 class RecordVideoScreen extends StatefulWidget {
+  final String exerciseVideoUrl; // Pass video URL from exercise_timer_screen
+  RecordVideoScreen({required this.exerciseVideoUrl});
   @override
   _RecordVideoScreenState createState() => _RecordVideoScreenState();
 }
@@ -13,6 +16,9 @@ class RecordVideoScreen extends StatefulWidget {
 class _RecordVideoScreenState extends State<RecordVideoScreen> {
   CameraController? _cameraController;
   bool _isRecording = false;
+  bool _isVideoPlayerInitialized = false;
+  bool _isCameraInitialized = false;
+  late VideoPlayerController _videoPlayerController;
   late List<CameraDescription> _cameras;// Stores a list of available cameras on the device.
   int _selectedCameraIndex = 0; // Track the current camera (0 for back, 1 for front)
   Future<void> _checkPermissions() async {
@@ -26,6 +32,7 @@ class _RecordVideoScreenState extends State<RecordVideoScreen> {
     super.initState();
     _checkPermissions();
     _initializeCamera();
+    _initializeVideoPlayer();
   }
 //this method retrieves available cameras, selects the one based on _selectedCameraIndex,
 //and initializes it with high resolution. After initializing, it calls setState to update the UI.
@@ -38,10 +45,25 @@ class _RecordVideoScreenState extends State<RecordVideoScreen> {
     await _cameraController?.initialize();
     setState(() {});
   }
+  void _initializeVideoPlayer() {
+    _videoPlayerController = VideoPlayerController.network(widget.exerciseVideoUrl)
+      ..initialize().then((_) {
+        setState(() {
+          _isVideoPlayerInitialized = true;
+        });
+        _videoPlayerController.play(); // Bắt đầu phát video ngay khi khởi tạo xong
+      }).catchError((error) {
+        // Xử lý lỗi khởi tạo
+        print("Error initializing video player: $error");
+      });
 
+    // Đặt video ở chế độ tự động phát và lặp lại
+    _videoPlayerController.setLooping(true);
+  }
   @override
   void dispose() {
     _cameraController?.dispose();
+    _videoPlayerController.dispose();
     super.dispose();
   }
 
@@ -109,7 +131,27 @@ class _RecordVideoScreenState extends State<RecordVideoScreen> {
       ),
       body: Column(
         children: [
+          // Top 30% for video player
           Expanded(
+            flex: 3,
+            child: _isVideoPlayerInitialized
+                ? GestureDetector(
+              onTap: () {
+                setState(() {
+                  _videoPlayerController.value.isPlaying
+                      ? _videoPlayerController.pause()
+                      : _videoPlayerController.play();
+                });
+              },
+              child: AspectRatio(
+                aspectRatio: _videoPlayerController.value.aspectRatio,
+                child: VideoPlayer(_videoPlayerController),
+              ),
+            )
+                : Center(child: CircularProgressIndicator()),
+          ),
+          Expanded(
+            flex: 7,
             child: AspectRatio(
               aspectRatio: _cameraController!.value.aspectRatio,
               child: CameraPreview(_cameraController!),

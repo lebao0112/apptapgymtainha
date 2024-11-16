@@ -169,7 +169,8 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => RecordVideoScreen()),
+                                  //dau ! de ép kiều từ string? thành string
+                                  MaterialPageRoute(builder: (context) => RecordVideoScreen(exerciseVideoUrl: videoUrl!)),
                                 );
                               },
                               icon: Icon(Icons.videocam),
