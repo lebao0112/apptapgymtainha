@@ -1,116 +1,10 @@
-// import React, { useState } from 'react';
-// import axios from 'axios';
-
-// function AddExerciseModal({ isOpen, onClose, onSave }) {
-//     // Các state lưu trữ thông tin động tác
-//     const [exerciseName, setExerciseName] = useState('');
-//     const [exerciseType, setExerciseType] = useState('');
-//     const [exerciseMuscle, setExerciseMuscle] = useState('');
-//     const [exerciseEquipment, setExerciseEquipment] = useState('');
-//     const [exerciseDifficulty, setExerciseDifficulty] = useState('');
-//     const [exerciseInstructions, setExerciseInstructions] = useState('');
-
-//     if (!isOpen) return null; // Nếu modal không mở, không render gì cả
-
-//     const handleSave = async () => {
-//         // Tạo một đối tượng chứa thông tin động tác từ các state
-//         const newExercise = {
-//             name: exerciseName,
-//             type: exerciseType,
-//             muscle: exerciseMuscle,
-//             equipment: exerciseEquipment,
-//             difficulty: exerciseDifficulty,
-//             instructions: exerciseInstructions,
-//         };
-
-//         try {
-//             // Gọi API để thêm mới động tác
-//             const response = await axios.post('/api/exercise/insert-exercise', newExercise);
-//             console.log("Exercise added:", response.data);
-
-//             // Gọi hàm onSave từ props để cập nhật UI sau khi lưu
-//             onSave(response.data);
-//             onClose(); // Đóng modal sau khi lưu thành công
-//         } catch (error) {
-//             console.error("Error adding exercise:", error);
-//             alert("Failed to add exercise");
-//         }
-//     };
-
-//     return (
-//         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={onClose}>
-//             <div
-//                 className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-lg w-full relative"
-//                 onClick={(e) => e.stopPropagation()} // Ngăn sự kiện click ra ngoài
-//             >
-//                 <h2 className="text-xl font-semibold mb-4">Thêm động tác mới</h2>
-//                 <input
-//                     type="text"
-//                     placeholder="Tên động tác"
-//                     value={exerciseName}
-//                     onChange={(e) => setExerciseName(e.target.value)}
-//                     className="w-full mb-3 p-2 border border-gray-300 rounded-md focus:outline-none"
-//                 />
-//                 <input
-//                     type="text"
-//                     placeholder="Loại"
-//                     value={exerciseType}
-//                     onChange={(e) => setExerciseType(e.target.value)}
-//                     className="w-full mb-3 p-2 border border-gray-300 rounded-md focus:outline-none"
-//                 />
-//                 <input
-//                     type="text"
-//                     placeholder="Nhóm cơ"
-//                     value={exerciseMuscle}
-//                     onChange={(e) => setExerciseMuscle(e.target.value)}
-//                     className="w-full mb-3 p-2 border border-gray-300 rounded-md focus:outline-none"
-//                 />
-//                 <input
-//                     type="text"
-//                     placeholder="Dụng cụ"
-//                     value={exerciseEquipment}
-//                     onChange={(e) => setExerciseEquipment(e.target.value)}
-//                     className="w-full mb-3 p-2 border border-gray-300 rounded-md focus:outline-none"
-//                 />
-//                 <input
-//                     type="text"
-//                     placeholder="Độ khó"
-//                     value={exerciseDifficulty}
-//                     onChange={(e) => setExerciseDifficulty(e.target.value)}
-//                     className="w-full mb-3 p-2 border border-gray-300 rounded-md focus:outline-none"
-//                 />
-//                 <textarea
-//                     placeholder="Hướng dẫn"
-//                     value={exerciseInstructions}
-//                     onChange={(e) => setExerciseInstructions(e.target.value)}
-//                     className="w-full mb-3 p-2 border border-gray-300 rounded-md focus:outline-none"
-//                 />
-//                 <div className="flex justify-end mt-4">
-//                     <button
-//                         onClick={onClose}
-//                         className="mr-2 px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
-//                     >
-//                         Đóng
-//                     </button>
-//                     <button
-//                         onClick={handleSave}
-//                         className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-//                     >
-//                         Lưu
-//                     </button>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// }
-
-// export default AddExerciseModal;
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import DropFileInput from '../../components/DropFileInput';
+import { uploadToCloudinary} from '../../config/uploadFileConfig';
 
-function AddExerciseModal({ isOpen, onClose, onUpdateList }) {
+ 
+function AddExerciseModal({ isOpen, onClose, onSave }) {
     const [exerciseName, setExerciseName] = useState('');
     const [exerciseType, setExerciseType] = useState('');
     const [exerciseMuscle, setExerciseMuscle] = useState('');
@@ -119,50 +13,108 @@ function AddExerciseModal({ isOpen, onClose, onUpdateList }) {
     const [exerciseInstructions, setExerciseInstructions] = useState('');
     const [imageFile, setImageFile] = useState(null);
     const [videoFile, setVideoFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [videoPreview, setVideoPreview] = useState(null);
+    const [imageUrl, setImageUrl] = useState("");
+    const [videoUrl, setVideoUrl] = useState("");
+
 
     const onFileChange = (files) => {
-        console.log(files);
+        console.log("🚀 ~ onFileChange ~ files:", files)
+        
     }
-
-    const handleFileDrop = (event, setFile) => {
-        event.preventDefault();
-        const file = event.dataTransfer.files[0];
-        setFile(file);
-        setPreview(URL.createObjectURL(file));
+    const handleImageFileChange = (files) => {
+        if (!files) {
+            console.error("No image file selected.");
+            return;
+        }
+        console.log("Image file selected:", files);
+        setImageFile(files[0]);
     };
 
-    const handleFileChange = (event, setFile) => {
-        const file = event.target.files[0];
-        setFile(file);
-        setPreview(URL.createObjectURL(file));
+    const handleVideoFileChange = (files) => {
+        if (!files) {
+            console.error("No video file selected.");
+            return;
+        }
+        console.log("Video file selected:", files);
+        setVideoFile(files[0]);
+    };
+
+
+    const handleUpload = async (file) => {
+        console.log("File to upload:", file); // Debug log to ensure the file is correct
+        if (!file) {
+            console.error("No file provided for upload.");
+            return;
+        }
+
+        const result = await uploadToCloudinary(file);
+        console.log("Uploaded File URL:", result.secure_url);
+
+        return result;
     };
 
     const handleSave = async () => {
-        if (!exerciseName || !exerciseType || !exerciseInstructions) {
+        if (!exerciseName || !exerciseType || !exerciseMuscle || !exerciseInstructions || !exerciseDifficulty || !exerciseEquipment) {
             alert("Vui lòng nhập đầy đủ các trường bắt buộc.");
             return;
         }
 
-        const formData = new FormData();
-        formData.append('name', exerciseName);
-        formData.append('type', exerciseType);
-        formData.append('muscle', exerciseMuscle);
-        formData.append('equipment', exerciseEquipment);
-        formData.append('difficulty', exerciseDifficulty);
-        formData.append('instructions', exerciseInstructions);
-        if (imageFile) formData.append('image', imageFile);
-        if (videoFile) formData.append('video', videoFile);
+        let uploadedImageUrl = "";
+        let uploadedVideoUrl = "";
+
+        // Upload image
+        if (imageFile) {
+            try {
+                const imageUploadResult = await uploadToCloudinary(imageFile);
+                uploadedImageUrl = imageUploadResult.secure_url || imageUploadResult.url || "";
+                console.log("Uploaded Image URL:", uploadedImageUrl);
+            } catch (error) {
+                console.error("Error uploading image:", error);
+            }
+        }
+
+        // Upload video
+        if (videoFile) {
+            try {
+                const videoUploadResult = await uploadToCloudinary(videoFile);
+                uploadedVideoUrl = videoUploadResult.secure_url || videoUploadResult.url || "";
+                console.log("Uploaded Video URL:", uploadedVideoUrl);
+            } catch (error) {
+                console.error("Error uploading video:", error);
+            }
+        }
+
+        const requestBody = {
+            name: exerciseName,
+            type: exerciseType,
+            muscle: exerciseMuscle,
+            equipment: exerciseEquipment,
+            difficulty: exerciseDifficulty,
+            instructions: exerciseInstructions,
+            imageUrl: uploadedImageUrl, 
+            videoUrl: uploadedVideoUrl,
+        };
+
+        console.log("Request Body:", requestBody);
 
         try {
-            await axios.post('/api/exercise/insert-exercise', formData, {
+            const token = localStorage.getItem('token');
+            console.log("🚀 ~ handleSave ~ token:", token)
+
+            
+            if (!token) {
+                alert("Bạn chưa đăng nhập. Vui lòng đăng nhập để thực hiện hành động này.");
+                return;
+            }
+
+            const response = await axios.post('/api/admin/exercise/insert-exercise', requestBody, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
             });
-            const response = await axios.get('/api/admin/exercise/exercise-list');
-            onUpdateList(response.data);
+          
+            onSave();
             onClose();
         } catch (error) {
             console.error("Error adding exercise:", error);
@@ -179,90 +131,67 @@ function AddExerciseModal({ isOpen, onClose, onUpdateList }) {
                 onClick={(e) => e.stopPropagation()}
             >
                 <h2 className="text-xl font-semibold mb-4">Thêm động tác mới</h2>
-                <div className="flex gap-10 justify-start">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tên động tác *</label>
-                        <input
-                            type="text"
-                            value={exerciseName}
-                            onChange={(e) => setExerciseName(e.target.value)}
-                            className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
-                        />
+                <div className="">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tên động tác *</label>
+                    <input
+                        type="text"
+                        value={exerciseName}
+                        onChange={(e) => setExerciseName(e.target.value)}
+                        className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
+                    />
 
-                        {/* Type */}
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Loại *</label>
-                        <input
-                            type="text"
-                            value={exerciseType}
-                            onChange={(e) => setExerciseType(e.target.value)}
-                            className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
-                        />
+                    {/* Type */}
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Loại *</label>
+                    <input
+                        type="text"
+                        value={exerciseType}
+                        onChange={(e) => setExerciseType(e.target.value)}
+                        className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
+                    />
 
-                        {/* Muscle */}
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nhóm cơ</label>
-                        <input
-                            type="text"
-                            value={exerciseMuscle}
-                            onChange={(e) => setExerciseMuscle(e.target.value)}
-                            className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
-                        />
+                    {/* Muscle */}
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nhóm cơ</label>
+                    <input
+                        type="text"
+                        value={exerciseMuscle}
+                        onChange={(e) => setExerciseMuscle(e.target.value)}
+                        className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
+                    />
 
-                        {/* Equipment */}
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dụng cụ</label>
-                        <input
-                            type="text"
-                            value={exerciseEquipment}
-                            onChange={(e) => setExerciseEquipment(e.target.value)}
-                            className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
-                        />
+                    {/* Equipment */}
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dụng cụ</label>
+                    <input
+                        type="text"
+                        value={exerciseEquipment}
+                        onChange={(e) => setExerciseEquipment(e.target.value)}
+                        className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
+                    />
 
-                        {/* Difficulty */}
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Độ khó</label>
-                        <input
-                            type="text"
-                            value={exerciseDifficulty}
-                            onChange={(e) => setExerciseDifficulty(e.target.value)}
-                            className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
-                        />
+                    {/* Difficulty */}
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Độ khó</label>
+                    <input
+                        type="text"
+                        value={exerciseDifficulty}
+                        onChange={(e) => setExerciseDifficulty(e.target.value)}
+                        className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
+                    />
 
-                        {/* Instructions */}
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Hướng dẫn *</label>
-                        <textarea
-                            value={exerciseInstructions}
-                            onChange={(e) => setExerciseInstructions(e.target.value)}
-                            className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
-                        ></textarea>
-                    </div>
-                    <div>
-                        {/* Image File */}
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Hình ảnh</label>
-                        <DropFileInput onFileChange={(files) => onFileChange(files)} />
+                    {/* Instructions */}
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Hướng dẫn *</label>
+                    <textarea
+                        value={exerciseInstructions}
+                        onChange={(e) => setExerciseInstructions(e.target.value)}
+                        className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none"
+                    ></textarea>
+                    {/* Image File */}
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Hình ảnh</label>
+                    <DropFileInput onFileChange={(files) => handleImageFileChange(files)} />
 
-                        {/* Video File */}
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Video</label>
-                        <div
-                            onDragOver={(e) => e.preventDefault()}
-                            onDrop={(e) => handleFileDrop(e, setVideoFile, setVideoPreview)}
-                            className="w-full p-4 border border-dashed border-gray-300 rounded-md text-center mb-4"
-                        >
-                            {videoPreview ? (
-                                <video src={videoPreview} controls className="w-full h-32 rounded-md" />
-                                
-                            ) : (
-                                "Kéo thả hoặc chọn file video"
-                            )}
-                            
-                            <input
-                                type="file"
-                                accept="video/*"
-                                onChange={(e) => handleFileChange(e, setVideoFile, setVideoPreview)}
-                                className="hidden"
-                            />
-                        </div>
-
-                    </div>
+                    {/* Video File */}
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Video</label>
+                    <DropFileInput onFileChange={(files) => handleVideoFileChange(files)} />
                 </div>
-                
+
 
                 {/* Buttons */}
                 <div className="flex justify-end mt-4">

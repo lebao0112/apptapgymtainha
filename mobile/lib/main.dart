@@ -79,6 +79,7 @@ class MyApp extends StatelessWidget {
       //dua vao thememode để chọn sáng tối
       themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       home: SplashScreen(),
+       // home: NewFeedScreen(),
     );
   }
 }

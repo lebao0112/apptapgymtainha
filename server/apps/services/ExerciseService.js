@@ -32,6 +32,7 @@ class ExerciseService {
           equipment: exercise.equipment,
           difficulty: exercise.difficulty,
           instructions: exercise.instructions,
+          updatedAt: new Date(),
         },
       }
     );

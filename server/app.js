@@ -5,6 +5,8 @@ var bodyParser = require("body-parser");
 var dotenv = require("dotenv");
 var cron = require("node-cron"); // For scheduling cron jobs
 var cors = require("cors");
+const upload = require("./apps/config/uploadS3");
+
 dotenv.config();
 
 app.use(express.json());
