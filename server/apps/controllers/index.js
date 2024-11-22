@@ -8,6 +8,8 @@ router.use("/progress", require(__dirname + "/ProgressController"));
 router.use("/chalprogress", require(__dirname + "/ChalProgressController"));
 router.use("/challenge", require(__dirname + "/ChallengeController"));
 router.use("/history", require(__dirname + "/HistoryController"));
+router.use("/post", require(__dirname + "/PostController"));
+router.use("/file", require(__dirname + "/UploadController"));
 //duong dan admin
 router.use("/admin/exercise", require(__dirname + "/admin/AdminExerciseController"));
 router.use("/admin/user", require(__dirname + "/admin/AdminUserController"));

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:doan_tapgymtainha/provider/challenge_provider.dart';
 import 'package:doan_tapgymtainha/provider/chalprogress_provider.dart';
 import 'package:doan_tapgymtainha/screen/trainingprogram_screen.dart';

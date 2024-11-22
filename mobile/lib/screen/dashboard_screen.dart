@@ -1,7 +1,7 @@
+import 'package:doan_tapgymtainha/screen/forum/newsfeed_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_tapgymtainha/screen/start_screen.dart'; // Import StartScreen
 import 'package:doan_tapgymtainha/screen/home_screen.dart';
-import 'package:doan_tapgymtainha/screen/profile_screen.dart';
 import 'package:doan_tapgymtainha/screen/explore_screen.dart';
 import 'package:doan_tapgymtainha/screen/setting_screen.dart';
 import 'counter_steps/counter_steps_screen.dart';
@@ -19,7 +19,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 0:
         return HomeScreen();
       case 1:
-        return ExploreScreen();
+        return NewsfeedScreen();
       case 2:
         return StartScreen(); // StartScreen will be created anew each time the tab is selected
       case 3:
@@ -49,7 +49,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.explore),
-            label: 'Khám phá',
+            label: 'Diễn đàn',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),

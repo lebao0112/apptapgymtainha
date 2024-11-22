@@ -3,31 +3,6 @@ var router = express.Router();
 var ExerciseService = require("./../services/ExerciseService");
 var Exercise = require("./../entity/exercise");
 
-// Insert a new exercise
-router.post("/insert-exercise", async function (req, res) {
-  const exerciseService = new ExerciseService();
-  const exercise = new Exercise();
-  exercise.name = req.body.name;
-  exercise.type = req.body.type;
-  exercise.muscle = req.body.muscle;
-  exercise.equipment = req.body.equipment;
-  exercise.difficulty = req.body.difficulty;
-  exercise.instructions = req.body.instructions;
-
-  try {
-    const result = await exerciseService.insertExercise(exercise);
-    res.status(201).json({
-      message: "Exercise added successfully",
-      exerciseId: result.insertedId,
-    });
-  } catch (error) {
-    console.error("Error adding exercise:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to add exercise", error: error.message });
-  }
-});
-
 // Update an existing exercise
 router.put("/update-exercise/:exerciseId", async function (req, res) {
   const exerciseService = new ExerciseService();
