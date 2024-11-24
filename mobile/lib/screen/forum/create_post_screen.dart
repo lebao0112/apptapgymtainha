@@ -1,4 +1,7 @@
+import 'package:doan_tapgymtainha/service/api_social_media.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -9,7 +12,11 @@ class CreatePostScreen extends StatefulWidget {
 
 class _CreatePostState extends State<CreatePostScreen> {
   final FocusNode _focusNode = FocusNode();
+  final TextEditingController _contentController = TextEditingController();
   bool _isKeyboardVisible = false;
+  final ImagePicker _picker = ImagePicker();
+  List<XFile> _selectedImages = [];
+
 
   @override
   void initState() {
@@ -28,6 +35,61 @@ class _CreatePostState extends State<CreatePostScreen> {
     super.dispose();
   }
 
+  Future<void> _pickMultipleImages() async {
+    try {
+      final List<XFile>? images = await _picker.pickMultiImage(
+        maxWidth: 800, // Optional: Resize image width
+        maxHeight: 800, // Optional: Resize image height
+        imageQuality: 80, // Optional: Compress image quality (1-100)
+      );
+      if (images != null) {
+        setState(() {
+          _selectedImages = images;
+        });
+      }
+    } catch (e) {
+      print("Error picking images: $e");
+    }
+  }
+
+  void createPost() async {
+    final content = _contentController.text;
+    if (content.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Nội dung hoặc hình ảnh không được để trống.")),
+      );
+      return;
+    }
+    if (_selectedImages != null && _selectedImages.isNotEmpty) {
+      // Chuyển đổi từ XFile sang File
+      final List<File> mediaFiles = _selectedImages.map((xfile) => File(xfile.path)).toList();
+
+      try {
+
+        final result = await ApiSocialMedia.createPost(
+          content: content,
+          mediaType: "image",
+          files: mediaFiles
+        );
+
+        if(result){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Đăng bài thành công")),
+          );
+          Navigator.pop(context);
+        }
+
+
+
+      } catch (error) {
+        print("Error creating post: $error");
+        return;
+      }
+    } else {
+      print("No files selected.");
+      return;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,9 +97,7 @@ class _CreatePostState extends State<CreatePostScreen> {
         title: Text('ĐĂNG BÀI'),
         actions: [
           ElevatedButton(
-              onPressed: () {
-
-              },
+              onPressed: createPost,
               child: Text(
                 'Đăng',
                 style: TextStyle(
@@ -61,14 +121,38 @@ class _CreatePostState extends State<CreatePostScreen> {
                   Container(
                     padding: const EdgeInsets.all(16.0),
                     child: TextFormField(
-                      maxLines: 100,
+                      controller: _contentController,
                       autofocus: true,
                       focusNode: _focusNode,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
                       decoration: InputDecoration(
                         hintText: "Nội dung...",
+                          border: InputBorder.none,
                       ),
                     ),
                   ),
+
+                  if(_selectedImages != null && _selectedImages!.isNotEmpty)
+                    Container(
+                      height: 1000,
+                      child:
+                          GridView.builder(
+                        padding: const EdgeInsets.all(8.0),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3, // Number of images per row
+                          crossAxisSpacing: 8.0,
+                          mainAxisSpacing: 8.0,
+                        ),
+                        itemCount: _selectedImages!.length,
+                        itemBuilder: (context, index) {
+                          return Image.file(
+                            File(_selectedImages![index].path),
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    ),
                 ],
               ),
             ),
@@ -82,7 +166,9 @@ class _CreatePostState extends State<CreatePostScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _pickMultipleImages();
+                        },
                         icon: Icon(Icons.image, color: Colors.blue),
                         tooltip: "Add Image",
                       ),
