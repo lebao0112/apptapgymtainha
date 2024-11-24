@@ -1,0 +1,61 @@
+import 'dart:convert';
+import 'package:doan_tapgymtainha/service/api_config.dart';
+import 'package:doan_tapgymtainha/shared/storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart';
+import 'dart:convert';
+import 'dart:io';
+
+
+class ApiSocialMedia {
+  static const String baseUrl = ApiConfig.baseUrl;
+
+
+
+  static Future<bool> createPost({
+    required String content,
+    required String mediaType,
+    List<File>? files,
+  }) async {
+    String? token = await Storage.getToken();
+    final String url = '${baseUrl}/post/create-post';
+
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(url))
+        ..headers['Authorization'] = 'Bearer $token'
+        ..fields['Content'] = content
+        ..fields['MediaType'] = mediaType;
+
+      // Thêm file vào multipart request nếu có
+      if (files != null && files.isNotEmpty) {
+        for (var file in files) {
+          request.files.add(await http.MultipartFile.fromPath(
+            'files',
+            file.path,
+          ));
+        }
+      }
+
+      // Gửi request
+      var response = await request.send();
+
+      // Xử lý response
+      if (response.statusCode == 201) {
+        var responseData = await http.Response.fromStream(response);
+        var responseBody = jsonDecode(responseData.body);
+        return true;
+      } else {
+        var responseData = await http.Response.fromStream(response);
+        var error = jsonDecode(responseData.body);
+        print('Failed to create post: ${error['message']}');
+        return false;
+      }
+    } catch (e) {
+      print('Error creating post: $e');
+      return false;
+    }
+  }
+
+}
