@@ -19,6 +19,29 @@ class ApiUserService {
     await storage.delete(key: "jwtToken");
   }
 
+  static Future<Map<String, dynamic>> fetchSomeOneProfile(String id) async{
+    String? token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/user/someone-profile/${id}'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final profileData = jsonDecode(response.body);
+
+      return profileData;
+    } else {
+      throw Exception('Failed to load user profile');
+    }
+  }
+
   static Future<Map<String, dynamic>> fetchUserProfile() async {
     String? token = await getToken();
 

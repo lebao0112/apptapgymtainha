@@ -26,7 +26,9 @@ let s3 = new S3Client({
 });
 
 // Cấu hình Multer để lưu file vào S3
-const upload = multer({
+const upload = multer(
+  {
+
   storage: multerS3({
     s3: s3,
     bucket: process.env.BUCKET_NAME,

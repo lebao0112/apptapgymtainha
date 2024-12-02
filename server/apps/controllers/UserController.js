@@ -28,6 +28,7 @@ router.post("/register", async function (req, res) {
     user.Weight = req.body.Weight;
     user.DateOfBirth = req.body.DateOfBirth;
     user.Gender = req.body.Gender;
+    user.AvatarUrl = "";
     user.Role = "user";
     const result = await userService.insertUser(user);
     console.log("User registered successfully:", result);
@@ -155,6 +156,34 @@ router.get("/profile", authenticateToken, async (req, res) => {
     const userService = new UserService();
     // Gọi service để lấy thông tin người dùng
     const user = await userService.getUser(userId);
+    console.log("🚀 ~ router.get ~ user:", user);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Trả về thông tin người dùng
+    res.json({
+      userProfile: user,
+      // userName: user.Name,
+      // email: user.Email,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to retrieve user profile",
+      error: error.message,
+    });
+  }
+});
+
+
+router.get("/someone-profile/:id", authenticateToken, async (req, res) => {
+  try {
+    // Lấy userId từ token đã xác thực
+    const userId = req.user.userId;
+    const userService = new UserService();
+    // Gọi service để lấy thông tin người dùng
+    const user = await userService.getUser(req.params.id);
     console.log("🚀 ~ router.get ~ user:", user);
 
     if (!user) {

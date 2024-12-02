@@ -3,6 +3,7 @@ import 'package:doan_tapgymtainha/provider/chalprogress_provider.dart';
 import 'package:doan_tapgymtainha/provider/complete_workout_status_provider.dart';
 import 'package:doan_tapgymtainha/provider/workout_provider.dart';
 import 'package:doan_tapgymtainha/provider/workout_timer_provider.dart';
+import 'package:doan_tapgymtainha/provider/post_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:doan_tapgymtainha/screen/splash_screen.dart';
@@ -39,6 +40,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CompleteWorkoutStatusProvider()),
         ChangeNotifierProvider(create: (_) => WorkoutProvider()),
         ChangeNotifierProvider(create: (_) => WorkoutTimerProvider()),
+        ChangeNotifierProvider(create: (_) => PostProvider()),
       ],
       child: MyApp(),
     ),

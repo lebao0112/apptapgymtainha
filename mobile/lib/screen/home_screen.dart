@@ -73,18 +73,26 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Image(
-                  image: AssetImage('assets/fire_streak.png'),
-                  height: 45,
-                  width: 45,
-                ),
-                Text(
-                  '10',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Theme.of(context).textTheme.bodyLarge?.color,
-                  ),
-                ),
+                IconButton(
+                    onPressed: () {
+
+                    },
+                    icon: Icon(
+                        Icons.notifications
+                    )
+                )
+                // Image(
+                //   image: AssetImage('assets/fire_streak.png'),
+                //   height: 45,
+                //   width: 45,
+                // ),
+                // Text(
+                //   '10',
+                //   style: TextStyle(
+                //     fontSize: 24,
+                //     color: Theme.of(context).textTheme.bodyLarge?.color,
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -335,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       margin: EdgeInsets.all(4),
       padding: EdgeInsets.all(20),
-      width: 400,
+
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           begin: Alignment.centerLeft,
@@ -347,94 +355,97 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            challenge['name'],
-            style: TextStyle(
-              color: Theme.of(context).textTheme.bodyLarge?.color,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              challenge['name'],
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyLarge?.color,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            challenge['description'],
-            style: TextStyle(color: Colors.white),
-          ),
-          Consumer<ChalprogressProvider>(
-            builder: (context, chalprogressProvider, child) {
-              final chalprogress = chalprogressProvider.chalprogresses.firstWhere(
-                    (item) => item['ChallengeId'] == challenge['_id'],
-                orElse: () => null,
-              );
-
-              final progressValue = chalprogress != null ? chalprogress['Progress'] : 0;
-              final progressPercentage = progressValue / challenge['days'].length;
-
-              return chalprogress == null
-                  ? Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      await createAndLoadChalProgress(
-                          context, challenge['_id'], chalprogressProvider, challenge);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.orange,
-                    ),
-                    child: Text(
-                      'BẮT ĐẦU',
-                      style: TextStyle(fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                ],
-              )
-                  : Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${progressValue.toString()} / ${challenge['days'].length}',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+            const SizedBox(height: 10),
+            Text(
+              challenge['description'],
+              style: TextStyle(color: Colors.white),
+            ),
+            Consumer<ChalprogressProvider>(
+              builder: (context, chalprogressProvider, child) {
+                final chalprogress = chalprogressProvider.chalprogresses.firstWhere(
+                      (item) => item['ChallengeId'] == challenge['_id'],
+                  orElse: () => null,
+                );
+        
+                final progressValue = chalprogress != null ? chalprogress['Progress'] : 0;
+                final progressPercentage = progressValue / challenge['days'].length;
+        
+                return chalprogress == null
+                    ? Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        await createAndLoadChalProgress(
+                            context, challenge['_id'], chalprogressProvider, challenge);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.orange,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  LinearProgressIndicator(
-                    value: progressPercentage,
-                    backgroundColor: Colors.grey.shade800,
-                    color: Colors.orange,
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TrainingProgramScreen(
-                            challenge: challenge,
-                          ),
+                      child: Text(
+                        'BẮT ĐẦU',
+                        style: TextStyle(fontWeight: FontWeight.w900),
+                      ),
+                    ),
+                  ],
+                )
+                    : Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${progressValue.toString()} / ${challenge['days'].length}',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.orange,
+                      ],
                     ),
-                    child: Text(
-                      'BẮT ĐẦU',
-                      style: TextStyle(fontWeight: FontWeight.w900),
+                    const SizedBox(height: 10),
+                    LinearProgressIndicator(
+                      value: progressPercentage,
+                      backgroundColor: Colors.grey.shade800,
+                      color: Colors.orange,
                     ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TrainingProgramScreen(
+                              challenge: challenge,
+                            ),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.orange,
+                      ),
+                      child: Text(
+                        'BẮT ĐẦU',
+                        style: TextStyle(fontWeight: FontWeight.w900),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
