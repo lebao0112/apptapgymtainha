@@ -36,6 +36,7 @@ class PostService {
           Content: post.Content,
           MediaType: post.MediaType,
           MediaUrls: post.MediaUrls,
+          Likes: post.Likes,
           UpdatedAt: new Date(),
         },
       }
@@ -49,8 +50,51 @@ class PostService {
 
   // Lấy danh sách bài đăng (có thể giới hạn kết quả trả về)
   async getPostList(skip = 0, limit = 100) {
-    const cursor = await this.postCollection.find().skip(skip).limit(limit);
-    return await cursor.toArray();
+    try {
+      const posts = await this.postCollection
+        .aggregate([
+          {
+            $lookup: {
+              from: "Users", // Tên collection chứa thông tin người dùng
+              localField: "UserId", // Trường trong collection Posts để join
+              foreignField: "_id", // Trường trong collection Users để join
+              as: "userinfo", // Tên trường sẽ chứa dữ liệu kết hợp
+            },
+          },
+          {
+            $unwind: { path: "$userinfo", preserveNullAndEmptyArrays: true }, // Giải nén mảng userinfo (null nếu không tìm thấy người dùng)
+          },
+          {
+            $project: {
+              _id: 1,
+              UserId: 1,
+              Content: 1,
+              MediaUrls: 1,
+              CreatedAt: 1,
+              UpdatedAt: 1,
+              Likes: 1,
+              "userinfo.Name": 1,
+              "userinfo.AvatarUrl": 1,
+            },
+          },
+          {
+            $skip: skip, // Bỏ qua số lượng bài đăng (phân trang)
+          },
+          {
+            $limit: limit, // Giới hạn số lượng bài đăng trả về
+          },
+        ])
+        .toArray();
+
+      return posts;
+    } catch (error) {
+      console.error("Error fetching post list with user info:", error);
+      throw new Error("Failed to fetch post list with user info");
+    }
+  }
+
+  async countDocuments(){
+    return await this.postCollection.countDocuments();
   }
 }
 

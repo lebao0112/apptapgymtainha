@@ -14,6 +14,23 @@ class ApiSocialMedia {
 
 
 
+  static Future<dynamic> fetchPosts(int page) async {
+    String? token = await Storage.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/post/get-posts?page=${page}'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to fetch posts');
+    }
+  }
+
   static Future<bool> createPost({
     required String content,
     required String mediaType,
@@ -57,5 +74,52 @@ class ApiSocialMedia {
       return false;
     }
   }
+
+  static Future<bool> checkIfUserLiked(String postId, String? commentId) async{
+    String? token = await Storage.getToken();
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/like/check-like'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+      body: jsonEncode({
+        "postId": postId,
+        "commentId": commentId
+      })
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data["isLiked"];
+    } else {
+      throw Exception('Failed to check like');
+    }
+  }
+
+  static Future<bool> toggleLike(String postId, String? commentId) async{
+    String? token = await Storage.getToken();
+
+    final response = await http.put(
+        Uri.parse('$baseUrl/like/like-post'),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode({
+          "postId": postId,
+          "commentId": commentId
+        })
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw false;
+    }
+  }
+
+
 
 }

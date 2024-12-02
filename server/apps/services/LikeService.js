@@ -46,7 +46,7 @@ class LikeService {
     return await this.likeCollection.findOne({
       PostId: postId ? new ObjectId(postId) : null,
       CommentId: commentId ? new ObjectId(commentId) : null,
-      UserId: userId,
+      UserId: userId ? new ObjectId(userId) : null,
     });
   }
 

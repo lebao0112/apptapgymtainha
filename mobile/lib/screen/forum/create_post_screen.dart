@@ -54,18 +54,16 @@ class _CreatePostState extends State<CreatePostScreen> {
 
   void createPost() async {
     final content = _contentController.text;
-    if (content.isEmpty) {
+    if (content.isEmpty && _selectedImages.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Nội dung hoặc hình ảnh không được để trống.")),
+        SnackBar(content: Text("Nội dung không được để trống.")),
       );
       return;
-    }
-    if (_selectedImages != null && _selectedImages.isNotEmpty) {
+    } else{
       // Chuyển đổi từ XFile sang File
       final List<File> mediaFiles = _selectedImages.map((xfile) => File(xfile.path)).toList();
 
       try {
-
         final result = await ApiSocialMedia.createPost(
           content: content,
           mediaType: "image",
@@ -78,16 +76,10 @@ class _CreatePostState extends State<CreatePostScreen> {
           );
           Navigator.pop(context);
         }
-
-
-
       } catch (error) {
         print("Error creating post: $error");
         return;
       }
-    } else {
-      print("No files selected.");
-      return;
     }
   }
   @override
@@ -98,6 +90,7 @@ class _CreatePostState extends State<CreatePostScreen> {
         actions: [
           ElevatedButton(
               onPressed: createPost,
+
               child: Text(
                 'Đăng',
                 style: TextStyle(
@@ -106,6 +99,7 @@ class _CreatePostState extends State<CreatePostScreen> {
                 )
               ),
               style: ButtonStyle(
+
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.orange),
               ),
           )

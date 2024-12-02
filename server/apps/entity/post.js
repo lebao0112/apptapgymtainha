@@ -6,9 +6,11 @@ class Post {
   MediaUrls;
   CreatedAt;
   UpdatedAt;
+  Likes;
 
   constructor() {
-     this.MediaUrls = [];
+    this.MediaUrls = [];
+    this.Likes = 0;
     this.CreatedAt = new Date();
     this.UpdatedAt = new Date();
   }
