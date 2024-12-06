@@ -3,6 +3,7 @@ class Comment {
   PostId;
   UserId;
   Content;
+  ParentId;
   CreatedAt;
   UpdatedAt;
 

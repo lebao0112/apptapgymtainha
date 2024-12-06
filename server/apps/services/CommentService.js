@@ -25,11 +25,54 @@ class CommentService {
 
   // Lấy danh sách bình luận của một bài đăng
   async getCommentsByPostId(postId, skip = 0, limit = 100) {
-    const cursor = await this.commentCollection
-      .find({ PostId: new ObjectId(postId) })
-      .skip(skip)
-      .limit(limit);
-    return await cursor.toArray();
+    const pipeline = [
+      {
+        $match: {
+          PostId: new ObjectId(postId),
+          ParentId: null, // Lọc các bình luận cha (không phải replies)
+        },
+      },
+      {
+        $lookup: {
+          from: "Users", // Tên của collection chứa thông tin user
+          localField: "UserId", // Trường liên kết trong collection comments
+          foreignField: "_id", // Trường liên kết trong collection users
+          as: "User", // Tên của trường sẽ chứa thông tin user sau khi populate
+        },
+      },
+      {
+        $unwind: {
+          path: "$User", // Tách mảng thành object nếu user tồn tại
+          preserveNullAndEmptyArrays: true, // Đảm bảo không lỗi nếu user không tồn tại
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          PostId: 1,
+          UserId: 1,
+          Content: 1,
+          ParentId: 1,
+          CreatedAt: 1,
+          UpdatedAt: 1,
+          "User.Name": 1, // Chỉ giữ lại trường Name từ User
+          "User.AvatarUrl": 1, // Chỉ giữ lại trường AvatarUrl từ User
+        },
+      },
+      {
+        $skip: skip, // Bỏ qua số lượng comment
+      },
+      {
+        $limit: limit, // Giới hạn số lượng comment trả về
+      },
+      {
+        $sort: {
+          CreatedAt: -1, // Sắp xếp theo thời gian mới nhất
+        },
+      },
+    ];
+
+    return await this.commentCollection.aggregate(pipeline).toArray();
   }
 
   // Cập nhật nội dung của một bình luận
@@ -37,6 +80,7 @@ class CommentService {
     return await this.commentCollection.updateOne(
       { _id: new ObjectId(comment._id) },
       {
+        
         $set: {
           Content: comment.Content,
           UpdatedAt: new Date(),

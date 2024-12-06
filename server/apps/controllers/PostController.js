@@ -4,7 +4,7 @@ var PostService = require("./../services/PostService");
 var LikeService = require("./../services/LikeService");
 var Post = require("./../entity/post");
 const authenticateToken = require("../middleware/authMiddleware");
-const upload = require("../config/uploadS3");
+const {upload} = require("../config/uploadS3");
 const { ObjectId } = require("mongodb");
 
 router.post(

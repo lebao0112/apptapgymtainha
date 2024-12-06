@@ -25,7 +25,7 @@ router.put("/like-post", authenticateToken, async function (req, res) {
     }
 
     const like = await likeService.checkIfUserLiked(postId, commentId, userId);
-    console.log("🚀 ~ like:", like);
+    // console.log("🚀 ~ like:", like);
 
     const updatedPost = new Post();
     if (like) {

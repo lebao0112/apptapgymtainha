@@ -1,5 +1,5 @@
 const express = require("express");
-const upload = require("../config/uploadS3"); 
+const {upload} = require("../config/uploadS3"); 
 const router = express.Router();
 
 // Route xử lý upload file

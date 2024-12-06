@@ -6,6 +6,9 @@ const bcrypt = require("bcrypt");
 const signToken = require("../middleware/generateToken");
 const authenticateToken = require("../middleware/authMiddleware");
 const jwt = require("jsonwebtoken");
+const  {upload, deleteFileOnS3} = require("../config/uploadS3");
+
+
 
 // Register user
 router.post("/register", async function (req, res) {
@@ -114,27 +117,80 @@ router.post(
   signToken
 );
 
-router.put("/update-username", authenticateToken, async (req, res) => {
-  try {
-    const userId = req.user.userId; // Lấy userId từ token đã xác thực
-    const { newName } = req.body; // Lấy tên mới từ request body
+router.put(
+  "/update-profile",
+  authenticateToken,
+  upload.single("avatar"),
+  async (req, res) => {
+    try {
+      // Lấy userId từ token
+      const userId = req.user.userId;
 
-    if (!newName || newName.trim() === "") {
-      return res.status(400).json({ message: "Tên không hợp lệ." });
+      // Lấy các trường từ body
+      const { name, email, height, weight, gender, dateOfBirth } = req.body;
+
+      const updatedFields = {};
+
+      // Chỉ thêm các trường hợp lệ vào `updatedFields` (bỏ qua các trường có giá trị "")
+      if (name && name.trim() !== "") updatedFields.Name = name;
+      if (email && email.trim() !== "") updatedFields.Email = email;
+      if (height && height.trim() !== "")
+        updatedFields.Height = parseFloat(height);
+      if (weight && weight.trim() !== "")
+        updatedFields.Weight = parseFloat(weight);
+      if (gender && gender.trim() !== "") updatedFields.Gender = gender;
+      if (dateOfBirth && dateOfBirth.trim() !== "")
+        updatedFields.DateOfBirth = dateOfBirth;
+
+      
+      // Xử lý avatar nếu có file được tải lên
+      if (req.file && req.file.location) {
+        // Lấy thông tin người dùng hiện tại
+        const userService = new UserService();
+        const currentUser = await userService.getUser(userId);
+
+        if (!currentUser) {
+          return res.status(404).json({
+            message: "Không tìm thấy người dùng",
+          });
+        }
+
+        // Xóa ảnh cũ khỏi S3 (nếu tồn tại)
+        const oldAvatarUrl = currentUser.AvatarUrl;
+        if (oldAvatarUrl) {
+          await deleteFileOnS3(oldAvatarUrl);
+        }
+
+        // Cập nhật URL ảnh mới
+        updatedFields.AvatarUrl = req.file.location;
+      }
+
+      // Cập nhật thông tin người dùng
+      const userService = new UserService();
+      const updatedUser = await userService.updateUser(userId, updatedFields);
+
+      if (!updatedUser) {
+        console.log("flag");
+        return res.status(404).json({
+          message: "Không tìm thấy người dùng",
+        });
+      }
+
+      // Trả về phản hồi thành công
+      return res.status(200).json({
+        message: "Cập nhật thông tin người dùng thành công",
+        user: updatedUser,
+      });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      return res.status(500).json({
+        message: "Đã xảy ra lỗi khi cập nhật thông tin người dùng",
+        error: error.message,
+      });
     }
-
-    const userService = new UserService();
-    const result = await userService.updateUserName(userId, newName); // Gọi hàm update
-
-    res.status(200).json({ message: "Tên người dùng đã được cập nhật." });
-  } catch (error) {
-    console.error("Error updating user name:", error);
-    res.status(500).json({
-      message: "Đã xảy ra lỗi khi cập nhật tên.",
-      error: error.message,
-    });
   }
-});
+);
+
 
 router.post("/delete-user", async function (req, res) {
   const userService = new UserService();
@@ -164,7 +220,7 @@ router.get("/profile", authenticateToken, async (req, res) => {
 
     // Trả về thông tin người dùng
     res.json({
-      userProfile: user,
+      user,
       // userName: user.Name,
       // email: user.Email,
     });
