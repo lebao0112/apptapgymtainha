@@ -1,9 +1,10 @@
 import 'package:doan_tapgymtainha/provider/post_provider.dart';
+import 'package:doan_tapgymtainha/screen/forum/comment_button.dart';
 import 'package:doan_tapgymtainha/screen/forum/create_post_screen.dart';
 import 'package:doan_tapgymtainha/screen/forum/media_viewer_screen.dart';
 import 'package:doan_tapgymtainha/screen/forum/search_post_screen.dart';
 import 'package:doan_tapgymtainha/service/api_user_service.dart';
-import 'package:doan_tapgymtainha/widget/like_button.dart';
+import 'package:doan_tapgymtainha/screen/forum/like_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
@@ -235,7 +236,6 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
                   goToScreen(context, MediaViewerScreen());
                 },
                 child: Container(
-
                   child: _buildMediaLayout(post["MediaUrls"].cast<String>()),
                 ),
               ),
@@ -246,21 +246,7 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   LikeButton(postId: post["_id"], likeCount: post["Likes"], isLiked: post["isLiked"]),
-                  Column(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-
-                        },
-                        icon:  Icon(Icons.comment_bank_outlined, color: Theme.of(context).textTheme.bodyLarge?.color),
-                      ),
-                      Text(
-                        '3',
-                        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
-                      ),
-                    ],
-                  )
-
+                  CommentButton(postId: post["_id"])
                 ],
               )
             ],

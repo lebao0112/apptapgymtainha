@@ -8,6 +8,8 @@ import 'package:path/path.dart';
 import 'dart:convert';
 import 'dart:io';
 
+import '../model/comment.dart';
+
 
 class ApiSocialMedia {
   static const String baseUrl = ApiConfig.baseUrl;
@@ -43,7 +45,8 @@ class ApiSocialMedia {
       var request = http.MultipartRequest('POST', Uri.parse(url))
         ..headers['Authorization'] = 'Bearer $token'
         ..fields['Content'] = content
-        ..fields['MediaType'] = mediaType;
+        ..fields['MediaType'] = mediaType
+        ..fields['Folder'] = "post";
 
       // Thêm file vào multipart request nếu có
       if (files != null && files.isNotEmpty) {
@@ -116,10 +119,29 @@ class ApiSocialMedia {
     if (response.statusCode == 200) {
       return true;
     } else {
-      throw false;
+      return false;
     }
   }
 
+  static Future<CommentResponse> fetchCommentsForPost(String postId) async {
+    String? token = await Storage.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/comment/get-comments-by-post/${postId}'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+
+      // Ánh xạ JSON thành CommentResponse
+      return CommentResponse.fromJson(data);
+    } else {
+      throw Exception('Failed to fetch comments for post');
+    }
+  }
 
 
 }
