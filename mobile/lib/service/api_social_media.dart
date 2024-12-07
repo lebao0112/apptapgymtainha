@@ -143,5 +143,76 @@ class ApiSocialMedia {
     }
   }
 
+  static Future<bool> sendComment({
+    required String postId,
+    required String content,
+    String? parentId,
+  }) async {
+    String? token = await Storage.getToken();
+    final String url = '$baseUrl/comment/create-comment';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode({
+          "PostId": postId,
+          "Content": content,
+          "ParentId": parentId,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        // Bình luận được tạo thành công
+        return true;
+      } else {
+        // Thất bại, in thông báo lỗi từ API
+        final errorData = jsonDecode(response.body);
+        print("Failed to send comment: ${errorData['message']}");
+        return false;
+      }
+    } catch (error) {
+      print("Error sending comment: $error");
+      return false;
+    }
+  }
+
+  static Future<bool> sendReplyComment({
+    required String postId,
+    required String content,
+    required String parentId,
+  }) async {
+    String? token = await Storage.getToken();
+    final String url = '$baseUrl/comment/create-comment';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+        body: jsonEncode({
+          "PostId": postId,
+          "Content": content,
+          "ParentId": parentId,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        return true;
+      } else {
+        final errorData = jsonDecode(response.body);
+        print("Failed to send reply comment: ${errorData['message']}");
+        return false;
+      }
+    } catch (error) {
+      print("Error sending reply comment: $error");
+      return false;
+    }
+  }
 
 }

@@ -29,7 +29,7 @@ class CommentService {
       {
         $match: {
           PostId: new ObjectId(postId),
-          ParentId: null, // Lọc các bình luận cha (không phải replies)
+//          ParentId: null, // Lọc các bình luận cha (không phải replies)
         },
       },
       {
