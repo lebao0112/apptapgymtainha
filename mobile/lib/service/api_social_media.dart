@@ -143,7 +143,7 @@ class ApiSocialMedia {
     }
   }
 
-  static Future<bool> sendComment({
+  static Future<Comment?> sendComment({
     required String postId,
     required String content,
     String? parentId,
@@ -166,21 +166,22 @@ class ApiSocialMedia {
       );
 
       if (response.statusCode == 201) {
-        // Bình luận được tạo thành công
-        return true;
+        final data = json.decode(response.body);
+        return Comment.fromJson(data["newComment"]);
       } else {
         // Thất bại, in thông báo lỗi từ API
         final errorData = jsonDecode(response.body);
+
         print("Failed to send comment: ${errorData['message']}");
-        return false;
+        return null;
       }
     } catch (error) {
       print("Error sending comment: $error");
-      return false;
+      return null;
     }
   }
 
-  static Future<bool> sendReplyComment({
+  static Future<Comment?> sendReplyComment({
     required String postId,
     required String content,
     required String parentId,
@@ -203,15 +204,16 @@ class ApiSocialMedia {
       );
 
       if (response.statusCode == 201) {
-        return true;
+        final data = json.decode(response.body);
+        return Comment.fromJson(data["newComment"]);
       } else {
         final errorData = jsonDecode(response.body);
         print("Failed to send reply comment: ${errorData['message']}");
-        return false;
+        return null;
       }
     } catch (error) {
       print("Error sending reply comment: $error");
-      return false;
+      return null;
     }
   }
 

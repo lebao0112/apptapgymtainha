@@ -1,3 +1,4 @@
+import 'package:doan_tapgymtainha/notification_helper.dart';
 import 'package:doan_tapgymtainha/provider/challenge_provider.dart';
 import 'package:doan_tapgymtainha/provider/chalprogress_provider.dart';
 import 'package:doan_tapgymtainha/provider/complete_workout_status_provider.dart';
@@ -18,6 +19,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 void main() async {
   //dam bao tai nguyen duoc khoi tao  truoc khi chay
   WidgetsFlutterBinding.ensureInitialized();
+  NotificationHelper.init();
   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
 
   OneSignal.initialize("39ade0ad-e5a0-4f74-8822-b6fb2d766c35");

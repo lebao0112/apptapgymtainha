@@ -179,11 +179,11 @@ class TrainingProgramScreen extends StatelessWidget {
   }
 
   void _onDayButtonTap(String workoutId, Map<String, dynamic> chalProgress , BuildContext context) async {
-    final workoutDetails = await ApiChallenge.fetchChallengeWorkoutDetails(workoutId);
+    // final workoutDetails = await ApiChallenge.fetchChallengeWorkoutDetails(workoutId);
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => WorkoutDetailScreen(workoutDetails: workoutDetails, chalProgress:  chalProgress,)),
+          builder: (context) => WorkoutDetailScreen(workoutId: workoutId, chalProgress:  chalProgress,)),
     );
   }
 }

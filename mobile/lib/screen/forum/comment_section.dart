@@ -73,47 +73,28 @@ class _CommentSectionState extends State<CommentSection> {
     final newComment = _commentController.text.trim();
 
     if (newComment.isNotEmpty) {
-      // Tạo bình luận tạm thời
-      final tempComment = Comment(
-        id: DateTime.now().toString(),
-        postId: postId,
-        userId: userId ?? "",
-        name: username ?? "ẩn danh",
-        avatarUrl: avatarUrl ?? "https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3408.jpg?w=740",
-        content: newComment,
-        parentId: null,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
-
-      // Thêm bình luận tạm thời vào cây bình luận
-      final newNode = CommentNode(comment: tempComment, replies: []);
-      setState(() {
-        commentTree.add(newNode);
-        _commentController.clear();
-      });
-
       try {
         // Gửi bình luận lên server
-        final success = await ApiSocialMedia.sendComment(
+        Comment? comment = await ApiSocialMedia.sendComment(
           postId: postId,
           content: newComment,
         );
 
-        if (!success) {
-          // Gỡ bỏ bình luận tạm thời nếu gửi thất bại
-          setState(() {
-            commentTree.remove(newNode);
-          });
+        if (comment == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to add comment')),
           );
         }
-      } catch (error) {
-        // Xử lý lỗi
+
+        comment?.avatarUrl = avatarUrl;
+        comment?.name = username;
+
+        final newNode = CommentNode(comment: comment!, replies: []);
         setState(() {
-          commentTree.remove(newNode);
+          commentTree.insert(0, newNode); //Thêm một comment vào đầu danh sách
+          _commentController.clear();
         });
+      } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to add comment')),
         );
@@ -121,55 +102,6 @@ class _CommentSectionState extends State<CommentSection> {
     }
   }
 
-  // void _addComment(UserProvider userProvider) async {
-  //   final userId = userProvider.user?.id;
-  //   final username = userProvider.user?.name;
-  //   final avatarUrl = userProvider.user?.avatarUrl;
-  //   final newComment = _commentController.text.trim();
-  //   if (newComment.isNotEmpty) {
-  //     // Thêm bình luận vào giao diện tạm thời
-  //     final tempComment = Comment(
-  //       id: DateTime.now().toString(),
-  //       postId: postId,
-  //       userId: userId ?? "",
-  //       name: username ?? "ẩn danh",
-  //       avatarUrl: avatarUrl ?? "https://img.freepik.com/premium-vector/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3408.jpg?w=740",
-  //       content: newComment,
-  //       parentId: null,
-  //       createdAt: DateTime.now(),
-  //       updatedAt: DateTime.now(),
-  //     );
-  //
-  //     setState(() {
-  //       comments.add(tempComment);
-  //       _commentController.clear();
-  //     });
-  //
-  //     // Gửi bình luận lên server
-  //     try {
-  //       final success = await ApiSocialMedia.sendComment(
-  //         postId: postId,
-  //         content: newComment,
-  //       );
-  //
-  //       if (!success) {
-  //         setState(() {
-  //           comments.remove(tempComment); // Gỡ bỏ bình luận tạm thời nếu thất bại
-  //         });
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(content: Text('Failed to add comment')),
-  //         );
-  //       }
-  //     } catch (error) {
-  //       setState(() {
-  //         comments.remove(tempComment);
-  //       });
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Failed to add comment')),
-  //       );
-  //     }
-  //   }
-  // }
 
   void _openReplyDialog(String parentId) {
     final TextEditingController replyController = TextEditingController();
@@ -250,7 +182,8 @@ class _CommentSectionState extends State<CommentSection> {
   Future<void> _sendReply(String parentId, String content) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final userId = userProvider.user?.id;
-
+    final username = userProvider.user?.name;
+    final avatarUrl = userProvider.user?.avatarUrl;
     // Tạo trả lời tạm thời
     final replyComment = Comment(
       id: DateTime.now().toString(),
@@ -277,33 +210,28 @@ class _CommentSectionState extends State<CommentSection> {
     findParentNode(commentTree);
 
     if (parentNode != null) {
-      final tempNode = CommentNode(comment: replyComment, replies: []);
-      setState(() {
-        parentNode!.replies.add(tempNode); // Thêm trả lời tạm thời
-      });
-
       try {
         // Gửi trả lời lên server
-        final success = await ApiSocialMedia.sendReplyComment(
+        Comment? reply = await ApiSocialMedia.sendReplyComment(
           postId: postId,
           content: content,
           parentId: parentId,
         );
 
-        if (!success) {
-          // Gỡ bỏ trả lời tạm thời nếu gửi thất bại
-          setState(() {
-            parentNode!.replies.remove(tempNode);
-          });
+        if (reply == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to send reply')),
           );
         }
-      } catch (error) {
-        // Xử lý lỗi
+
+        reply?.avatarUrl = avatarUrl;
+        reply?.name = username;
+
+        final tempNode = CommentNode(comment: reply!, replies: []);
         setState(() {
-          parentNode!.replies.remove(tempNode);
+          parentNode!.replies.add(tempNode); // Thêm trả lời tạm thời
         });
+      } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to send reply')),
         );
@@ -346,53 +274,6 @@ class _CommentSectionState extends State<CommentSection> {
                 'Bình luận',
                 style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
               ),
-
-              // Danh sách bình luận
-              // Expanded(
-              //   child: isLoading
-              //       ? Center(child: CircularProgressIndicator())
-              //       : comments.isEmpty
-              //       ? Center(
-              //     child: Text(
-              //       'No comments yet.',
-              //       style: TextStyle(color: Colors.white),
-              //     ),
-              //   )
-              //       : ListView.builder(
-              //     controller: scrollController,
-              //     itemCount: comments.length,
-              //     itemBuilder: (context, index) {
-              //       final comment = comments[index];
-              //       return ListTile(
-              //         leading: CircleAvatar(
-              //           backgroundImage: comment.avatarUrl != null
-              //               ? NetworkImage(comment.avatarUrl!) // Hiển thị avatar nếu có
-              //               : AssetImage('assets/default_avatar.png') as ImageProvider, // Avatar mặc định
-              //         ),
-              //         title: Text(
-              //           comment.name ?? 'Anonymous', // Hiển thị tên người dùng
-              //           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              //         ),
-              //         subtitle: Column(
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             Text(
-              //               comment.content,
-              //               style: TextStyle(color: Colors.white),
-              //             ),
-              //             TextButton(
-              //               onPressed: () => _openReplyDialog(comment.id),
-              //               child: Text(
-              //                 'Reply',
-              //                 style: TextStyle(color: Colors.blue),
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //       );
-              //     },
-              //   ),
-              // ),
               Expanded(
                 child: isLoading
                     ? Center(child: CircularProgressIndicator())
@@ -420,23 +301,34 @@ class _CommentSectionState extends State<CommentSection> {
                     Expanded(
                       child: TextField(
                         controller: _commentController,
+                        style: TextStyle(
+                          color: Theme.of(context).brightness == Brightness.light
+                              ? Colors.black // Văn bản màu đen ở chế độ sáng
+                              : Colors.white, // Văn bản màu trắng ở chế độ tối
+                        ),
                         decoration: InputDecoration(
-                          hintText: 'Add a comment...',
+                          hintText: 'Thêm bình luận...',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide.none,
                           ),
                           filled: true,
-                          fillColor: Colors.grey[200],
+                          fillColor: Theme.of(context).brightness == Brightness.light
+                              ? Colors.grey[200] // Nền xám nhạt ở chế độ sáng
+                              : Colors.grey[800], // Nền xám đậm ở chế độ tối
                           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         ),
                       ),
                     ),
                     SizedBox(width: 8),
                     IconButton(
-                      icon: Icon(Icons.send),
+                      icon: Icon(
+                          Icons.send,
+                          color: Colors.orange
+                      ),
                       onPressed: () {
                         _addComment(userProvider);
+                        FocusScope.of(context).unfocus();
                       },
                     ),
                   ],
@@ -476,7 +368,7 @@ class _CommentSectionState extends State<CommentSection> {
     return rootComments;
   }
 
-  Widget buildCommentList(List<CommentNode> commentTree, {double indent = 0.0}) {
+  Widget buildCommentList(List<CommentNode> commentTree, {double indent = 10}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: commentTree.map((node) {
@@ -485,35 +377,62 @@ class _CommentSectionState extends State<CommentSection> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Hiển thị bình luận chính
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: node.comment.avatarUrl != null
-                      ? NetworkImage(node.comment.avatarUrl!)
-                      : AssetImage('assets/default_avatar.png') as ImageProvider,
-                ),
-                title: Text(
-                  node.comment.name ?? 'Anonymous',
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-                subtitle: Column(
+              Container(
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      node.comment.content,
-                      style: TextStyle(color: Colors.white),
+                  children: <Widget>[
+                    CircleAvatar(
+                      backgroundImage: node.comment.avatarUrl != null
+                          ? NetworkImage(node.comment.avatarUrl!)
+                          : AssetImage('assets/default_avatar.png') as ImageProvider,
                     ),
-                    TextButton(
-                      onPressed: () => _openReplyDialog(node.comment.id),
-                      child: Text(
-                        'Trả lời',
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    ),
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          node.comment.name ?? 'Anonymous',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                        Text(
+                          node.comment.content,
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                        ),
+                        TextButton(
+                          onPressed: () => _openReplyDialog(node.comment.id),
+                          child: Text(
+                            'Trả lời',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      ],
+                    )
                   ],
+
                 ),
               ),
+              // ListTile(
+              //   leading: CircleAvatar(
+              //     backgroundImage: node.comment.avatarUrl != null
+              //         ? NetworkImage(node.comment.avatarUrl!)
+              //         : AssetImage('assets/default_avatar.png') as ImageProvider,
+              //   ),
+              //   title: Text(
+              //     node.comment.name ?? 'Anonymous',
+              //     style: TextStyle(
+              //         color: Colors.white, fontWeight: FontWeight.bold),
+              //   ),
+              //   subtitle: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Text(
+              //         node.comment.content,
+              //         style: TextStyle(color: Colors.white),
+              //       ),
+              //
+              //     ],
+              //   ),
+              // ),
 
               // Hiển thị các bình luận trả lời (đệ quy)
               if (node.replies.isNotEmpty)

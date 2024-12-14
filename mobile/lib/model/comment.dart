@@ -6,8 +6,8 @@ class Comment {
   final String? parentId;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String? avatarUrl; // Avatar URL
-  final String? name;
+  String? avatarUrl;
+  String? name;
 
   Comment({
     required this.id,

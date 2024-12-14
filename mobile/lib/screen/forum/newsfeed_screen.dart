@@ -4,6 +4,7 @@ import 'package:doan_tapgymtainha/screen/forum/create_post_screen.dart';
 import 'package:doan_tapgymtainha/screen/forum/media_viewer_screen.dart';
 import 'package:doan_tapgymtainha/screen/forum/search_post_screen.dart';
 import 'package:doan_tapgymtainha/service/api_user_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:doan_tapgymtainha/screen/forum/like_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -170,6 +171,7 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
   Widget _buildPostCard(Map<String, dynamic> post) {
     Map<String, dynamic> userinfo = post["userinfo"];
     var username = userinfo["Name"];
+    var avarUrl = userinfo["AvatarUrl"];
     bool isLiked = true;
     return   Container(
       padding: const EdgeInsets.all(8.0),
@@ -187,7 +189,7 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
                   CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.grey.shade800,
-                    backgroundImage: AssetImage("assets/default_avatar.png"),
+                    backgroundImage: (avarUrl != null) ? NetworkImage(avarUrl) : AssetImage("assets/default_avatar.png"),
                   ),
                   SizedBox(
                     width: 10,
@@ -233,7 +235,7 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
               // Container cho ảnh và media
               GestureDetector(
                 onTap: () {
-                  goToScreen(context, MediaViewerScreen());
+                  goToScreen(context, MediaViewerScreen(mediaUrls: List<String>.from(post["MediaUrls"]), username: username));
                 },
                 child: Container(
                   child: _buildMediaLayout(post["MediaUrls"].cast<String>()),
@@ -279,10 +281,23 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
       // Nếu chỉ có một ảnh
       return ClipRRect(
         borderRadius: BorderRadius.circular(5),
-        child: Image.network(
-          mediaUrls[0],
+        child: CachedNetworkImage(
+          imageUrl: mediaUrls[0],
           width: double.infinity,
           fit: BoxFit.cover,
+          errorWidget: (_, __, ___) {
+            return Container(
+              color: Colors.grey[200],
+              height: 200,
+              child: Center(
+                child: Icon(
+                  Icons.broken_image,
+                  color: Colors.grey,
+                  size: 40,
+                ),
+              ),
+            );
+          },
         ),
       );
     } else if (mediaUrls.length == 2) {
@@ -294,9 +309,22 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
               padding: const EdgeInsets.all(4.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5),
-                child: Image.network(
-                  url,
+                child: CachedNetworkImage(
+                  imageUrl:  url,
                   fit: BoxFit.cover,
+                  errorWidget: (_, __, ___) {
+                    return Container(
+                      color: Colors.grey[200],
+                      height: 200,
+                      child: const Center(
+                        child: Icon(
+                          Icons.broken_image,
+                          color: Colors.grey,
+                          size: 40,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -309,11 +337,18 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(5),
-            child: Image.network(
-              mediaUrls[0],
+            child: CachedNetworkImage(
+              imageUrl: mediaUrls[0],
               width: double.infinity,
               height: 200,
               fit: BoxFit.cover,
+              errorWidget: (_, __, ___) => Center(
+                child: Icon(
+                  Icons.broken_image,
+                  size: 40,
+                  color: Colors.grey,
+                ),
+              ),
             ),
           ),
           SizedBox(height: 4),
@@ -324,9 +359,16 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
                   padding: const EdgeInsets.all(4.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(5),
-                    child: Image.network(
-                      url,
+                    child: CachedNetworkImage(
+                      imageUrl: url,
                       fit: BoxFit.cover,
+                      errorWidget: (_, __, ___) => Center(
+                        child: Icon(
+                          Icons.broken_image,
+                          size: 40,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -341,11 +383,24 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(5),
-            child: Image.network(
-              mediaUrls[0],
+            child: CachedNetworkImage(
+              imageUrl: mediaUrls[0],
               width: double.infinity,
               height: 200,
               fit: BoxFit.cover,
+              errorWidget: (_, __, ___) {
+                return Container(
+                  color: Colors.grey[200],
+                  height: 200,
+                  child: const Center(
+                    child: Icon(
+                      Icons.broken_image,
+                      color: Colors.grey,
+                      size: 40,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           SizedBox(height: 4),
@@ -357,9 +412,22 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
                     padding: const EdgeInsets.all(4.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(5),
-                      child: Image.network(
-                        url,
+                      child: CachedNetworkImage(
+                        imageUrl:  url,
                         fit: BoxFit.cover,
+                        errorWidget: (_, __, ___) {
+                          return Container(
+                            color: Colors.grey[200],
+                            height: 200,
+                            child: Center(
+                              child: Icon(
+                                Icons.broken_image,
+                                color: Colors.grey,
+                                size: 40,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -373,9 +441,16 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(5),
-                          child: Image.network(
-                            mediaUrls[3],
+                          child: CachedNetworkImage(
+                            imageUrl: mediaUrls[3],
                             fit: BoxFit.cover,
+                            errorWidget: (_, __, ___) {
+                              return Image.asset(
+                                'assets/default_image.png',
+                                fit: BoxFit.cover,
+
+                              );
+                            },
                           ),
                         ),
                         Container(
