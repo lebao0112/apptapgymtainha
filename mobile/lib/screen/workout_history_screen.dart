@@ -51,28 +51,6 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
                 // Hiển thị danh sách workout của ngày đó
                 Column(
                   children: workouts.map((workout) {
-                    // return Card(
-                    //   elevation: 2,
-                    //   margin: const EdgeInsets.symmetric(vertical: 4),
-                    //   child: ListTile(
-                    //     title: Text(
-                    //       workout['Name'] ?? 'Unnamed Workout',
-                    //       style: TextStyle(
-                    //         fontWeight: FontWeight.bold,
-                    //       ),
-                    //     ),
-                    //     subtitle: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //       children: [
-                    //         Text(
-                    //             "Thời gian: ${workout['TotalTime'] ?? '00:00'}",
-                    //
-                    //         ),
-                    //         Text("Calories: ${workout['Talories'] ?? 0} kcal"),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // );
                     return Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(

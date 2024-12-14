@@ -24,7 +24,7 @@ class CommentService {
   }
 
   // Lấy danh sách bình luận của một bài đăng
-  async getCommentsByPostId(postId, skip = 0, limit = 100) {
+  async getCommentsByPostId(postId, skip = 0, limit = 10000) {
     const pipeline = [
       {
         $match: {

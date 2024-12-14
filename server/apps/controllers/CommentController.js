@@ -27,8 +27,11 @@ router.post("/create-comment", authenticateToken, async function (req, res) {
   try {
     const result = await commentService.insertComment(comment);
     res.status(201).json({
-      message: "Comment added successfully",
-      commentId: result.insertedId,
+      message: "Comment created successfully.",
+      newComment: {
+        _id: result.insertedId,
+        ...comment,
+      },
     });
   } catch (error) {
     console.error("Error creating comment:", error);
