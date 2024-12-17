@@ -1,3 +1,4 @@
+import 'package:doan_tapgymtainha/screen/checkcalories/trackfoodcalories.dart';
 import 'package:doan_tapgymtainha/screen/forum/newsfeed_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_tapgymtainha/screen/start_screen.dart'; // Import StartScreen
@@ -21,7 +22,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 1:
         return NewsfeedScreen();
       case 2:
-        return StartScreen(); // StartScreen will be created anew each time the tab is selected
+        return StartScreen();
       case 3:
         return CounterStepsScreen();
       case 4:
