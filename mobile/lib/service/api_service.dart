@@ -290,4 +290,56 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> addFoodToDiary(Map<String, dynamic> foodItem) async {
+    String? token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    print('foodItem: $foodItem');  // Kiểm tra xem dữ liệu có đúng không
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/food-diary/create-or-update'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+      body: jsonEncode({
+        'foodItem': foodItem,  // Đảm bảo foodItem chứa các trường như name, calories, fat, carbs, protein
+      }),
+    );
+    print('Response Status: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to add food to diary');
+    }
+  }
+
+
+  static Future<Map<String, dynamic>> getFoodDiaryByDate(String date) async {
+    String? token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/food-diary/get/$date'),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      },
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else if (response.statusCode == 404) {
+      // Nếu không tìm thấy nhật ký thực phẩm cho ngày này
+      return {};
+    } else {
+      throw Exception('Failed to fetch food diary');
+    }
+  }
+
 }

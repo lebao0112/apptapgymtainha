@@ -1,3 +1,5 @@
+
+import 'package:dart_openai/dart_openai.dart';
 import 'package:doan_tapgymtainha/notification_helper.dart';
 import 'package:doan_tapgymtainha/provider/challenge_provider.dart';
 import 'package:doan_tapgymtainha/provider/chalprogress_provider.dart';
@@ -5,6 +7,7 @@ import 'package:doan_tapgymtainha/provider/complete_workout_status_provider.dart
 import 'package:doan_tapgymtainha/provider/user_provider.dart';
 import 'package:doan_tapgymtainha/provider/workout_provider.dart';
 import 'package:doan_tapgymtainha/provider/workout_timer_provider.dart';
+import 'package:doan_tapgymtainha/screen/checkcalories/api_configfood.dart';
 import 'package:doan_tapgymtainha/provider/post_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +20,7 @@ import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
+  OpenAI.apiKey = ApiConfigFood.openaikey;
   //dam bao tai nguyen duoc khoi tao  truoc khi chay
   WidgetsFlutterBinding.ensureInitialized();
   NotificationHelper.init();

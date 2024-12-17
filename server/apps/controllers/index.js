@@ -8,6 +8,7 @@ router.use("/progress", require(__dirname + "/ProgressController"));
 router.use("/chalprogress", require(__dirname + "/ChalProgressController"));
 router.use("/challenge", require(__dirname + "/ChallengeController"));
 router.use("/history", require(__dirname + "/HistoryController"));
+router.use("/food-diary", require(__dirname + "/FooddiaryController"));
 router.use("/post", require(__dirname + "/PostController"));
 router.use("/like", require(__dirname + "/LikeController"));
 router.use("/comment", require(__dirname + "/CommentController"));
