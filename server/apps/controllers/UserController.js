@@ -235,8 +235,6 @@ router.get("/profile", authenticateToken, async (req, res) => {
 
 router.get("/someone-profile/:id", authenticateToken, async (req, res) => {
   try {
-    // Lấy userId từ token đã xác thực
-    const userId = req.user.userId;
     const userService = new UserService();
     // Gọi service để lấy thông tin người dùng
     const user = await userService.getUser(req.params.id);

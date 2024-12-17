@@ -75,6 +75,7 @@ class PostService {
               Likes: 1,
               "userinfo.Name": 1,
               "userinfo.AvatarUrl": 1,
+              "userinfo._id": 1,
             },
           },
           {
