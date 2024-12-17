@@ -2,6 +2,7 @@ import 'package:doan_tapgymtainha/provider/post_provider.dart';
 import 'package:doan_tapgymtainha/screen/forum/comment_button.dart';
 import 'package:doan_tapgymtainha/screen/forum/create_post_screen.dart';
 import 'package:doan_tapgymtainha/screen/forum/media_viewer_screen.dart';
+import 'package:doan_tapgymtainha/screen/forum/post_widget.dart';
 import 'package:doan_tapgymtainha/screen/forum/search_post_screen.dart';
 import 'package:doan_tapgymtainha/service/api_user_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -152,12 +153,13 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
           itemBuilder: (context, index) {
             if (index < posts.length) {
               // Hiển thị bài viết
-              return _buildPostCard(posts[index]);
+              // return _buildPostCard(posts[index]);
+              return PostWidget(post: posts[index]);
             } else {
               // Hiển thị loading indicator khi đang tải thêm
               return _isLoadingMorePost
-                  ? Padding(
-                padding: const EdgeInsets.all(16.0),
+                  ? const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Center(child: CircularProgressIndicator()),
               )
                   : SizedBox.shrink(); // Không hiển thị gì nếu không tải
@@ -168,307 +170,307 @@ class _NewFeedScreenState extends State<NewsfeedScreen> {
     );
   }
 
-  Widget _buildPostCard(Map<String, dynamic> post) {
-    Map<String, dynamic> userinfo = post["userinfo"];
-    var username = userinfo["Name"];
-    var avarUrl = userinfo["AvatarUrl"];
-    bool isLiked = true;
-    return   Container(
-      padding: const EdgeInsets.all(8.0),
-      margin: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Stack(
-        children: [
-          // Nội dung chính của Container
-          Column(
-            children: <Widget>[
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.grey.shade800,
-                    backgroundImage: (avarUrl != null) ? NetworkImage(avarUrl) : AssetImage("assets/default_avatar.png"),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        username ?? "username",
-                        style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyLarge?.color,
-                            fontSize: 20, fontWeight: FontWeight.bold),
-
-                      ),
-                      Text(
-                        formatDateTime(post["CreatedAt"]),
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Text(
-                  post["Content"],
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.bodyLarge?.color,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              // Container cho ảnh và media
-              GestureDetector(
-                onTap: () {
-                  goToScreen(context, MediaViewerScreen(mediaUrls: List<String>.from(post["MediaUrls"]), username: username));
-                },
-                child: Container(
-                  child: _buildMediaLayout(post["MediaUrls"].cast<String>()),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  LikeButton(postId: post["_id"], likeCount: post["Likes"], isLiked: post["isLiked"]),
-                  CommentButton(postId: post["_id"])
-                ],
-              )
-            ],
-          ),
-
-          Positioned(
-            top: 0,
-            right: 0,
-            child: IconButton(
-              onPressed: () {
-                // Xử lý sự kiện khi nhấn nút
-              },
-              icon: Icon(
-                Icons.more_horiz,
-                color: Theme.of(context).textTheme.bodyLarge?.color,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMediaLayout(List<String> mediaUrls) {
-    if(mediaUrls.length == 0){
-      return Container(
-
-      );
-    }else if(mediaUrls.length == 1) {
-      // Nếu chỉ có một ảnh
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(5),
-        child: CachedNetworkImage(
-          imageUrl: mediaUrls[0],
-          width: double.infinity,
-          fit: BoxFit.cover,
-          errorWidget: (_, __, ___) {
-            return Container(
-              color: Colors.grey[200],
-              height: 200,
-              child: Center(
-                child: Icon(
-                  Icons.broken_image,
-                  color: Colors.grey,
-                  size: 40,
-                ),
-              ),
-            );
-          },
-        ),
-      );
-    } else if (mediaUrls.length == 2) {
-      // Nếu có hai ảnh, chia làm 2 cột
-      return Row(
-        children: mediaUrls.map((url) {
-          return Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: CachedNetworkImage(
-                  imageUrl:  url,
-                  fit: BoxFit.cover,
-                  errorWidget: (_, __, ___) {
-                    return Container(
-                      color: Colors.grey[200],
-                      height: 200,
-                      child: const Center(
-                        child: Icon(
-                          Icons.broken_image,
-                          color: Colors.grey,
-                          size: 40,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      );
-    } else if (mediaUrls.length == 3) {
-      // Nếu có ba ảnh
-      return Column(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: CachedNetworkImage(
-              imageUrl: mediaUrls[0],
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
-              errorWidget: (_, __, ___) => Center(
-                child: Icon(
-                  Icons.broken_image,
-                  size: 40,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 4),
-          Row(
-            children: mediaUrls.skip(1).map((url) {
-              return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: CachedNetworkImage(
-                      imageUrl: url,
-                      fit: BoxFit.cover,
-                      errorWidget: (_, __, ___) => Center(
-                        child: Icon(
-                          Icons.broken_image,
-                          size: 40,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      );
-    } else {
-      // Nếu có nhiều hơn 3 ảnh
-      return Column(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: CachedNetworkImage(
-              imageUrl: mediaUrls[0],
-              width: double.infinity,
-              height: 200,
-              fit: BoxFit.cover,
-              errorWidget: (_, __, ___) {
-                return Container(
-                  color: Colors.grey[200],
-                  height: 200,
-                  child: const Center(
-                    child: Icon(
-                      Icons.broken_image,
-                      color: Colors.grey,
-                      size: 40,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          SizedBox(height: 4),
-          Row(
-            children: [
-              ...mediaUrls.skip(1).take(2).map((url) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: CachedNetworkImage(
-                        imageUrl:  url,
-                        fit: BoxFit.cover,
-                        errorWidget: (_, __, ___) {
-                          return Container(
-                            color: Colors.grey[200],
-                            height: 200,
-                            child: Center(
-                              child: Icon(
-                                Icons.broken_image,
-                                color: Colors.grey,
-                                size: 40,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-              if (mediaUrls.length > 4)
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(5),
-                          child: CachedNetworkImage(
-                            imageUrl: mediaUrls[3],
-                            fit: BoxFit.cover,
-                            errorWidget: (_, __, ___) {
-                              return Image.asset(
-                                'assets/default_image.png',
-                                fit: BoxFit.cover,
-
-                              );
-                            },
-                          ),
-                        ),
-                        Container(
-                          color: Colors.black54,
-                          alignment: Alignment.center,
-                          child: Text(
-                            '+${mediaUrls.length - 3}',
-                            style: TextStyle(color: Colors.white, fontSize: 24),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-            ],
-          ),
-        ],
-      );
-    }
-  }
+  // Widget _buildPostCard(Map<String, dynamic> post) {
+  //   Map<String, dynamic> userinfo = post["userinfo"];
+  //   var username = userinfo["Name"];
+  //   var avarUrl = userinfo["AvatarUrl"];
+  //   bool isLiked = true;
+  //   return  Container(
+  //     padding: const EdgeInsets.all(8.0),
+  //     margin: const EdgeInsets.all(8.0),
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(5),
+  //     ),
+  //     child: Stack(
+  //       children: [
+  //         // Nội dung chính của Container
+  //         Column(
+  //           children: <Widget>[
+  //             Row(
+  //               children: [
+  //                 CircleAvatar(
+  //                   radius: 30,
+  //                   backgroundColor: Colors.grey.shade800,
+  //                   backgroundImage: (avarUrl != null) ? NetworkImage(avarUrl) : AssetImage("assets/default_avatar.png"),
+  //                 ),
+  //                 SizedBox(
+  //                   width: 10,
+  //                 ),
+  //                 Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Text(
+  //                       username ?? "username",
+  //                       style: TextStyle(
+  //                           color: Theme.of(context).textTheme.bodyLarge?.color,
+  //                           fontSize: 20, fontWeight: FontWeight.bold),
+  //
+  //                     ),
+  //                     Text(
+  //                       formatDateTime(post["CreatedAt"]),
+  //                       style: TextStyle(
+  //                         fontSize: 15,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //             SizedBox(
+  //               height: 10,
+  //             ),
+  //             Container(
+  //               width: double.infinity,
+  //               padding: const EdgeInsets.all(8.0),
+  //               decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(5),
+  //               ),
+  //               child: Text(
+  //                 post["Content"],
+  //                 style: TextStyle(
+  //                   color: Theme.of(context).textTheme.bodyLarge?.color,
+  //                   fontSize: 16,
+  //                 ),
+  //               ),
+  //             ),
+  //             SizedBox(height: 10),
+  //             // Container cho ảnh và media
+  //             GestureDetector(
+  //               onTap: () {
+  //                 goToScreen(context, MediaViewerScreen(mediaUrls: List<String>.from(post["MediaUrls"]), username: username));
+  //               },
+  //               child: Container(
+  //                 child: _buildMediaLayout(post["MediaUrls"].cast<String>()),
+  //               ),
+  //             ),
+  //             SizedBox(
+  //               height: 10,
+  //             ),
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //               children: [
+  //                 LikeButton(postId: post["_id"], likeCount: post["Likes"], isLiked: post["isLiked"]),
+  //                 CommentButton(postId: post["_id"])
+  //               ],
+  //             )
+  //           ],
+  //         ),
+  //
+  //         Positioned(
+  //           top: 0,
+  //           right: 0,
+  //           child: IconButton(
+  //             onPressed: () {
+  //               // Xử lý sự kiện khi nhấn nút
+  //             },
+  //             icon: Icon(
+  //               Icons.more_horiz,
+  //               color: Theme.of(context).textTheme.bodyLarge?.color,
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _buildMediaLayout(List<String> mediaUrls) {
+  //   if(mediaUrls.length == 0){
+  //     return Container(
+  //
+  //     );
+  //   }else if(mediaUrls.length == 1) {
+  //     // Nếu chỉ có một ảnh
+  //     return ClipRRect(
+  //       borderRadius: BorderRadius.circular(5),
+  //       child: CachedNetworkImage(
+  //         imageUrl: mediaUrls[0],
+  //         width: double.infinity,
+  //         fit: BoxFit.cover,
+  //         errorWidget: (_, __, ___) {
+  //           return Container(
+  //             color: Colors.grey[200],
+  //             height: 200,
+  //             child: Center(
+  //               child: Icon(
+  //                 Icons.broken_image,
+  //                 color: Colors.grey,
+  //                 size: 40,
+  //               ),
+  //             ),
+  //           );
+  //         },
+  //       ),
+  //     );
+  //   } else if (mediaUrls.length == 2) {
+  //     // Nếu có hai ảnh, chia làm 2 cột
+  //     return Row(
+  //       children: mediaUrls.map((url) {
+  //         return Expanded(
+  //           child: Padding(
+  //             padding: const EdgeInsets.all(4.0),
+  //             child: ClipRRect(
+  //               borderRadius: BorderRadius.circular(5),
+  //               child: CachedNetworkImage(
+  //                 imageUrl:  url,
+  //                 fit: BoxFit.cover,
+  //                 errorWidget: (_, __, ___) {
+  //                   return Container(
+  //                     color: Colors.grey[200],
+  //                     height: 200,
+  //                     child: const Center(
+  //                       child: Icon(
+  //                         Icons.broken_image,
+  //                         color: Colors.grey,
+  //                         size: 40,
+  //                       ),
+  //                     ),
+  //                   );
+  //                 },
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       }).toList(),
+  //     );
+  //   } else if (mediaUrls.length == 3) {
+  //     // Nếu có ba ảnh
+  //     return Column(
+  //       children: [
+  //         ClipRRect(
+  //           borderRadius: BorderRadius.circular(5),
+  //           child: CachedNetworkImage(
+  //             imageUrl: mediaUrls[0],
+  //             width: double.infinity,
+  //             height: 200,
+  //             fit: BoxFit.cover,
+  //             errorWidget: (_, __, ___) => Center(
+  //               child: Icon(
+  //                 Icons.broken_image,
+  //                 size: 40,
+  //                 color: Colors.grey,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //         SizedBox(height: 4),
+  //         Row(
+  //           children: mediaUrls.skip(1).map((url) {
+  //             return Expanded(
+  //               child: Padding(
+  //                 padding: const EdgeInsets.all(4.0),
+  //                 child: ClipRRect(
+  //                   borderRadius: BorderRadius.circular(5),
+  //                   child: CachedNetworkImage(
+  //                     imageUrl: url,
+  //                     fit: BoxFit.cover,
+  //                     errorWidget: (_, __, ___) => Center(
+  //                       child: Icon(
+  //                         Icons.broken_image,
+  //                         size: 40,
+  //                         color: Colors.grey,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             );
+  //           }).toList(),
+  //         ),
+  //       ],
+  //     );
+  //   } else {
+  //     // Nếu có nhiều hơn 3 ảnh
+  //     return Column(
+  //       children: [
+  //         ClipRRect(
+  //           borderRadius: BorderRadius.circular(5),
+  //           child: CachedNetworkImage(
+  //             imageUrl: mediaUrls[0],
+  //             width: double.infinity,
+  //             height: 200,
+  //             fit: BoxFit.cover,
+  //             errorWidget: (_, __, ___) {
+  //               return Container(
+  //                 color: Colors.grey[200],
+  //                 height: 200,
+  //                 child: const Center(
+  //                   child: Icon(
+  //                     Icons.broken_image,
+  //                     color: Colors.grey,
+  //                     size: 40,
+  //                   ),
+  //                 ),
+  //               );
+  //             },
+  //           ),
+  //         ),
+  //         SizedBox(height: 4),
+  //         Row(
+  //           children: [
+  //             ...mediaUrls.skip(1).take(2).map((url) {
+  //               return Expanded(
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.all(4.0),
+  //                   child: ClipRRect(
+  //                     borderRadius: BorderRadius.circular(5),
+  //                     child: CachedNetworkImage(
+  //                       imageUrl:  url,
+  //                       fit: BoxFit.cover,
+  //                       errorWidget: (_, __, ___) {
+  //                         return Container(
+  //                           color: Colors.grey[200],
+  //                           height: 200,
+  //                           child: Center(
+  //                             child: Icon(
+  //                               Icons.broken_image,
+  //                               color: Colors.grey,
+  //                               size: 40,
+  //                             ),
+  //                           ),
+  //                         );
+  //                       },
+  //                     ),
+  //                   ),
+  //                 ),
+  //               );
+  //             }).toList(),
+  //             if (mediaUrls.length > 4)
+  //               Expanded(
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.all(4.0),
+  //                   child: Stack(
+  //                     children: [
+  //                       ClipRRect(
+  //                         borderRadius: BorderRadius.circular(5),
+  //                         child: CachedNetworkImage(
+  //                           imageUrl: mediaUrls[3],
+  //                           fit: BoxFit.cover,
+  //                           errorWidget: (_, __, ___) {
+  //                             return Image.asset(
+  //                               'assets/default_image.png',
+  //                               fit: BoxFit.cover,
+  //
+  //                             );
+  //                           },
+  //                         ),
+  //                       ),
+  //                       Container(
+  //                         color: Colors.black54,
+  //                         alignment: Alignment.center,
+  //                         child: Text(
+  //                           '+${mediaUrls.length - 3}',
+  //                           style: TextStyle(color: Colors.white, fontSize: 24),
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ),
+  //           ],
+  //         ),
+  //       ],
+  //     );
+  //   }
+  // }
 }

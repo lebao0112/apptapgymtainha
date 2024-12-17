@@ -51,7 +51,7 @@ class ProfileContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Align(
+          if (user.id == userProvider.user!.id) Align(
             alignment: Alignment.bottomRight,
             child: IconButton(
               onPressed: () {
@@ -60,6 +60,8 @@ class ProfileContent extends StatelessWidget {
               icon: Icon(Icons.edit, color: Colors.grey),
             ),
           ),
+
+
           CircleAvatar(
             radius: profileHeight / 2,
             backgroundColor: Colors.grey.shade800,
@@ -107,6 +109,9 @@ class ProfileContent extends StatelessWidget {
               ],
             ),
           ),
+          Column(
+
+          )
         ],
       ),
     );
