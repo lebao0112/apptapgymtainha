@@ -222,6 +222,30 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> fetchWorkoutDetailsAvailable(
+      String workoutId) async {
+    String? token = await getToken();
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+
+    final response = await http.get(
+      Uri.parse(
+          '$baseUrl/workout/workout-available/$workoutId'), // Update this endpoint to the new route
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization":
+        "Bearer $token", // Ensure the token is passed correctly
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body); // Return the workout details
+    } else {
+      print('Failed to fetch workout details: ${response.statusCode}');
+      throw Exception('Failed to fetch workout details');
+    }
+  }
   static Future<void> updateUserName(String newName) async {
     String? token = await getToken();
     // Gửi yêu cầu tới server để cập nhật tên người dùng

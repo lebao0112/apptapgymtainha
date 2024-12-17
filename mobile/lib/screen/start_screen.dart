@@ -1,3 +1,4 @@
+import 'package:doan_tapgymtainha/screen/workout_calenda_screen.dart';
 import 'package:doan_tapgymtainha/screen/workoutdetail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -72,11 +73,12 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final workoutProvider = Provider.of<WorkoutProvider>(context);
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          'Start Workout',
+          'BẮT ĐẦU TẬP LUYỆN',
           style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
         ),
         centerTitle: true,
@@ -102,39 +104,89 @@ class _StartScreenState extends State<StartScreen> {
                 foregroundColor: Colors.white,
                 minimumSize: Size(double.infinity, 50),
               ),
-              child: Text('New workout'),
+              child: Text('Tạo bài tập mới'),
             ),
             SizedBox(height: 20),
-            Text(
-              'My workouts',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyLarge?.color),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Bài tập của tôi',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyLarge?.color),
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WorkoutCalendarScreen(workouts: workoutProvider.workouts)),
+                      );
+                    },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min, // Đảm bảo Row chỉ chiếm đủ không gian cần thiết
+                    children: [
+                      Icon(Icons.calendar_month_rounded , color: Theme.of(context).textTheme.bodyLarge?.color), // Thêm icon cuốn lịch
+                      SizedBox(width: 8), // Khoảng cách giữa icon và text
+                      Text(
+                        "Lịch tập",
+                        style: TextStyle(
+                            color: Theme.of(context).textTheme.bodyLarge?.color
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
             SizedBox(height: 10),
-            Consumer<WorkoutProvider>(
-              builder: (context, workoutProvider, child) {
-                if (workoutProvider.isLoading) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (workoutProvider.workouts.isEmpty) {
-                  return Center(child: Text('No workouts found', style: TextStyle(color: Colors.white)));
-                } else {
-                  return GridView.count(
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 1.5,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: workoutProvider.workouts.map((workout) {
-                      final String title = workout['Title'] ?? 'No Title';
-                      final String description = workout['Description'] ?? 'No Description';
-                      final String workoutId = workout['_id'] ?? '';
+            workoutProvider.isLoading
+                ? Center(child: CircularProgressIndicator())
+                : workoutProvider.workouts.isEmpty
+                ? Center(
+                child: Text('No workouts found',
+                    style: TextStyle(color: Colors.white)))
+                : GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 1.5,
+              physics: NeverScrollableScrollPhysics(),
+              children: workoutProvider.workouts.map((workout) {
+                final String title = workout['Title'] ?? 'No Title';
+                final String description =
+                    workout['Description'] ?? 'No Description';
+                final String workoutId = workout['_id'] ?? '';
 
-                      return _buildTemplateCard(workoutId, title, description);
-                    }).toList(),
-                  );
-                }
-              },
+                return _buildTemplateCard(
+                    workoutId, title, description);
+              }).toList(),
             ),
+            // Consumer<WorkoutProvider>(
+            //   builder: (context, workoutProvider, child) {
+            //     if (workoutProvider.isLoading) {
+            //       return Center(child: CircularProgressIndicator());
+            //     } else if (workoutProvider.workouts.isEmpty) {
+            //       return Center(child: Text('No workouts found', style: TextStyle(color: Colors.white)));
+            //     } else {
+            //       return GridView.count(
+            //         shrinkWrap: true,
+            //         crossAxisCount: 2,
+            //         crossAxisSpacing: 10,
+            //         mainAxisSpacing: 10,
+            //         childAspectRatio: 1.5,
+            //         physics: NeverScrollableScrollPhysics(),
+            //         children: workoutProvider.workouts.map((workout) {
+            //           final String title = workout['Title'] ?? 'No Title';
+            //           final String description = workout['Description'] ?? 'No Description';
+            //           final String workoutId = workout['_id'] ?? '';
+            //
+            //           return _buildTemplateCard(workoutId, title, description);
+            //         }).toList(),
+            //       );
+            //     }
+            //   },
+            // ),
           ],
         ),
       ),
@@ -150,7 +202,7 @@ class _StartScreenState extends State<StartScreen> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  WorkoutDetailScreen(workoutDetails: workoutDetails)),
+                  WorkoutDetailScreen(workoutId: workoutId,)),
         );
 
         if (result == true) {

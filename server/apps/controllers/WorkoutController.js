@@ -99,12 +99,6 @@ router.get("/user-workouts", authenticateToken, async function (req, res) {
   }
 });
 
-// Route để lấy toàn bộ workout (có thể không cần xác thực tùy theo yêu cầu)
-router.get("/workout-list", async function (req, res) {
-  const workoutService = new WorkoutService();
-  const workouts = await workoutService.getWorkoutList();
-  res.render("workout/workout-list", { workouts });
-});
 // Route để lấy chi tiết workout dựa vào workoutId
 router.get("/workout/:workoutId", authenticateToken, async function (req, res) {
   const workoutService = new WorkoutService();
@@ -118,6 +112,47 @@ router.get("/workout/:workoutId", authenticateToken, async function (req, res) {
     // Check if the workout exists and belongs to the authenticated user
     if (!workout || workout.UserId !== req.user.userId) {
       return res.status(404).json({ message: "Workout not found or not owned by user" });
+    }
+
+    // Fetch the full exercise details for each exercise in the workout
+    const exerciseDetails = await Promise.all(
+      workout.Exercises.map(async (exercise) => {
+        const exerciseData = await exerciseService.getExercise(
+          exercise.exerciseId
+        );
+
+        // Merge exercise details with the reps and duration specific to this workout
+        return {
+          ...exerciseData,
+          reps: exercise.reps,
+          duration: exercise.duration,
+        };
+      })
+    );
+
+    // Return the workout details including exercise details
+    res.status(200).json({
+      ...workout,
+      Exercises: exerciseDetails  // Replace exercise IDs with full exercise details
+    });
+  } catch (error) {
+    console.error("Error fetching workout:", error);
+    res.status(500).json({ message: "Failed to fetch workout", error: error.message });
+  }
+});
+
+router.get("/workout-available/:workoutId", authenticateToken, async function (req, res) {
+  const workoutService = new WorkoutService();
+  const exerciseService = new ExerciseService();
+  const workoutId = req.params.workoutId;
+
+  try {
+    // Fetch the workout by ID
+    const workout = await workoutService.getWorkout(workoutId);
+
+    // Check if the workout exists and belongs to the authenticated user
+    if (!workout) {
+      return res.status(404).json({ message: "Workout not found" });
     }
 
     // Fetch the full exercise details for each exercise in the workout

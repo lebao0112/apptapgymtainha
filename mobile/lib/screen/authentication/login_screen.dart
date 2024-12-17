@@ -1,3 +1,4 @@
+import 'package:doan_tapgymtainha/provider/user_provider.dart';
 import 'package:doan_tapgymtainha/provider/workout_provider.dart';
 import 'package:doan_tapgymtainha/provider/workout_timer_provider.dart';
 import 'package:doan_tapgymtainha/screen/home_screen.dart';
@@ -73,6 +74,8 @@ class _LoginScreenState extends State<LoginScreen> {
               .loadWorkouts();
           await Provider.of<WorkoutTimerProvider>(context, listen: false)
               .loadHistory();
+          await Provider.of<UserProvider>(context, listen: false)
+              .loadUserProfile();
 
           Navigator.pushReplacement(
             context,
