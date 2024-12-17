@@ -1,3 +1,4 @@
+import 'package:doan_tapgymtainha/screen/checkcalories/trackfoodcalories.dart';
 import 'package:flutter/material.dart';
 import 'package:doan_tapgymtainha/screen/start_screen.dart'; // Import StartScreen
 import 'package:doan_tapgymtainha/screen/home_screen.dart';
@@ -19,7 +20,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 0:
         return HomeScreen();
       case 1:
-        return ExploreScreen();
+        return HomeScreen();
       case 2:
         return StartScreen(); // StartScreen will be created anew each time the tab is selected
       case 3:
@@ -49,7 +50,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.explore),
-            label: 'Khám phá',
+            label: 'Check Calories',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),

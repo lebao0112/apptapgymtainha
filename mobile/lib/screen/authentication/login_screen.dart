@@ -146,6 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
         @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true, // Giúp giao diện tránh bị che bởi bàn phím
       body: Stack(
         children: [

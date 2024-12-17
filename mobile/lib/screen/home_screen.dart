@@ -10,6 +10,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import 'ai/chatwithai.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -248,7 +250,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ChatWithAI(),
+                                      ),
+                                    );
+                                  },
                                   child: Text('START'),
                                 ),
                               ],
@@ -451,8 +460,13 @@ class WorkoutItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Lấy thông tin màu sắc từ theme hiện tại
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDarkMode ? Colors.black : Colors.grey[300]; // Nền đen cho tối, xám cho sáng
+    final textColor = isDarkMode ? Colors.white : Colors.black; // Chữ trắng cho tối, đen cho sáng
+
     return Card(
-      color: Colors.grey[900],
+      color: backgroundColor,
       margin: EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -464,18 +478,18 @@ class WorkoutItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: textColor,
               ),
             ),
             SizedBox(height: 8),
             Text(
               duration,
-              style: TextStyle(color: Colors.grey[500]),
+              style: TextStyle(color: textColor),
             ),
             SizedBox(height: 4),
             Text(
               exercises,
-              style: TextStyle(color: Colors.grey[500]),
+              style: TextStyle(color: textColor),
             ),
           ],
         ),
