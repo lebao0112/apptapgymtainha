@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Delete Product</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Delete Product</h2>
+        <p>Are you sure you want to delete the product: <strong>
+                <%= product.Name %>
+            </strong>?</p>
+        <form action="/product/delete-product?id=<%= product._id %>" method="POST">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="/product-list" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</body>
+
+</html>
