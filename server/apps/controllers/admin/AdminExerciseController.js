@@ -20,10 +20,6 @@ router.get("/exercise-list",authenticateToken, authorizeRole("admin"), async fun
 });
 // Insert a new exercise
 router.post("/insert-exercise", authenticateToken, authorizeRole("admin"), async function (req, res) {
-  if (req.user.Role != "admin") {
-    res.json({ message: "Not Found" });
-  }
-
   const exerciseService = new ExerciseService();
   const exercise = new Exercise();
   exercise.name = req.body.name;
@@ -32,6 +28,8 @@ router.post("/insert-exercise", authenticateToken, authorizeRole("admin"), async
   exercise.equipment = req.body.equipment;
   exercise.difficulty = req.body.difficulty;
   exercise.instructions = req.body.instructions;
+  exercise.imageUrl = req.body.imageUrl;
+  exercise.videoUrl = req.body.videoUrl;
 
   try {
     const result = await exerciseService.insertExercise(exercise);

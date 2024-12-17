@@ -21,12 +21,26 @@ class UserService {
     return await this.userCollection.findOne({ _id: new ObjectId(id) });
   }
 
-  async updateUser(user) {
-    return await this.userCollection.updateOne(
-      { _id: new ObjectId(user._id) },
-      { $set: user }
-    );
+  async updateUser(userId, updatedFields) {
+    try {
+      const result = await this.userCollection.findOneAndUpdate(
+        { _id: new ObjectId(userId) }, // Tìm user theo _id
+        { $set: updatedFields }, // Chỉ cập nhật các trường hợp lệ
+        { returnDocument: "after", returnNewDocument: true } // Trả về document sau khi cập nhật
+      );
+
+      return result; // Trả về user đã cập nhật
+    } catch (error) {
+      console.error("Error in updateUser:", error);
+      throw error;
+    }
   }
+  // async updateUser(user) {
+  //   return await this.userCollection.updateOne(
+  //     { _id: new ObjectId(user._id) },
+  //     { $set: user }
+  //   );
+  // }
 
   async deleteUser(id) {
     return await this.userCollection.deleteOne({ _id: new ObjectId(id) });

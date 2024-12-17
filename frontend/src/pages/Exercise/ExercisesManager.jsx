@@ -24,11 +24,12 @@ function ExercisesManager() {
         setIsModalOpen(false); // Đóng modal
     };
 
-    const handleSaveExercise = (newExercise) => {
+    const handleSaveExercise = () => {
         // Thực hiện logic lưu bài tập mới
-        console.log("Đã lưu động tác mới:", newExercise);
+      
         setIsModalOpen(false);
         window.location.reload();
+        alert("Đã lưu động tác mới");
     };
 
     return (
