@@ -1,4 +1,5 @@
 import 'package:doan_tapgymtainha/cache/user_profile_cache.dart';
+import 'package:doan_tapgymtainha/screen/checkcalories/fooddiary.dart';
 import 'package:doan_tapgymtainha/screen/workout_history_screen.dart';
 import 'package:doan_tapgymtainha/service/api_service.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import '../provider/theme_provider.dart';
 import 'authentication/login_screen.dart';
+import 'checkcalories/trackfoodcalories.dart';
 import 'profile_screen.dart'; // Đảm bảo bạn đã tạo ProfileScreen
 
 class SettingScreen extends StatelessWidget {
@@ -100,11 +102,15 @@ class SettingScreen extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.flag, color: Colors.orangeAccent),
               title: Text(
-                'Mục tiêu tập luyện',
+                'Kiểm tra calories thức ăn',
                 style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
               ),
               onTap: () {
-                // Điều hướng đến màn hình Workout Goals
+                // Điều hướng đến màn hình
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FoodDiary()),
+                );
               },
             ),
             Divider(color: Colors.grey),
