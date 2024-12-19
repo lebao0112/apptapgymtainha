@@ -100,7 +100,7 @@ class SettingScreen extends StatelessWidget {
 
             // Workout Goals Section
             ListTile(
-              leading: Icon(Icons.flag, color: Colors.orangeAccent),
+              leading: Icon(Icons.fastfood, color: Colors.orangeAccent),
               title: Text(
                 'Kiểm tra calories thức ăn',
                 style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
@@ -111,19 +111,6 @@ class SettingScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(builder: (context) => FoodDiary()),
                 );
-              },
-            ),
-            Divider(color: Colors.grey),
-
-            // Privacy Settings Section
-            ListTile(
-              leading: Icon(Icons.privacy_tip, color: Colors.orangeAccent),
-              title: Text(
-                'Quyền bảo mật và riêng tư',
-                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
-              ),
-              onTap: () {
-                // Điều hướng đến cài đặt bảo mật
               },
             ),
             Divider(color: Colors.grey),
@@ -154,19 +141,6 @@ class SettingScreen extends StatelessWidget {
               ),
               onTap: () {
                 // Xử lý logic cho lựa chọn ngôn ngữ
-              },
-            ),
-            Divider(color: Colors.grey),
-
-            // Support Section
-            ListTile(
-              leading: Icon(Icons.help, color: Colors.orangeAccent),
-              title: Text(
-                'Hỗ trợ',
-                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
-              ),
-              onTap: () {
-                // Điều hướng đến mục hỗ trợ
               },
             ),
             Divider(color: Colors.grey),

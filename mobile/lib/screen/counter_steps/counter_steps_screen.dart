@@ -205,7 +205,7 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Home",
+          "Tính bước chân",
           style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -245,14 +245,14 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStatCard("Time", _formatDuration(_duration)),
+                _buildStatCard("Thời gian", _formatDuration(_duration)),
                 _buildStatCard("Kcal", _kcal.toStringAsFixed(1)),
                 _buildStatCard("Km", _km.toStringAsFixed(2)),
               ],
             ),
             SizedBox(height: 20),
             Text(
-              "Your Progress",
+              "Tién độ",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -276,7 +276,7 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
                             ? Colors.grey[800]
                             : Colors.grey[300],
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.purple),
+                        border: Border.all(color: Colors.orange),
                       ),
                       child: Column(
                         children: [
@@ -285,7 +285,7 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.purple,
+                              color: Colors.orange,
                             ),
                           ),
                           Text(
@@ -306,10 +306,15 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _startStopCounter,
-              child: Text(_isCounting ? "Stop" : "Start"),
+              child: Text(
+                  _isCounting ? "Dừng" : "Bắt đầu",
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
+              ),
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                backgroundColor: Colors.purple,
+                backgroundColor: Colors.orange,
               ),
             ),
             SizedBox(height: 20),

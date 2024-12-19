@@ -198,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: TextStyle(
                                 fontSize: 26,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                                color: Colors.orange,
                               ),
                             ),
                             const SizedBox(height: 25),
@@ -209,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 labelText: "Email",
                                 prefixIcon: const Icon(Icons.email),
                                 filled: true,
-                                fillColor: Colors.grey[200],
+                                fillColor: Colors.grey,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15.0),
                                   borderSide: BorderSide.none,
@@ -231,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 labelText: "Mật khẩu",
                                 prefixIcon: const Icon(Icons.lock),
                                 filled: true,
-                                fillColor: Colors.grey[200],
+                                fillColor: Colors.grey,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15.0),
                                   borderSide: BorderSide.none,

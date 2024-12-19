@@ -195,6 +195,9 @@ class _StartScreenState extends State<StartScreen> {
 
   Widget _buildTemplateCard(
       String workoutId, String title, String description) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDarkMode ? Colors.grey : Colors.grey[300]; // Nền đen cho tối, xám cho sáng
+    final textColor = isDarkMode ? Colors.white : Colors.black;
     return GestureDetector(
       onTap: () async {
         final workoutDetails = await ApiService.fetchWorkoutDetails(workoutId);
@@ -210,7 +213,7 @@ class _StartScreenState extends State<StartScreen> {
         }
       },
       child: Card(
-        color: const Color.fromARGB(255, 121, 120, 120),
+        color: backgroundColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Padding(
           padding: const EdgeInsets.all(8.0),

@@ -276,77 +276,77 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: CupertinoSegmentedControl<int>(
-                children: {
-                  0: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'Người bắt đầu',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  1: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'Trung bình',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  2: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'Nâng cao',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                },
-                onValueChanged: (int? value) {
-                  setState(() {
-                    _selectedSegment = value ?? 0;
-                  });
-                },
-                groupValue: _selectedSegment,
-                unselectedColor: Colors.grey[800],
-                selectedColor: Colors.orange,
-                borderColor: Colors.orange,
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.4,
-              child: ListView(
-                padding: EdgeInsets.all(16),
-                children: _getWorkoutItems(),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            //   child: CupertinoSegmentedControl<int>(
+            //     children: {
+            //       0: Padding(
+            //         padding: EdgeInsets.all(8.0),
+            //         child: Text(
+            //           'Người bắt đầu',
+            //           style: TextStyle(color: Colors.white),
+            //         ),
+            //       ),
+            //       1: Padding(
+            //         padding: EdgeInsets.all(8.0),
+            //         child: Text(
+            //           'Trung bình',
+            //           style: TextStyle(color: Colors.white),
+            //         ),
+            //       ),
+            //       2: Padding(
+            //         padding: EdgeInsets.all(8.0),
+            //         child: Text(
+            //           'Nâng cao',
+            //           style: TextStyle(color: Colors.white),
+            //         ),
+            //       ),
+            //     },
+            //     onValueChanged: (int? value) {
+            //       setState(() {
+            //         _selectedSegment = value ?? 0;
+            //       });
+            //     },
+            //     groupValue: _selectedSegment,
+            //     unselectedColor: Colors.grey[800],
+            //     selectedColor: Colors.orange,
+            //     borderColor: Colors.orange,
+            //   ),
+            // ),
+            // SizedBox(
+            //   height: MediaQuery.of(context).size.height * 0.4,
+            //   child: ListView(
+            //     padding: EdgeInsets.all(16),
+            //     children: _getWorkoutItems(),
+            //   ),
+            // ),
           ],
         ),
       ),
     );
   }
 
-  List<Widget> _getWorkoutItems() {
-    switch (_selectedSegment) {
-      case 0:
-        return [
-          WorkoutItem(title: 'BỤNG NGƯỜI BẮT ĐẦU', duration: '20 PHÚT', exercises: '16 BÀI TẬP'),
-          WorkoutItem(title: 'NGỰC NGƯỜI BẮT ĐẦU', duration: '9 PHÚT', exercises: '11 BÀI TẬP'),
-        ];
-      case 1:
-        return [
-          WorkoutItem(title: 'BỤNG TRUNG BÌNH', duration: '25 PHÚT', exercises: '20 BÀI TẬP'),
-          WorkoutItem(title: 'NGỰC TRUNG BÌNH', duration: '15 PHÚT', exercises: '12 BÀI TẬP'),
-        ];
-      case 2:
-        return [
-          WorkoutItem(title: 'BỤNG NÂNG CAO', duration: '30 PHÚT', exercises: '25 BÀI TẬP'),
-          WorkoutItem(title: 'NGỰC NÂNG CAO', duration: '20 PHÚT', exercises: '15 BÀI TẬP'),
-        ];
-      default:
-        return [];
-    }
-  }
+  // List<Widget> _getWorkoutItems() {
+  //   switch (_selectedSegment) {
+  //     case 0:
+  //       return [
+  //         WorkoutItem(title: 'BỤNG NGƯỜI BẮT ĐẦU', duration: '20 PHÚT', exercises: '16 BÀI TẬP'),
+  //         WorkoutItem(title: 'NGỰC NGƯỜI BẮT ĐẦU', duration: '9 PHÚT', exercises: '11 BÀI TẬP'),
+  //       ];
+  //     case 1:
+  //       return [
+  //         WorkoutItem(title: 'BỤNG TRUNG BÌNH', duration: '25 PHÚT', exercises: '20 BÀI TẬP'),
+  //         WorkoutItem(title: 'NGỰC TRUNG BÌNH', duration: '15 PHÚT', exercises: '12 BÀI TẬP'),
+  //       ];
+  //     case 2:
+  //       return [
+  //         WorkoutItem(title: 'BỤNG NÂNG CAO', duration: '30 PHÚT', exercises: '25 BÀI TẬP'),
+  //         WorkoutItem(title: 'NGỰC NÂNG CAO', duration: '20 PHÚT', exercises: '15 BÀI TẬP'),
+  //       ];
+  //     default:
+  //       return [];
+  //   }
+  // }
 
   Widget _buildChallengeCard(BuildContext context, dynamic challenge) {
     return Container(

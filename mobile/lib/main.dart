@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         //xac dinh day la theme tối
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: Colors.black,
+        scaffoldBackgroundColor: Colors.white10,
         primaryColor: Colors.deepPurple,
         textTheme: TextTheme(
           bodyLarge: TextStyle(color: Colors.white), // White text for dark mode
