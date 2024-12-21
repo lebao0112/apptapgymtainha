@@ -37,6 +37,7 @@ class PostService {
           MediaType: post.MediaType,
           MediaUrls: post.MediaUrls,
           Likes: post.Likes,
+          Comments: post.Comments,
           UpdatedAt: new Date(),
         },
       }
@@ -73,6 +74,7 @@ class PostService {
               CreatedAt: 1,
               UpdatedAt: 1,
               Likes: 1,
+              Comments: 1,
               "userinfo.Name": 1,
               "userinfo.AvatarUrl": 1,
               "userinfo._id": 1,

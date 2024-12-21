@@ -96,97 +96,99 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(left: 30, right: 30, bottom: 5),
-                child: StepProgressIndicator(
-                  totalSteps: exerciseLength,
-                  currentStep: currentExerciseIndex,
-                  size: 5,
-                  selectedColor: Colors.orange,
-                  unselectedColor: Colors.grey,
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 10, left: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: Icon(Icons.close),
-                      color: Colors.black,
-                    ),
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(left: 30, right: 30, bottom: 5),
+                  child: StepProgressIndicator(
+                    totalSteps: exerciseLength,
+                    currentStep: currentExerciseIndex,
+                    size: 5,
+                    selectedColor: Colors.orange,
+                    unselectedColor: Colors.grey,
                   ),
-
-                  // Exercise and Timer Text in the Center
-                  Container(
-                    margin: const EdgeInsets.only(top: 10, left: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(top: 10, left: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: Icon(Icons.close),
+                        color: Colors.black,
+                      ),
+                    ),
+            
+                    // Exercise and Timer Text in the Center
+                    Container(
+                      margin: const EdgeInsets.only(top: 10, left: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Động tác ${currentExerciseIndex+1}/$exerciseLength',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+            
+                        ],
+                      ),
+                    ),
+            
+                    // Music Button and Rotate Screen Button on the Right
+                    // Music Button and Camera Button on the Right
+                    Column(
                       children: [
-                        Text(
-                          'Exercises ${currentExerciseIndex+1}/$exerciseLength',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                        Container(
+                          margin: const EdgeInsets.only(top: 10, right: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300], // Background color of the container
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  // Add action for music button here
+                                },
+                                icon: Icon(Icons.music_note_outlined),
+                                color: Colors.black, // Icon color
+                              ),
+                              SizedBox(width: 8), // Space between the icons
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    //dau ! de ép kiều từ string? thành string
+                                    MaterialPageRoute(builder: (context) => RecordVideoScreen(exerciseVideoUrl: videoUrl!)),
+                                  );
+                                },
+                                icon: Icon(Icons.videocam),
+                                color: Colors.black, // Icon color
+                              ),
+                            ],
                           ),
                         ),
-
                       ],
                     ),
-                  ),
-
-                  // Music Button and Rotate Screen Button on the Right
-                  // Music Button and Camera Button on the Right
-                  Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 10, right: 10),
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300], // Background color of the container
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                // Add action for music button here
-                              },
-                              icon: Icon(Icons.music_note_outlined),
-                              color: Colors.black, // Icon color
-                            ),
-                            SizedBox(width: 8), // Space between the icons
-                            IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  //dau ! de ép kiều từ string? thành string
-                                  MaterialPageRoute(builder: (context) => RecordVideoScreen(exerciseVideoUrl: videoUrl!)),
-                                );
-                              },
-                              icon: Icon(Icons.videocam),
-                              color: Colors.black, // Icon color
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
 
-          SizedBox(height: 100), 
+          SizedBox(height: 100),
 
           // Video Player Section
 

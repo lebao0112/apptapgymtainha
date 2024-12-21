@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 class CommentButton extends StatefulWidget {
   final String postId;
+  final int commentCount;
 
-  const CommentButton({super.key, required this.postId});
+  const CommentButton({super.key, required this.postId, required this.commentCount});
 
   @override
   State<CommentButton> createState() => _CommentButtonState();
@@ -13,6 +14,7 @@ class CommentButton extends StatefulWidget {
 
 class _CommentButtonState extends State<CommentButton> {
   late String postId = widget.postId;
+  late int commentCount = widget.commentCount;
   @override
   void initState() {
     super.initState();
@@ -37,7 +39,7 @@ class _CommentButtonState extends State<CommentButton> {
           icon:  Icon(Icons.comment_bank_outlined, color: Theme.of(context).textTheme.bodyLarge?.color),
         ),
         Text(
-          '3',
+          commentCount.toString(),
           style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
         ),
       ],

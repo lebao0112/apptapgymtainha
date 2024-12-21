@@ -60,7 +60,7 @@ router.put("/like-post", authenticateToken, async function (req, res) {
         updatePostResult.modifiedCount === 1
       ) {
         postService.updatePost(post);
-        return res.status(201).json({
+        return res.status(200).json({
           message: "Like successfully",
           likeId: insertLikeResult.insertedId,
         });

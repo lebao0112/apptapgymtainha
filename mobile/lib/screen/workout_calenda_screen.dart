@@ -220,7 +220,7 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
               ],
             ),
             trailing: IconButton(
-              icon: const Icon(Icons.access_time),
+              icon: const Icon(Icons.access_time, color: Colors.orange),
               onPressed: () => _pickTime(day),
             ),
           );
@@ -229,6 +229,7 @@ class _WorkoutCalendarScreenState extends State<WorkoutCalendarScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _saveAndScheduleNotifications,
         child: const Icon(Icons.save),
+        backgroundColor: Colors.orange,
       ),
     );
   }

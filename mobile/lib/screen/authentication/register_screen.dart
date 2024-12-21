@@ -133,7 +133,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: _nameController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Username',
+                    labelText: 'Tên tài khoản',
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -225,7 +225,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             _selectedDate == null
                                 ? 'Chọn ngày sinh'
                                 : 'Ngày sinh: ${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                           ),
                         ),
                       ),

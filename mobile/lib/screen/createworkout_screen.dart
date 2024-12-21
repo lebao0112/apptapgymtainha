@@ -25,7 +25,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
         if (existingWorkouts
             .any((workout) => workout['Title'] == _titleController.text)) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Workout title already exists')),
+            SnackBar(content: Text('Tên workout này đã tồn tại')),
           );
           return;
         }
@@ -115,7 +115,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
       appBar: AppBar(
         title: Text(
           style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
-          'Create Workout',
+          'Tạo workout',
         ),
         centerTitle: true,
       ),
@@ -130,7 +130,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                 TextFormField(
                   style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                   controller: _titleController,
-                  decoration: InputDecoration(labelText: "Workout Title"),
+                  decoration: InputDecoration(labelText: "Tên"),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a title';
@@ -142,7 +142,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                 TextFormField(
                   style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                   controller: _descriptionController,
-                  decoration: InputDecoration(labelText: "Workout Description"),
+                  decoration: InputDecoration(labelText: "Mô tả"),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a description';
@@ -279,7 +279,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
   Widget _buildDurationPicker(int index) {
     return Column(
       children: [
-        Text("Duration"),
+        Text("Thời gian"),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

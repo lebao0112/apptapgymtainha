@@ -23,18 +23,6 @@ class _LikeButtonState extends State<LikeButton> {
     super.initState();
     // _checkIfUserLiked();
   }
-  // Future<void> _checkIfUserLiked() async{
-  //   final result = await ApiSocialMedia.checkIfUserLiked(postId, commentId);
-  //   if(result){
-  //     setState(() {
-  //       isLiked = true;
-  //     });
-  //   }else{
-  //     setState(() {
-  //       isLiked = false;
-  //     });
-  //   }
-  // }
 
   Future<void> _toggleLike() async{
     setState(() {

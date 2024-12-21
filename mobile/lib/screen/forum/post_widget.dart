@@ -139,7 +139,7 @@ class PostWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   LikeButton(postId: post["_id"], likeCount: post["Likes"], isLiked: post["isLiked"]),
-                  CommentButton(postId: post["_id"])
+                  CommentButton(postId: post["_id"], commentCount: post["Comments"])
                 ],
               )
             ],
