@@ -65,7 +65,7 @@ function AddExerciseModal({ isOpen, onClose, onSave }) {
         // Upload image
         if (imageFile) {
             try {
-                const imageUploadResult = await uploadToCloudinary(imageFile);
+                const imageUploadResult = await uploadToCloudinary(imageFile, "yrbkawdp");
                 uploadedImageUrl = imageUploadResult.secure_url || imageUploadResult.url || "";
                 console.log("Uploaded Image URL:", uploadedImageUrl);
             } catch (error) {
@@ -76,7 +76,7 @@ function AddExerciseModal({ isOpen, onClose, onSave }) {
         // Upload video
         if (videoFile) {
             try {
-                const videoUploadResult = await uploadToCloudinary(videoFile);
+                const videoUploadResult = await uploadToCloudinary(videoFile, "yrbkawdp");
                 uploadedVideoUrl = videoUploadResult.secure_url || videoUploadResult.url || "";
                 console.log("Uploaded Video URL:", uploadedVideoUrl);
             } catch (error) {
@@ -185,11 +185,11 @@ function AddExerciseModal({ isOpen, onClose, onSave }) {
                     ></textarea>
                     {/* Image File */}
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Hình ảnh</label>
-                    <DropFileInput onFileChange={(files) => handleImageFileChange(files)} />
+                    <DropFileInput onFileChange={(files) => handleImageFileChange(files)} accept=".jpg,.jpeg,.png" />
 
                     {/* Video File */}
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Video</label>
-                    <DropFileInput onFileChange={(files) => handleVideoFileChange(files)} />
+                    <DropFileInput onFileChange={(files) => handleVideoFileChange(files)} accept=".mp4,.mkv" />
                 </div>
 
 

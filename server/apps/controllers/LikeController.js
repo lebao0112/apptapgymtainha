@@ -22,6 +22,7 @@ router.put("/like-post", authenticateToken, async function (req, res) {
 
     if (!post) {
       return res.status(500).json({ message: "Failed to find the post" });
+      
     }
 
     const like = await likeService.checkIfUserLiked(postId, commentId, userId);

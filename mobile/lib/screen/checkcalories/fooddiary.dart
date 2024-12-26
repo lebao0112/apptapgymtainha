@@ -9,6 +9,7 @@ class FoodDiary extends StatefulWidget {
 }
 
 class _FoodDiaryState extends State<FoodDiary> {
+
   double totalCaloriesRemaining = 1740;
   List<Map<String, dynamic>> breakfastItems = [];
   List<Map<String, dynamic>> lunchItems = [];
@@ -117,30 +118,34 @@ class _FoodDiaryState extends State<FoodDiary> {
 
 
   Widget _buildMealSection(String mealName, List<Map<String, dynamic>> foodItems) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDarkMode ? Colors.grey : Colors.grey[300];
+    final textColor = isDarkMode ? Colors.white : Colors.black;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.grey[900],
+        color: backgroundColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: ExpansionTile(
         title: Text(
           mealName,
-          style: TextStyle(color: Colors.white, fontSize: 18),
+          style: TextStyle( color: textColor, fontSize: 18),
+
         ),
         trailing: Text(
           '${foodItems.fold<double>(0, (sum, item) => sum + (item['calories'] as num).toDouble()).toStringAsFixed(0)}',
-          style: TextStyle(color: Colors.white, fontSize: 18),
+          style: TextStyle(color: textColor, fontSize: 18),
         ),
         children: foodItems.map((food) {
           return ListTile(
             title: Text(
               food['name'],
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: textColor),
             ),
             subtitle: Text(
               '${food['calories']} Cal',
-              style: TextStyle(color: Colors.white70),
+              style: TextStyle(color: textColor),
             ),
           );
         }).toList(),
@@ -150,14 +155,17 @@ class _FoodDiaryState extends State<FoodDiary> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDarkMode ? Colors.grey : Colors.grey[300];
+    final textColor = isDarkMode ? Colors.white : Colors.black;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor:Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         title: Text(
           'Nhật Ký',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle( color: Theme.of(context).textTheme.bodyLarge?.color),
         ),
       ),
       body: Padding(
@@ -168,7 +176,7 @@ class _FoodDiaryState extends State<FoodDiary> {
             // Calories Remaining Section
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey[900],
+                color: backgroundColor,
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.all(16.0),
@@ -179,12 +187,12 @@ class _FoodDiaryState extends State<FoodDiary> {
                     children: [
                       Text(
                         'Lượng Calories còn lại',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        style: TextStyle(color: textColor, fontSize: 18),
                       ),
                       Text(
                         totalCaloriesRemaining.toStringAsFixed(0),
                         style: TextStyle(
-                          color: Colors.white,
+                          color: textColor,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -200,7 +208,7 @@ class _FoodDiaryState extends State<FoodDiary> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
-                  icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                  icon: Icon(Icons.arrow_back_ios, color: textColor),
                   onPressed: () {
                     DateTime previousDate = currentDate.subtract(Duration(days: 1));
                     updateFoodDiaryForDate(previousDate);
@@ -209,13 +217,13 @@ class _FoodDiaryState extends State<FoodDiary> {
                 Text(
                   getFormattedDate(currentDate),
                   style: TextStyle(
-                    color: Colors.white,
+                    color: textColor,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                  icon: Icon(Icons.arrow_forward_ios, color: textColor),
                   onPressed: () {
                     DateTime nextDate = currentDate.add(Duration(days: 1));
                     updateFoodDiaryForDate(nextDate);

@@ -12,6 +12,8 @@ function DropFileInput(props) {
 
     const [fileList, setFileList] = useState([]);
 
+    const allowedTypes = props.accept.split(',').map((type) => type.trim());
+
     const onDragEnter = () => wrapperRef.current.classList.add('dragover');
 
     const onDragLeave = () => wrapperRef.current.classList.remove('dragover');
@@ -22,12 +24,28 @@ function DropFileInput(props) {
         const newFile = e.target.files[0];
         console.log("🚀 ~ onFileDrop ~ newFile:", newFile)
         if (newFile) {
-            const updatedList = [...fileList, newFile];
-            setFileList(updatedList);
-            props.onFileChange(updatedList);
+            const fileExtension = newFile.name.split('.').pop().toLowerCase();
+            const mimeType = newFile.type;
+
+            const isValid =
+                allowedTypes.includes(`.${fileExtension}`) ||
+                allowedTypes.includes(mimeType);
+            if(isValid){
+                const updatedList = [...fileList,
+                    {
+                        file: newFile,
+                        preview: URL.createObjectURL(newFile), // Tạo URL preview
+                    },
+                ];
+                console.log("🚀 ~ onFileDrop ~ updatedList:", updatedList)
+                
+                setFileList(updatedList);
+                props.onFileChange([newFile]);
+            }else{
+                alert(`File không hợp lệ`);
+            }
+          
         }
-
-
     }
 
     const fileRemove = (file) => {
@@ -39,21 +57,34 @@ function DropFileInput(props) {
 
     return (
         <>
-
-
-
             {
                 fileList.length > 0 ? (
                     <div className="drop-file-preview">
                         {
                             fileList.map((item, index) => (
                                 <div key={index} className="drop-file-preview__item">
-                                    <img src={ImageConfig[item.type.split('/')[1]] || ImageConfig['default']} alt="" />
+                                    {item.file.type.startsWith('image/') ? (
+                                        <img
+                                            src={item.preview}
+                                            alt="Preview"
+                                            className="drop-file-preview__image"
+                                        />
+                                    ) : (
+                                        <img
+                                            src={ImageConfig[item.file.type.split('/')[1]] || ImageConfig['default']}
+                                            alt=""
+                                        />
+                                    )}
                                     <div className="drop-file-preview__item__info">
-                                        <p>{item.name}</p>
-                                        <p>{item.size}B</p>
+                                        <p>{item.file.name}</p>
+                                        <p>{item.file.size}B</p>
                                     </div>
-                                    <span className="drop-file-preview__item__del" onClick={() => fileRemove(item)}>x</span>
+                                    <span
+                                        className="drop-file-preview__item__del"
+                                        onClick={() => fileRemove(item.file)}
+                                    >
+                                        x
+                                    </span>
                                 </div>
                             ))
                         }
@@ -75,7 +106,7 @@ function DropFileInput(props) {
                             </div>
 
                         </div>
-                        <input type="file" value="" onChange={onFileDrop} />
+                            <input type="file" accept={props.accept} value="" onChange={onFileDrop} />
                     </div>
                 )
             }

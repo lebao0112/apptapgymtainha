@@ -13,7 +13,9 @@ router.use("/post", require(__dirname + "/PostController"));
 router.use("/like", require(__dirname + "/LikeController"));
 router.use("/comment", require(__dirname + "/CommentController"));
 router.use("/file", require(__dirname + "/UploadController"));
+
 //duong dan admin
+router.use("/admin/notification",require(__dirname + "/admin/PushNotificationController"));
 router.use("/admin/exercise", require(__dirname + "/admin/AdminExerciseController"));
 router.use("/admin/user", require(__dirname + "/admin/AdminUserController"));
 //router ma get khong co j phia sau thi la index

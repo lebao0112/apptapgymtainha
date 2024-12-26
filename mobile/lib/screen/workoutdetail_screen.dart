@@ -51,7 +51,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Center(
           child: CircularProgressIndicator(),
         ),
@@ -64,7 +64,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
         body: Center(
           child: Text(
             "Error loading workout details.",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
           ),
         ),
       );
@@ -83,12 +83,12 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
     Map<String, dynamic>? chalprogress = widget.chalProgress;
 
     return Scaffold(
-          backgroundColor: Colors.black,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
+              icon: Icon(Icons.arrow_back, color: Theme.of(context).textTheme.bodyLarge?.color),
               onPressed: () => Navigator.of(context).pop(),
             ),
             title: Text(workoutTitle,
@@ -97,7 +97,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
             actions: [
               if (!isAvailable)
                 IconButton(
-                  icon: Icon(Icons.delete_outline_outlined, color: Colors.white),
+                  icon: Icon(Icons.delete_outline_outlined, color: Theme.of(context).textTheme.bodyLarge?.color),
                   onPressed: () async {
                     final confirmed = await ConfirmationDialog.showConfirmationDialog(
                       context,
@@ -113,10 +113,10 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                   },
                 ),
               IconButton(
-                  icon: Icon(Icons.favorite_border, color: Colors.white),
+                  icon: Icon(Icons.favorite_border, color: Theme.of(context).textTheme.bodyLarge?.color),
                   onPressed: () {}),
               IconButton(
-                  icon: Icon(Icons.more_vert, color: Colors.white),
+                  icon: Icon(Icons.more_vert, color: Theme.of(context).textTheme.bodyLarge?.color),
                   onPressed: () {}),
             ],
           ),
@@ -134,7 +134,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                         style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white),
+                            color: Theme.of(context).textTheme.bodyLarge?.color),
                       ),
                       const SizedBox(height: 8),
 
@@ -143,7 +143,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                       // Mô tả chương trình tập
                       Text(
                         workoutDescription,
-                        style: TextStyle(fontSize: 16, color: Colors.grey[300]),
+                        style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.bodyLarge?.color),
                       ),
                       const SizedBox(height: 16),
 
@@ -183,11 +183,11 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
 
                       // Exercises list
                       Text(
-                        'Exercises (${exercises.length})',
+                        'Động tác (${exercises.length})',
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white),
+                            color: Theme.of(context).textTheme.bodyLarge?.color),
                       ),
                       const SizedBox(height: 8),
                       Column(
@@ -205,10 +205,6 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                   margin: const EdgeInsets.only(bottom: 50),
                   child: ElevatedButton(
                     onPressed: () {
-
-                      print("tên workout là ${workoutTitle}");
-                      print("tên workout là ${workoutId}");
-
                       final workoutTimer = Provider.of<WorkoutTimerProvider>(context, listen: false);
                       workoutTimer.startTimer(workoutTitle, workoutId, 0);
 
@@ -228,9 +224,8 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                           borderRadius: BorderRadius.circular(30)),
                     ),
                     child: const Text(
-                      'START',
-                      style: TextStyle(
-                          color: Colors.white,
+                      'BẮT ĐẦU',
+                      style: TextStyle(color: Colors.white,
                           fontSize: 23,
                           fontWeight: FontWeight.bold),
                     ),
@@ -246,12 +241,12 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(title,
-            style: const TextStyle(
-                color: Colors.white,
+            style: TextStyle(
+                color: Theme.of(context).textTheme.bodyLarge?.color,
                 fontWeight: FontWeight.bold,
                 fontSize: 16)),
         const SizedBox(height: 4),
-        Text(subtitle, style: TextStyle(color: Colors.grey[300], fontSize: 14)),
+        Text(subtitle, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14)),
       ],
     );
   }
@@ -292,9 +287,9 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
       title: Text(
         exercise['name']!,
         style: TextStyle(
-            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+            color: Theme.of(context).textTheme.bodyLarge?.color, fontWeight: FontWeight.bold, fontSize: 16),
       ),
-      subtitle: Text(detail.isEmpty ? 'No data available' : detail, style: TextStyle(color: Colors.grey[300])),
+      subtitle: Text(detail.isEmpty ? 'No data available' : detail, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
     );
   }
   String formatDuration(int seconds) {

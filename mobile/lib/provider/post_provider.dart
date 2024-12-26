@@ -55,5 +55,35 @@ class PostProvider with ChangeNotifier {
     }
   }
 
+  Future<void> searchPosts(String keyword) async {
+    _isLoading = true;
+    _posts = [];
+    notifyListeners();
+
+    try {
+      final data = await ApiSocialMedia.searchPosts(keyword, 1);
+      _posts = data["posts"];
+      _hasMore = data["hasMore"];
+    } catch (error) {
+      print("Error searching posts: $error");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadMoreSearchResults(String keyword) async {
+    if (!_hasMore || _isLoading) return;
+
+    try {
+      final data = await ApiSocialMedia.searchPosts(keyword, _currentPage + 1);
+      _posts.addAll(data["posts"]);
+      _hasMore = data["hasMore"];
+      _currentPage++;
+      notifyListeners();
+    } catch (error) {
+      print("Error loading more search results: $error");
+    }
+  }
 
 }

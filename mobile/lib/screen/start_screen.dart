@@ -196,8 +196,9 @@ class _StartScreenState extends State<StartScreen> {
   Widget _buildTemplateCard(
       String workoutId, String title, String description) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDarkMode ? Colors.grey : Colors.grey[300]; // Nền đen cho tối, xám cho sáng
+    final backgroundColor = isDarkMode ? Colors.grey : Colors.grey[300];
     final textColor = isDarkMode ? Colors.white : Colors.black;
+
     return GestureDetector(
       onTap: () async {
         final workoutDetails = await ApiService.fetchWorkoutDetails(workoutId);

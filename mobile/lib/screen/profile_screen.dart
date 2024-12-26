@@ -5,17 +5,20 @@ import 'package:provider/provider.dart';
 import 'package:doan_tapgymtainha/provider/user_provider.dart';
 import 'package:doan_tapgymtainha/model/user.dart';
 
+import '../provider/theme_provider.dart';
+
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final User? user = userProvider.user;
-
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           'Hồ Sơ Cá Nhân',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
         ),
       ),
       body: userProvider.user == null && userProvider.isLoading
@@ -45,7 +48,7 @@ class ProfileContent extends StatelessWidget {
     final profileHeight = 144.0;
 
     return Container(
-      color: Colors.black,
+      color: Theme.of(context).scaffoldBackgroundColor,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Column(
@@ -81,7 +84,7 @@ class ProfileContent extends StatelessWidget {
               Text(
                 user.name ?? 'Tên không xác định',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),

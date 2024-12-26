@@ -25,7 +25,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
         if (existingWorkouts
             .any((workout) => workout['Title'] == _titleController.text)) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Tên workout này đã tồn tại')),
+            SnackBar(content: Text('Tên bài tập này đã tồn tại')),
           );
           return;
         }
@@ -115,7 +115,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
       appBar: AppBar(
         title: Text(
           style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
-          'Tạo workout',
+          'Tạo bài tập',
         ),
         centerTitle: true,
       ),
@@ -179,17 +179,17 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                       buildExerciseListItem(entry.value, entry.key))
                       .toList(),
                 )
-                    : Text("No exercises selected"),
+                    : Text("Chưa có động tác"),
                 SizedBox(height: 20),
           
                 ElevatedButton(
 
                   onPressed: _selectExercises,
-                  child: Text(style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),'Add Exercises'),
+                  child: Text(style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),'Thêm động tác'),
                 ),
                 ElevatedButton(
                   onPressed: _addWorkout,
-                  child: Text(style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),'Add Workout'),
+                  child: Text(style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),'Lưu'),
                 ),
               ],
             ),

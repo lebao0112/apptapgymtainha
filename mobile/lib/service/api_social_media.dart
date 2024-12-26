@@ -217,4 +217,47 @@ class ApiSocialMedia {
     }
   }
 
+  static Future<Map<String, dynamic>> searchPosts(String keyword, int page) async {
+    String? token = await Storage.getToken();
+    final response = await http.get(
+      Uri.parse('$baseUrl/post/search-posts?keyword=$keyword&page=$page&limit=10'),
+      headers: { 'Authorization': 'Bearer $token' },
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to fetch search results');
+    }
+  }
+
+  static Future<bool> deletePost(String postId) async {
+    String? token = await Storage.getToken();
+    final String url = '$baseUrl/post/delete-post?postId=${postId}';
+
+    try {
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Xóa thành công
+        print("Post deleted successfully.");
+        return true;
+      } else {
+        // Xóa thất bại, xử lý lỗi từ API
+        final errorData = jsonDecode(response.body);
+        print("Failed to delete post: ${errorData['message']}");
+        return false;
+      }
+    } catch (error) {
+      print("Error deleting post: $error");
+      return false;
+    }
+  }
+
 }

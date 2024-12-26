@@ -25,39 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  // void _login() async {
-  //   if (_formKey.currentState!.validate()) {
-  //     try {
-  //       // Gọi API đăng nhập
-  //       await ApiService.loginUser(
-  //         _emailController.text,
-  //         _passwordController.text,
-  //       );
-  //
-  //       await Provider.of<ChalprogressProvider>(context, listen: false).loadChalProgresses;
-  //
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => DashboardScreen(),
-  //         ),
-  //       );
-  //
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text('Đăng nhập thành công'),
-  //         ),
-  //       );
-  //     } catch (e) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(
-  //           content: Text('Đăng nhập thất bại: $e'),
-  //         ),
-  //       );
-  //     }
-  //   }
-  // }
-
   void _login() async {
     if (_formKey.currentState!.validate()) {
       try {
@@ -146,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-        @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,

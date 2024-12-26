@@ -26,10 +26,11 @@ void main() async {
   NotificationHelper.init();
   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
 
-  OneSignal.initialize("39ade0ad-e5a0-4f74-8822-b6fb2d766c35");
+  OneSignal.initialize("f0900138-aee4-485c-89e4-06504db07937");
 
   // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
   OneSignal.Notifications.requestPermission(true);
+
   await Hive.initFlutter();
   await Hive.openBox('userProfileBox');
 
@@ -37,6 +38,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  final userProvider = UserProvider();
+  await userProvider.loadUserProfile();
   runApp(
     MultiProvider(
       providers: [

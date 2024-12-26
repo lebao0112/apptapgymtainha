@@ -17,13 +17,14 @@ const cld = new Cloudinary({
 const imageUrl = cld.image("example-public-id").toURL();
 console.log("Generated Image URL:", imageUrl);
 
-export const uploadToCloudinary = async (file) => {
+export const uploadToCloudinary = async (file, uploadPreset) => {
   console.log("🚀 ~ uploadToCloudinary ~ file:", file)
 
   
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_preset", "yrbkawdp"); // Replace with your upload preset
+  // formData.append("upload_preset", "yrbkawdp");
+   formData.append("upload_preset", uploadPreset);
 
   for (let [key, value] of formData.entries()) {
     console.log(`${key}:`, value);

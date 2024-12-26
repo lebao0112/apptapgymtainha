@@ -21,12 +21,11 @@ class PostService {
     return await this.postCollection.insertOne(post);
   }
 
-  // Lấy thông tin bài đăng theo ID
   async getPost(id) {
     return await this.postCollection.findOne({ _id: new ObjectId(id) });
   }
 
-  // Cập nhật bài đăng
+
   async updatePost(post) {
     return await this.postCollection.updateOne(
       { _id: new ObjectId(post._id) },
@@ -44,26 +43,25 @@ class PostService {
     );
   }
 
-  // Xóa bài đăng theo ID
   async deletePost(id) {
     return await this.postCollection.deleteOne({ _id: new ObjectId(id) });
   }
 
-  // Lấy danh sách bài đăng (có thể giới hạn kết quả trả về)
+
   async getPostList(skip = 0, limit = 100) {
     try {
       const posts = await this.postCollection
         .aggregate([
           {
             $lookup: {
-              from: "Users", // Tên collection chứa thông tin người dùng
-              localField: "UserId", // Trường trong collection Posts để join
-              foreignField: "_id", // Trường trong collection Users để join
-              as: "userinfo", // Tên trường sẽ chứa dữ liệu kết hợp
+              from: "Users", 
+              localField: "UserId", 
+              foreignField: "_id", 
+              as: "userinfo", 
             },
           },
           {
-            $unwind: { path: "$userinfo", preserveNullAndEmptyArrays: true }, // Giải nén mảng userinfo (null nếu không tìm thấy người dùng)
+            $unwind: { path: "$userinfo", preserveNullAndEmptyArrays: true }, 
           },
           {
             $project: {
@@ -96,7 +94,71 @@ class PostService {
     }
   }
 
-  async countDocuments(){
+  async searchPosts(keyword, skip = 0, limit = 10) {
+    try {
+      const regex = new RegExp(keyword, "i"); // Case-insensitive regex search
+      const posts = await this.postCollection
+        .aggregate([
+          {
+            $match: {
+              Content: { $regex: regex },
+            },
+          },
+          {
+            $lookup: {
+              from: "Users",
+              localField: "UserId",
+              foreignField: "_id",
+              as: "userinfo",
+            },
+          },
+          {
+            $unwind: { path: "$userinfo", preserveNullAndEmptyArrays: true },
+          },
+          {
+            $project: {
+              _id: 1,
+              UserId: 1,
+              Content: 1,
+              MediaUrls: 1,
+              CreatedAt: 1,
+              UpdatedAt: 1,
+              Likes: 1,
+              Comments: 1,
+              "userinfo.Name": 1,
+              "userinfo.AvatarUrl": 1,
+              "userinfo._id": 1,
+            },
+          },
+          {
+            $sort: { CreatedAt: -1 }, // Sắp xếp theo thời gian từ mới nhất đến cũ nhất
+          },
+          { $skip: skip },
+          { $limit: limit },
+        ])
+        .toArray();
+
+      return posts;
+    } catch (error) {
+      console.error("Error searching posts:", error);
+      throw new Error("Failed to search posts");
+    }
+  }
+
+  // Count total search results
+  async countSearchResults(keyword) {
+    try {
+      const regex = new RegExp(keyword, "i");
+      return await this.postCollection.countDocuments({
+        Content: { $regex: regex },
+      });
+    } catch (error) {
+      console.error("Error counting search results:", error);
+      throw new Error("Failed to count search results");
+    }
+  }
+
+  async countDocuments() {
     return await this.postCollection.countDocuments();
   }
 }

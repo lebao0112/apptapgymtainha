@@ -57,7 +57,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             label: 'Bắt đầu',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.report),
+            icon: Icon(Icons.stacked_line_chart),
             label: 'Thống kê',
           ),
           BottomNavigationBarItem(

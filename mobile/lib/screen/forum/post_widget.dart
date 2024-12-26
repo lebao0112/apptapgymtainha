@@ -1,16 +1,29 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:doan_tapgymtainha/provider/user_provider.dart';
+import 'package:doan_tapgymtainha/screen/forum/newsfeed_screen.dart';
 import 'package:doan_tapgymtainha/screen/forum/user_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
+import '../../model/user.dart';
+import '../../provider/post_provider.dart';
+import '../../service/api_social_media.dart';
 import 'comment_button.dart';
 import 'like_button.dart';
 import 'media_viewer_screen.dart';
 
-class PostWidget extends StatelessWidget {
+class PostWidget extends StatefulWidget {
   final Map<String, dynamic> post;
 
   const PostWidget({super.key, required this.post});
+
+  @override
+  State<PostWidget> createState() => _PostWidgetState();
+}
+
+class _PostWidgetState extends State<PostWidget> {
+  bool _isDeleted = false;
 
   void goToScreen(BuildContext context, Widget screen){
     Navigator.push(
@@ -52,13 +65,91 @@ class PostWidget extends StatelessWidget {
     }
   }
 
+  Future<void> _showDeleteConfirmationDialog(
+      BuildContext context, String postId) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Xác nhận xóa"),
+          content: const Text("Bạn có chắc chắn muốn xóa bài đăng này không?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false); // Người dùng nhấn Hủy
+              },
+              child: const Text("Hủy"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, true); // Người dùng nhấn Xóa
+              },
+              child: const Text("Xóa"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == true) {
+      _deletePost(context, postId); // Thực hiện xóa nếu người dùng xác nhận
+    }
+  }
+
+  void _deletePost(BuildContext context, String postId) async {
+    bool isDeleted = await ApiSocialMedia.deletePost(postId);
+
+    if (isDeleted) {
+      setState(() {
+        _isDeleted = true; // Đánh dấu bài đăng đã bị xóa
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Bài đăng đã được xóa thành công!"),
+          backgroundColor: Colors.green,
+        ),
+
+
+      );
+
+
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Xóa bài đăng thất bại. Vui lòng thử lại!"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> userinfo = post["userinfo"];
+    // final userProvider = Provider.of<UserProvider>(context);
+    // final User? user = userProvider.user;
+    Map<String, dynamic> userinfo = widget.post["userinfo"];
     var username = userinfo["Name"];
     var avarUrl = userinfo["AvatarUrl"];
     var userId = userinfo["_id"];
     bool isLiked = true;
+
+    if (_isDeleted) {
+      return Container(
+        padding: const EdgeInsets.all(16.0),
+        margin: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.grey[200],
+        ),
+        child: Center(
+          child: Text(
+            "Bài đăng đã được xóa.",
+            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+          ),
+        ),
+      );
+    }
     return  Container(
       padding: const EdgeInsets.all(8.0),
       margin: const EdgeInsets.all(8.0),
@@ -95,7 +186,7 @@ class PostWidget extends StatelessWidget {
 
                         ),
                         Text(
-                          formatDateTime(post["CreatedAt"]),
+                          formatDateTime(widget.post["CreatedAt"]),
                           style: const TextStyle(
                             fontSize: 15,
                           ),
@@ -115,7 +206,7 @@ class PostWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                 ),
                 child: Text(
-                  post["Content"],
+                  widget.post["Content"],
                   style: TextStyle(
                     color: Theme.of(context).textTheme.bodyLarge?.color,
                     fontSize: 16,
@@ -126,10 +217,10 @@ class PostWidget extends StatelessWidget {
               // Container cho ảnh và media
               GestureDetector(
                 onTap: () {
-                  goToScreen(context, MediaViewerScreen(mediaUrls: List<String>.from(post["MediaUrls"]), username: username));
+                  goToScreen(context, MediaViewerScreen(mediaUrls: List<String>.from(widget.post["MediaUrls"]), username: username));
                 },
                 child: Container(
-                  child: _buildMediaLayout(post["MediaUrls"].cast<String>()),
+                  child: _buildMediaLayout(widget.post["MediaUrls"].cast<String>()),
                 ),
               ),
               const SizedBox(
@@ -138,30 +229,40 @@ class PostWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  LikeButton(postId: post["_id"], likeCount: post["Likes"], isLiked: post["isLiked"]),
-                  CommentButton(postId: post["_id"], commentCount: post["Comments"])
+                  LikeButton(postId: widget.post["_id"], likeCount: widget.post["Likes"], isLiked: widget.post["isLiked"]),
+                  CommentButton(postId: widget.post["_id"], commentCount: widget.post["Comments"])
                 ],
               )
             ],
           ),
 
+
           Positioned(
             top: 0,
             right: 0,
-            child: IconButton(
-              onPressed: () {
-                // Xử lý sự kiện khi nhấn nút
+            child: PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'delete') {
+                  _showDeleteConfirmationDialog(context, widget.post["_id"]);
+                }
               },
+              itemBuilder: (BuildContext context) => [
+                const PopupMenuItem(
+                  value: 'delete',
+                  child: Text('Xóa'),
+                ),
+              ],
               icon: Icon(
                 Icons.more_horiz,
                 color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
-          ),
+          )
         ],
       ),
     );
   }
+
   Widget _buildMediaLayout(List<String> mediaUrls) {
     if(mediaUrls.length == 0){
       return Container(

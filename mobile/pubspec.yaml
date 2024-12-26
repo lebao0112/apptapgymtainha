@@ -76,7 +76,7 @@ dependencies:
   mime: ^1.0.0
   image_cropper: ^4.0.1
   photo_view: ^0.15.0
-
+  fl_chart: ^0.69.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

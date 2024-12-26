@@ -1,5 +1,6 @@
 import 'package:doan_tapgymtainha/cache/user_profile_cache.dart';
 import 'package:doan_tapgymtainha/screen/checkcalories/fooddiary.dart';
+import 'package:doan_tapgymtainha/screen/static_screen.dart';
 import 'package:doan_tapgymtainha/screen/workout_history_screen.dart';
 import 'package:doan_tapgymtainha/service/api_service.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +79,24 @@ class SettingScreen extends StatelessWidget {
               ),
               onTap: () {
                 // Điều hướng đến màn hình Notifications
+              },
+            ),
+
+            Divider(color: Colors.grey),
+
+            // Workout History Section
+            ListTile(
+              leading: Icon(Icons.bar_chart, color: Colors.orangeAccent),
+              title: Text(
+                'Thống kê',
+                style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyLarge?.color),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => StaticScreen()),
+                );
               },
             ),
             Divider(color: Colors.grey),

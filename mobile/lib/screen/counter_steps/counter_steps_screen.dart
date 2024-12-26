@@ -231,7 +231,7 @@ class _CounterStepsScreenState extends State<CounterStepsScreen> {
               roundedCap: (_, __) => true,
               child: Center(
                 child: Text(
-                  '$_steps\n/$_stepGoal',
+                  '$_steps',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,

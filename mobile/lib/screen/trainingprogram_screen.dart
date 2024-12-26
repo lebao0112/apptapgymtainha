@@ -12,16 +12,19 @@ class TrainingProgramScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDarkMode ? Colors.grey : Colors.grey[300];
+    final textColor = isDarkMode ? Colors.white : Colors.black;
     final String challengeId = challenge['_id'];
     final int totalDays = (challenge['days'] as List).length;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: textColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -41,7 +44,7 @@ class TrainingProgramScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: textColor,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -52,7 +55,7 @@ class TrainingProgramScreen extends StatelessWidget {
                   children: [
                     Text(
                       '${chalProgress['Progress']} / $totalDays workouts hoàn thành',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                      style: TextStyle(color: textColor, fontSize: 16),
                     ),
                   ],
                 ),
@@ -76,6 +79,9 @@ class TrainingProgramScreen extends StatelessWidget {
 
   Widget _buildDayCheck(List<String> days, BuildContext context, String challengeId, Map<String, dynamic> chalProgress,
       {bool showContinueButton = true}) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDarkMode ? Colors.grey : Colors.grey[300];
+    final textColor = isDarkMode ? Colors.white : Colors.black;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -83,7 +89,7 @@ class TrainingProgramScreen extends StatelessWidget {
         Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.grey.shade900,
+            color: backgroundColor,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
@@ -138,6 +144,9 @@ class TrainingProgramScreen extends StatelessWidget {
   }
 
   Widget _buildDayButton(int dayNumber, String workoutId, Map<String, dynamic> chalProgress, BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDarkMode ? Colors.grey : Colors.grey[300];
+    final textColor = isDarkMode ? Colors.white : Colors.black;
     return Padding(
       padding: EdgeInsets.all(7),
       child: GestureDetector(
@@ -162,14 +171,14 @@ class TrainingProgramScreen extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-            color: Colors.grey.shade800,
+            color: Theme.of(context).scaffoldBackgroundColor,
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
           child: Text(
             dayNumber.toString(),
             style: TextStyle(
-              color: Colors.grey,
+              color: textColor,
               fontWeight: FontWeight.bold,
             ),
           ),

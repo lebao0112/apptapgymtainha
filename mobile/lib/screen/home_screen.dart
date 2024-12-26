@@ -62,6 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final double bannerHeight = 200;
     final double bannerWidth = MediaQuery.of(context).size.width;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDarkMode ? Colors.grey : Colors.grey[300];
+    final textColor = isDarkMode ? Colors.white : Colors.black;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -101,6 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: SingleChildScrollView(
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -134,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 currentMonth == now.month &&
                                 currentYear == now.year
                                 ? Colors.orange
-                                : Colors.grey[800],
+                                : backgroundColor,
                           ),
                           child: Text(
                             '$day',
@@ -143,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   currentMonth == now.month &&
                                   currentYear == now.year
                                   ? Colors.black
-                                  : Colors.white,
+                                  : textColor,
                             ),
                           ),
                         );
