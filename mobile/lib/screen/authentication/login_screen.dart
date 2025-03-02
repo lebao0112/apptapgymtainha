@@ -176,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 labelText: "Email",
                                 prefixIcon: const Icon(Icons.email),
                                 filled: true,
-                                fillColor: Colors.grey,
+                                fillColor: Colors.grey[300],
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15.0),
                                   borderSide: BorderSide.none,
@@ -198,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 labelText: "Mật khẩu",
                                 prefixIcon: const Icon(Icons.lock),
                                 filled: true,
-                                fillColor: Colors.grey,
+                                fillColor: Colors.grey[300],
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15.0),
                                   borderSide: BorderSide.none,

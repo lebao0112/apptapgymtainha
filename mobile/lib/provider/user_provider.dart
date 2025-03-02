@@ -38,7 +38,7 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
     try {
       final user = await ApiUserService.fetchUserProfile();
-      setUser(user); // Cập nhật trạng thái user trong Provider
+      setUser(user);
     } catch (error) {
       _isLoading = false;
       print('Error in loadUserProfile: $error');

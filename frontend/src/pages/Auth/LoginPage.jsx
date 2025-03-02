@@ -21,7 +21,7 @@ const LoginPage = () => {
             const { token } = response.data;
 
             localStorage.setItem('token', token);
-            navigate('/dashboard', {replace: true});
+            navigate('/notifications', {replace: true});
            
         } catch (error) {
             alert('Email hoặc mật khẩu không chính xác');

@@ -22,7 +22,7 @@ class _ChatWithAIState extends State<ChatWithAI> {
         messages: [
           OpenAIChatCompletionChoiceMessageModel(
             role: OpenAIChatMessageRole.system,
-            content: "You are a professional gym coach. Provide expert advice and motivation for users based on their fitness goals and questions.",
+            content: "You are a professional gym coach. Provide expert advice and motivation for users based on their fitness goals and questions. Only response to topics relate to fitness, gym, health, diet. Tuyệt đối không trả lời những chủ đề không liên quan đến healt, fitness, diet, gym. ",
           ),
           OpenAIChatCompletionChoiceMessageModel(
             role: OpenAIChatMessageRole.user,

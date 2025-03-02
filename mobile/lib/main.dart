@@ -38,8 +38,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  final userProvider = UserProvider();
-  await userProvider.loadUserProfile();
   runApp(
     MultiProvider(
       providers: [
