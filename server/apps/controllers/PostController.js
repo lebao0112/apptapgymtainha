@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var PostService = require("./../services/PostService");
 var LikeService = require("./../services/LikeService");
+var CommentService = require("./../services/CommentService");
 // var UserService = require("./../services/UserService");
 var Post = require("./../entity/post");
 const authenticateToken = require("../middleware/authMiddleware");
@@ -42,7 +43,7 @@ router.post(
 );
 
 router.get("/get-posts", authenticateToken, async function (req, res) {
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1, limit = 100 } = req.query;
   const skip = (page - 1) * limit;
 
   const userId = req.user.userId;
@@ -63,9 +64,9 @@ router.get("/get-posts", authenticateToken, async function (req, res) {
       })
     );
 
-    // postsWithLikesStatus.sort(
-    //   (a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt)
-    // );
+    postsWithLikesStatus.sort(
+      (a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt)
+    );
 
     res.status(200).json({
       posts: postsWithLikesStatus,
